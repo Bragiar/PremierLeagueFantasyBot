@@ -1,0 +1,62 @@
+{
+  "last_known_events": [
+    {
+      "deadline_time": "2026-08-28T17:30:00Z",
+      "finished": false,
+      "id": 2,
+      "name": "Gameweek 2"
+    },
+    {
+      "deadline_time": "2026-09-04T17:30:00Z",
+      "finished": false,
+      "id": 3,
+      "name": "Gameweek 3"
+    },
+    {
+      "deadline_time": "2026-09-12T12:30:00Z",
+      "finished": false,
+      "id": 4,
+      "name": "Gameweek 4"
+    },
+    {
+      "deadline_time": "2026-09-18T17:30:00Z",
+      "finished": false,
+      "id": 5,
+      "name": "Gameweek 5"
+    },
+    {
+      "deadline_time": "2026-10-10T10:00:00Z",
+      "finished": false,
+      "id": 6,
+      "name": "Gameweek 6"
+    },
+    {
+      "deadline_time": "2026-10-17T10:00:00Z",
+      "finished": false,
+      "id": 7,
+      "name": "Gameweek 7"
+    },
+    {
+      "deadline_time": "2026-10-23T17:30:00Z",
+      "finished": false,
+      "id": 8,
+      "name": "Gameweek 8"
+    },
+    {
+      "deadline_time": "2026-10-31T11:00:00Z",
+      "finished": false,
+      "id": 9,
+      "name": "Gameweek 9"
+    }
+  ],
+  "last_run": {
+    "at": "2026-08-21T17:31:53.424908+00:00",
+    "delivery": "dry_run",
+    "event_id": 2,
+    "fallback": false,
+    "notification_key": "gw2:manual",
+    "window": "manual"
+  },
+  "schema_version": 1,
+  "sent_notifications": {}
+}

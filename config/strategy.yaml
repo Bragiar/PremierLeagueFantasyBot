@@ -1,0 +1,29 @@
+strategy:
+  fixture_horizon: 5
+  max_fixture_horizon: 6
+  max_recommended_transfers: 1
+  max_points_hit: 0
+  min_transfer_gain: 2.5
+  secure_starter_weight: 1.6
+  fixture_weight: 0.45
+  form_weight: 0.8
+  ownership_weight: 0.08
+  defensive_contribution_weight: 0.35
+  avoid_optional_transfers: true
+  save_chips_by_default: true
+  captain_min_availability: 90
+  captain_ownership_weight: 0.18
+
+notifications:
+  offsets_minutes: [1440, 180, 45]
+  tolerance_minutes: 40
+
+openai:
+  enabled: true
+  reasoning_effort: low
+  max_explanation_characters: 700
+
+fpl_api:
+  base_url: https://fantasy.premierleague.com/api
+  timeout_seconds: 20
+  retries: 3
