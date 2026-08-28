@@ -50,12 +50,12 @@
     }
   ],
   "last_run": {
-    "at": "2026-08-21T17:31:53.424908+00:00",
-    "delivery": "dry_run",
+    "at": "2026-08-28T14:59:34.737519+00:00",
+    "delivery": "test_sent",
     "event_id": 2,
     "fallback": false,
-    "notification_key": "gw2:manual",
-    "window": "manual"
+    "notification_key": "gw2:3h",
+    "window": "3h"
   },
   "schema_version": 1,
   "sent_notifications": {}

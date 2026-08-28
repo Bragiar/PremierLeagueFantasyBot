@@ -7,6 +7,16 @@ from pathlib import Path
 from typing import Any
 
 
+def load_json_object(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    with path.open("r", encoding="utf-8") as handle:
+        value = json.load(handle)
+    if not isinstance(value, dict):
+        raise ValueError(f"Expected a JSON object in {path}")
+    return value
+
+
 def load_state(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"schema_version": 1, "sent_notifications": {}, "last_known_events": []}
@@ -38,6 +48,12 @@ def atomic_write_text(path: Path, content: str) -> None:
 
 def save_state(path: Path, state: dict[str, Any]) -> None:
     atomic_write_text(path, json.dumps(state, indent=2, sort_keys=True) + "\n")
+
+
+def save_json_object(path: Path, value: dict[str, Any]) -> None:
+    atomic_write_text(
+        path, json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    )
 
 
 def append_jsonl(path: Path, record: dict[str, Any]) -> None:

@@ -50,12 +50,32 @@ def load_squad(path: Path) -> SquadSettings:
             )
         )
 
+    raw_chips = data.get("chips", {})
+    if not isinstance(raw_chips, dict):
+        raise ValueError("chips must be a mapping")
+    chips: dict[str, dict[str, str]] = {}
+    allowed_chips = {"wildcard", "free_hit", "bench_boost", "triple_captain"}
+    for half in ("first_half", "second_half"):
+        raw_half = raw_chips.get(half, {})
+        if not isinstance(raw_half, dict):
+            raise ValueError(f"chips.{half} must be a mapping")
+        unknown = set(raw_half).difference(allowed_chips)
+        if unknown:
+            raise ValueError(f"Unknown chips in {half}: {', '.join(sorted(unknown))}")
+        chips[half] = {}
+        for chip in allowed_chips:
+            status = str(raw_half.get(chip, "used")).lower()
+            if status not in {"available", "used"}:
+                raise ValueError(f"chips.{half}.{chip} must be available or used")
+            chips[half][chip] = status
+
     return SquadSettings(
         entries=tuple(entries),
         bank=money_to_tenths(data.get("bank", 0), "bank"),
         free_transfers=max(0, int(data.get("free_transfers", 1))),
         captain=str(data.get("captain", "")).strip(),
         vice_captain=str(data.get("vice_captain", "")).strip(),
+        chips=chips,
     )
 
 

@@ -1,16 +1,44 @@
 strategy:
   fixture_horizon: 5
   max_fixture_horizon: 6
+  # Rolling planner: searches reachable squads while carrying banked transfers forward.
+  planner_free_transfer_cap: 5
+  planner_max_transfers_per_week: 2
+  planner_beam_width: 35
+  planner_candidates_per_position: 10
+  planner_outgoing_candidates: 4
+  planner_transfer_options_per_state: 8
+  planner_pair_seeds: 5
+  planner_min_transfer_gain: 2.0
+  planner_transfer_uncertainty_cost: 1.0
+  planner_saved_transfer_value: 0.8
+  planner_bench_weight: 0.08
+  planner_chip_window_searches: 4
+  planner_promoted_home_tc_bonus: 2.5
+  planner_gw19_free_hit_penalty: 5.0
+  promoted_teams: [Coventry City, Hull City, Ipswich Town]
   max_recommended_transfers: 1
   max_points_hit: 0
   min_transfer_gain: 2.5
+  research_candidate_transfers: 3
   secure_starter_weight: 1.6
   fixture_weight: 0.45
   form_weight: 0.8
   ownership_weight: 0.08
   defensive_contribution_weight: 0.35
+  # Immediate-Gameweek weights are separate from the five-Gameweek transfer plan.
+  lineup_fixture_weight: 1.0
+  lineup_form_weight: 0.25
+  lineup_ownership_weight: 0.02
+  lineup_secure_starter_weight: 1.6
+  lineup_defensive_contribution_weight: 0.2
   avoid_optional_transfers: true
   save_chips_by_default: true
+  allow_exceptional_early_chip: false
+  triple_captain_exceptional_uplift: 12
+  bench_boost_exceptional_uplift: 20
+  free_hit_exceptional_uplift: 25
+  wildcard_exceptional_uplift: 35
   captain_min_availability: 90
   captain_ownership_weight: 0.18
 
@@ -19,9 +47,13 @@ notifications:
   tolerance_minutes: 40
 
 openai:
-  enabled: true
+  enabled: false
+  web_research: true
   reasoning_effort: low
   max_explanation_characters: 700
+  max_web_search_calls: 5
+  allow_research_override: true
+  override_min_verified_sources: 2
 
 fpl_api:
   base_url: https://fantasy.premierleague.com/api

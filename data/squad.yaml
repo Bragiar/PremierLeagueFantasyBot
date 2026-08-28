@@ -3,8 +3,19 @@
 # which is correct for this initial £100.0m squad.
 bank: 0.0
 free_transfers: 1
-captain: Haaland
-vice_captain: Bruno Fernandes
+captain: Joao Pedro
+vice_captain: Haaland
+chips:
+  first_half:
+    wildcard: available
+    free_hit: available
+    bench_boost: available
+    triple_captain: available
+  second_half:
+    wildcard: available
+    free_hit: available
+    bench_boost: available
+    triple_captain: available
 squad:
   - {name: Verbruggen, position: GK, purchase_price: null}
   - {name: Dubravka, position: GK, purchase_price: null}

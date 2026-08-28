@@ -34,6 +34,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Generate and record a plan without sending Telegram.",
     )
     parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="Generate latest output without Telegram, state changes, or a decision-log entry.",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="Generate now even when no notification window is due.",
@@ -41,7 +46,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--no-openai",
         action="store_true",
-        help="Skip optional OpenAI commentary even when a key is configured.",
+        help="Skip optional OpenAI web research even when a key is configured.",
+    )
+    parser.add_argument(
+        "--test-telegram",
+        action="store_true",
+        help="Send a clearly labelled test message without claiming a real notification window.",
+    )
+    parser.add_argument(
+        "--select-option",
+        default=None,
+        help="Select an exact option ID from the engine shortlist and validate it again.",
+    )
+    parser.add_argument(
+        "--select-chip",
+        default=None,
+        help="Select an exact option ID from the chip shortlist and validate it again.",
     )
     parser.add_argument(
         "--now",
@@ -60,9 +80,13 @@ def main(argv: list[str] | None = None) -> int:
         result = run(
             repo_root,
             dry_run=args.dry_run,
+            preview=args.preview,
+            test_telegram=args.test_telegram,
             force=args.force,
             now=args.now,
             disable_openai=args.no_openai,
+            selected_option_id=args.select_option,
+            selected_chip_id=args.select_chip,
         )
     except (OSError, ValueError) as exc:
         print(f"FPL bot stopped safely: {type(exc).__name__}: {exc}", file=sys.stderr)

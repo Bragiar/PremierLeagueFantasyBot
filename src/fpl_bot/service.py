@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from fpl_bot.ai import add_optional_ai_commentary
+from fpl_bot.ai import research_recommendation
 from fpl_bot.config import load_squad, load_strategy
 from fpl_bot.deadlines import (
     due_window,
@@ -16,11 +16,18 @@ from fpl_bot.deadlines import (
     serialize_future_events,
 )
 from fpl_bot.fpl_api import FPLAPIError, FPLClient
-from fpl_bot.models import Event, Recommendation
+from fpl_bot.models import Event, Recommendation, ResearchReview
 from fpl_bot.recommender import fallback_recommendation, recommend
 from fpl_bot.render import render_markdown, render_telegram
 from fpl_bot.squad import resolve_squad
-from fpl_bot.storage import append_jsonl, atomic_write_text, load_state, save_state
+from fpl_bot.storage import (
+    append_jsonl,
+    atomic_write_text,
+    load_json_object,
+    load_state,
+    save_json_object,
+    save_state,
+)
 from fpl_bot.telegram import TelegramError, send_telegram
 
 
@@ -34,6 +41,24 @@ class ServiceResult:
 def already_notified(state: dict[str, Any], key: str) -> bool:
     sent = state.get("sent_notifications", {})
     return isinstance(sent, dict) and key in sent
+
+
+def should_apply_research_override(
+    review: ResearchReview,
+    current_option_id: str,
+    current_chip_id: str,
+    config: dict[str, Any],
+) -> bool:
+    return (
+        bool(config.get("allow_research_override", True))
+        and review.verdict == "disagree"
+        and review.confidence == "high"
+        and len(review.sources) >= int(config.get("override_min_verified_sources", 2))
+        and (
+            review.recommended_option_id != current_option_id
+            or review.recommended_chip_id != current_chip_id
+        )
+    )
 
 
 def _trim_sent_notifications(state: dict[str, Any], current_event: int) -> None:
@@ -81,15 +106,23 @@ def run(
     repo_root: Path,
     *,
     dry_run: bool = False,
+    preview: bool = False,
+    test_telegram: bool = False,
     force: bool = False,
     now: datetime | None = None,
     disable_openai: bool = False,
+    selected_option_id: str | None = None,
+    selected_chip_id: str | None = None,
 ) -> ServiceResult:
+    if test_telegram and (dry_run or preview):
+        raise ValueError("Test Telegram delivery cannot be combined with dry-run or preview")
     now = (now or datetime.now(UTC)).astimezone(UTC)
     strategy_config = load_strategy(repo_root / "config" / "strategy.yaml")
     squad_settings = load_squad(repo_root / "data" / "squad.yaml")
     state_path = repo_root / "state" / "last_run.json"
+    plan_state_path = repo_root / "state" / "rolling_plan.json"
     state = load_state(state_path)
+    previous_plan = load_json_object(plan_state_path)
 
     api_config = strategy_config["fpl_api"]
     client = FPLClient(
@@ -135,6 +168,10 @@ def run(
 
     recommendation: Recommendation
     if bootstrap is None:
+        if selected_option_id is not None or selected_chip_id is not None:
+            raise ValueError(
+                "Could not validate a reviewed transfer or chip without live FPL data"
+            )
         recommendation = fallback_recommendation(
             event, squad_settings, api_problem or "official FPL API unavailable"
         )
@@ -151,8 +188,14 @@ def run(
                 fixtures,
                 squad_settings,
                 strategy_config["strategy"],
+                selected_option_id=selected_option_id,
+                selected_chip_id=selected_chip_id,
             )
         except (FPLAPIError, KeyError, TypeError, ValueError) as exc:
+            if selected_option_id is not None or selected_chip_id is not None:
+                raise ValueError(
+                    f"Could not apply reviewed transfer/chip selection: {exc}"
+                ) from exc
             recommendation = fallback_recommendation(
                 event, squad_settings, f"{type(exc).__name__}: live analysis incomplete"
             )
@@ -160,11 +203,63 @@ def run(
     openai_config = dict(strategy_config["openai"])
     if disable_openai:
         openai_config["enabled"] = False
-    ai_used, ai_error = add_optional_ai_commentary(recommendation, openai_config)
+    review = None
+    ai_error = None
+    if not recommendation.fallback:
+        review, ai_error = research_recommendation(recommendation, openai_config)
+    ai_used = review is not None
+    if review is not None:
+        original_option_id = recommendation.selected_option_id
+        original_chip_id = recommendation.selected_chip_id
+        should_override = should_apply_research_override(
+            review, original_option_id, original_chip_id, openai_config
+        )
+        if should_override:
+            try:
+                recommendation = recommend(
+                    event,
+                    owned,
+                    bootstrap,
+                    fixtures,
+                    squad_settings,
+                    strategy_config["strategy"],
+                    selected_option_id=review.recommended_option_id,
+                    selected_chip_id=review.recommended_chip_id,
+                )
+                review = replace(
+                    review,
+                    changed_engine_choice=(
+                        review.recommended_option_id != original_option_id
+                    ),
+                    changed_chip_choice=(
+                        review.recommended_chip_id != original_chip_id
+                    ),
+                )
+            except (KeyError, TypeError, ValueError) as exc:
+                ai_error = f"{type(exc).__name__}: research choice failed final validation"
+        recommendation.research_review = review
+        recommendation.source = "deterministic+openai-web"
 
-    telegram_message = render_telegram(recommendation, window)
+    if recommendation.rolling_plan is not None:
+        from fpl_bot.planner import with_plan_changes
+
+        recommendation.rolling_plan = with_plan_changes(
+            recommendation.rolling_plan, previous_plan
+        )
+
+    telegram_message = render_telegram(
+        recommendation, window, test_message=test_telegram
+    )
     markdown = render_markdown(recommendation, window)
     atomic_write_text(repo_root / "outputs" / "latest_recommendation.md", markdown)
+    if recommendation.rolling_plan is not None:
+        save_json_object(
+            repo_root / "outputs" / "latest_strategy_plan.json",
+            recommendation.rolling_plan.to_dict(),
+        )
+
+    if preview:
+        return ServiceResult(0, "preview", telegram_message)
 
     delivery = "dry_run" if dry_run else "pending"
     delivery_error: str | None = None
@@ -175,10 +270,13 @@ def run(
                 os.getenv("TELEGRAM_CHAT_ID", "").strip(),
                 telegram_message,
             )
-            delivery = "sent"
-            state.setdefault("sent_notifications", {})[key] = now.isoformat()
+            if test_telegram:
+                delivery = "test_sent"
+            else:
+                delivery = "sent"
+                state.setdefault("sent_notifications", {})[key] = now.isoformat()
         except TelegramError as exc:
-            delivery = "failed"
+            delivery = "test_failed" if test_telegram else "failed"
             delivery_error = str(exc)
 
     if bootstrap is not None:
@@ -195,6 +293,8 @@ def run(
     }
     _trim_sent_notifications(state, event.id)
     save_state(state_path, state)
+    if recommendation.rolling_plan is not None:
+        save_json_object(plan_state_path, recommendation.rolling_plan.to_dict())
     append_jsonl(
         repo_root / "logs" / "decision_log.jsonl",
         _record(recommendation, now, window, key, delivery, ai_used, ai_error),
@@ -203,7 +303,7 @@ def run(
     if delivery_error:
         return ServiceResult(
             2,
-            "delivery_failed",
+            "test_delivery_failed" if test_telegram else "delivery_failed",
             f"Recommendation recorded, but {delivery_error.lower()}.",
         )
     return ServiceResult(0, delivery, telegram_message)
