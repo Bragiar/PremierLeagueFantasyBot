@@ -138,6 +138,152 @@
       "selected_chip_id": "chip:none",
       "selected_option_id": "hold",
       "vice_captain": "João Pedro"
+    },
+    "3": {
+      "captain": "Ajayi",
+      "event_id": 3,
+      "event_name": "Gameweek 3",
+      "points_hit": 0,
+      "projections": [
+        {
+          "expected_minutes": 59.8,
+          "expected_points": 1.99,
+          "player": "Gabriel",
+          "player_id": 4,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 4.25,
+          "player": "Calafiori",
+          "player_id": 8,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 8.08,
+          "player": "Kayode",
+          "player_id": 88,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 6.35,
+          "player": "Janelt",
+          "player_id": 98,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 50.0,
+          "expected_points": 4.35,
+          "player": "Verbruggen",
+          "player_id": 109,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 4.23,
+          "player": "João Pedro",
+          "player_id": 165,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.1,
+          "expected_points": 0.0,
+          "player": "van Ewijk",
+          "player_id": 175,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 17.0,
+          "expected_points": 0.78,
+          "player": "Hughes",
+          "player_id": 212,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 47.6,
+          "expected_points": 0.13,
+          "player": "Diop",
+          "player_id": 259,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 17.0,
+          "expected_points": 0.78,
+          "player": "Kusi-Asare",
+          "player_id": 272,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 10.24,
+          "player": "Ajayi",
+          "player_id": 279,
+          "role": "captain"
+        },
+        {
+          "expected_minutes": 75.5,
+          "expected_points": 7.7,
+          "player": "Szoboszlai",
+          "player_id": 368,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 85.0,
+          "expected_points": 9.32,
+          "player": "Haaland",
+          "player_id": 411,
+          "role": "vice-captain"
+        },
+        {
+          "expected_minutes": 49.2,
+          "expected_points": 0.62,
+          "player": "Shaw",
+          "player_id": 423,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 64.4,
+          "expected_points": 1.46,
+          "player": "B.Fernandes",
+          "player_id": 426,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 59.1,
+          "expected_points": 1.39,
+          "player": "Mbeumo",
+          "player_id": 427,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 17.0,
+          "expected_points": 0.63,
+          "player": "Dubravka",
+          "player_id": 497,
+          "role": "reserve goalkeeper"
+        },
+        {
+          "expected_minutes": 52.2,
+          "expected_points": 2.39,
+          "player": "Tzolis",
+          "player_id": 557,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.0,
+          "expected_points": 8.55,
+          "player": "M.Sangaré",
+          "player_id": 565,
+          "role": "transfer candidate"
+        }
+      ],
+      "recorded_at": "2026-08-29T23:27:10.917678+00:00",
+      "risk_mode": "balanced",
+      "selected_chip_id": "chip:none",
+      "selected_option_id": "transfer:423:279",
+      "vice_captain": "Haaland"
     }
   },
   "schema_version": 1,
