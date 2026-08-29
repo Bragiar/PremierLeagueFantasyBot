@@ -58,7 +58,7 @@ jobs:
           elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.force }}" == "true" ]]; then
             args+=(--force)
           fi
-          python -m fpl_bot "${args[@]}"
+          python -m fpl_bot --repo-root "$GITHUB_WORKSPACE" "${args[@]}"
 
       - name: Commit decision artifacts
         if: always()
