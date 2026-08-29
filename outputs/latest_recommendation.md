@@ -80,11 +80,11 @@ Combined model score over the 5-Gameweek route: **320.3**. This is a comparative
 
 | GW | Transfers | Captain | Chip | Hit | Free transfers after | Bank | Model score | Confidence |
 |---:|---|---|---|---:|---:|---:|---:|---|
-| 3 | Shaw → Ajayi | Ajayi | None | 0 | 1 | £0.5m | 58.3 | Low |
-| 4 | Hughes → Armstrong | Haaland | None | 0 | 1 | £0.0m | 63.0 | Medium |
-| 5 | Verbruggen → Tzolakis | Haaland | None | 0 | 1 | £0.0m | 68.0 | Medium |
-| 6 | Roll / no transfer | Haaland | None | 0 | 2 | £0.0m | 65.7 | Low |
-| 7 | Roll / no transfer | Haaland | None | 0 | 3 | £0.0m | 65.4 | Low |
+| 3 | Shaw → Ajayi | Ajayi | None | 0 | 2 | £0.5m | 58.3 | Low |
+| 4 | Hughes → Armstrong | Haaland | None | 0 | 2 | £0.0m | 63.0 | Medium |
+| 5 | Verbruggen → Tzolakis | Haaland | None | 0 | 2 | £0.0m | 68.0 | Medium |
+| 6 | Roll / no transfer | Haaland | None | 0 | 3 | £0.0m | 65.7 | Low |
+| 7 | Roll / no transfer | Haaland | None | 0 | 4 | £0.0m | 65.4 | Low |
 
 ### Gameweek 3 projected team
 
@@ -136,12 +136,7 @@ These are decision gates, not chips already applied to the short-term route. If 
 
 ## Changes since the previous saved plan
 
-- Advanced the rolling plan from GW2 to GW3.
-- GW3 transfer plan changed: Roll / no transfer → Shaw → Ajayi.
-- GW3 captain changed: Haaland → Ajayi.
-- GW4 transfer plan changed: Roll / no transfer → Hughes → Armstrong.
-- GW5 transfer plan changed: Roll / no transfer → Verbruggen → Tzolakis.
-- Bench Boost target changed: GW13 → GW9.
+- No material transfer, captain or chip-window changes since the saved plan.
 
 > Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.
 

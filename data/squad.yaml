@@ -3,7 +3,7 @@
 # rule cannot create imaginary budget. Use null only for untouched opening-squad
 # players; the bot then reconstructs their season-opening price from official data.
 bank: 0.0
-free_transfers: 1
+free_transfers: 2
 captain: Joao Pedro
 vice_captain: Haaland
 chips:
