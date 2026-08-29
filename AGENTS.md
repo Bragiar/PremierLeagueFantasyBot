@@ -10,7 +10,9 @@ When the user asks to run or review the FPL bot “locally”, “here in Codex/
 
    `.venv/bin/fpl-bot --preview --force --no-openai`
 
-2. Read `outputs/latest_recommendation.md` and `outputs/latest_strategy_plan.json`.
+2. Read `outputs/latest_recommendation.md`, `outputs/latest_strategy_plan.json`, and—when
+   it contains settled weeks—`state/forecast_history.json`. Check the expected-minutes
+   table and confidence notes before trusting a high player score.
    Treat the immediate transfer and chip shortlists as the complete set of selectable
    actions for the current Gameweek. Do not invent or select a current transfer or chip
    outside those exact option IDs. The later rolling-plan actions are conditional and
@@ -24,7 +26,8 @@ When the user asks to run or review the FPL bot “locally”, “here in Codex/
    risks, the preferred transfer option ID, and the preferred chip option ID. Compare a
    chip's calculated uplift with plausible stronger opportunities before it expires.
    Also review whether the short-term route relies on doubtful starters or outdated role
-   assumptions, and whether the provisional primary/backup chip windows still make sense.
+   assumptions, whether recent forecast errors expose a systematic weakness, and whether
+   the provisional primary/backup chip windows still make sense.
    Keep the engine choices unless a different shortlisted combination has high-confidence
    support from at least two recent sources.
 5. Finalize through Python so budget and squad rules are checked again. Normally use:

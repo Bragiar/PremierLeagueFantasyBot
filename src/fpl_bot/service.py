@@ -15,6 +15,12 @@ from fpl_bot.deadlines import (
     select_next_event,
     serialize_future_events,
 )
+from fpl_bot.evaluation import (
+    normalize_forecast_history,
+    performance_summary,
+    record_forecast,
+    settle_finished_forecasts,
+)
 from fpl_bot.fpl_api import FPLAPIError, FPLClient
 from fpl_bot.models import Event, Recommendation, ResearchReview
 from fpl_bot.recommender import fallback_recommendation, recommend
@@ -121,8 +127,12 @@ def run(
     squad_settings = load_squad(repo_root / "data" / "squad.yaml")
     state_path = repo_root / "state" / "last_run.json"
     plan_state_path = repo_root / "state" / "rolling_plan.json"
+    forecast_state_path = repo_root / "state" / "forecast_history.json"
     state = load_state(state_path)
     previous_plan = load_json_object(plan_state_path)
+    forecast_history = normalize_forecast_history(
+        load_json_object(forecast_state_path)
+    )
 
     api_config = strategy_config["fpl_api"]
     client = FPLClient(
@@ -136,6 +146,7 @@ def run(
     try:
         bootstrap = client.bootstrap()
         event = select_next_event(bootstrap["events"], now)
+        settle_finished_forecasts(forecast_history, bootstrap, client)
     except FPLAPIError as exc:
         api_problem = str(exc)
         event = _fallback_event(state, now)
@@ -246,6 +257,14 @@ def run(
         recommendation.rolling_plan = with_plan_changes(
             recommendation.rolling_plan, previous_plan
         )
+    model_summary = performance_summary(forecast_history)
+    if model_summary is not None:
+        recommendation.validation.append(
+            "Recent forecast calibration: "
+            f"{model_summary['points_mae']:.2f} points MAE and "
+            f"{model_summary['minutes_mae']:.1f} minutes MAE across "
+            f"{model_summary['gameweeks']} Gameweeks"
+        )
 
     telegram_message = render_telegram(
         recommendation, window, test_message=test_telegram
@@ -295,6 +314,9 @@ def run(
     save_state(state_path, state)
     if recommendation.rolling_plan is not None:
         save_json_object(plan_state_path, recommendation.rolling_plan.to_dict())
+    if not recommendation.fallback and recommendation.player_projections:
+        record_forecast(forecast_history, recommendation, now)
+    save_json_object(forecast_state_path, forecast_history)
     append_jsonl(
         repo_root / "logs" / "decision_log.jsonl",
         _record(recommendation, now, window, key, delivery, ai_used, ai_error),

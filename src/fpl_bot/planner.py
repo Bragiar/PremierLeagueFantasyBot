@@ -16,10 +16,12 @@ from fpl_bot.models import (
     Transfer,
 )
 from fpl_bot.recommender import (
+    _captain_score,
     _choose_lineup,
     _optimize_squad,
     _squad_objective,
     availability,
+    expected_minutes,
     fixture_difficulties,
     score_player,
     score_player_for_gameweek,
@@ -170,15 +172,13 @@ def _project_week(
     *,
     chip_id: str = "chip:none",
     preferred_captain: str | None = None,
+    strategy: dict[str, Any] | None = None,
 ) -> tuple[float, list[Player], list[Player], Player, Player]:
+    strategy = strategy or {}
     lineup, bench, reserve_goalkeeper = _choose_lineup(players, scores)
     captain = max(
         lineup,
-        key=lambda player: (
-            scores[player.id]
-            + player.cost / 50
-            + 0.02 * player.selected_by_percent
-        ),
+        key=lambda player: _captain_score(player, scores, strategy),
     )
     if preferred_captain:
         preferred = next(
@@ -210,6 +210,8 @@ def _candidate_pool(
             and player.can_select
             and player.cost > 0
             and availability(player) >= 90
+            and expected_minutes(player, strategy)
+            >= float(strategy.get("planner_min_expected_minutes", 45))
         ]
         strongest = sorted(
             eligible, key=lambda player: lookahead_scores[player.id], reverse=True
@@ -245,6 +247,10 @@ def _single_transfer_candidates(
     )
     pools = _candidate_pool(candidates, lookahead_scores, strategy)
     minimum_gain = float(strategy.get("planner_min_transfer_gain", 0.75))
+    bench_weight = float(strategy.get("planner_bench_weight", 0.08))
+    baseline_objective = _squad_objective(
+        [item.player for item in owned], lookahead_scores, bench_weight
+    )
     choices: list[tuple[float, Transfer]] = []
     for outgoing in outgoing_pool:
         sale = selling_price(outgoing.player.cost, outgoing.purchase_price)
@@ -258,9 +264,18 @@ def _single_transfer_candidates(
                 selling_price=sale,
                 buying_price=incoming.cost,
             )
-            if _apply(owned, bank, (transfer,)) is None:
+            applied = _apply(owned, bank, (transfer,))
+            if applied is None:
                 continue
-            gain = lookahead_scores[incoming.id] - lookahead_scores[outgoing.player.id]
+            next_owned, _ = applied
+            gain = (
+                _squad_objective(
+                    [item.player for item in next_owned],
+                    lookahead_scores,
+                    bench_weight,
+                )
+                - baseline_objective
+            )
             if gain < minimum_gain and availability(outgoing.player) > 0:
                 continue
             choices.append((gain, transfer))
@@ -504,7 +519,9 @@ def _build_chip_targets(
         bank = route_banks.get(event_id, final_bank)
         players = [item.player for item in owned]
         scores = score_cache[event_id]
-        projected, lineup, bench, reserve, captain = _project_week(players, scores)
+        projected, lineup, bench, reserve, captain = _project_week(
+            players, scores, strategy=strategy
+        )
         del projected
         if "chip:triple_captain" in available and (
             event_id > current_event.id or selected_chip_id == "chip:triple_captain"
@@ -560,6 +577,20 @@ def _build_chip_targets(
             blank_players = sum(
                 1 for player in players if not difficulties.get(player.team_id)
             )
+            team_fixture_counts = {
+                player.team_id: len(difficulties.get(player.team_id, []))
+                for player in candidates
+            }
+            has_double = any(count > 1 for count in team_fixture_counts.values())
+            minimum_blanks = int(strategy.get("free_hit_min_blank_players", 2))
+            expiry_pressure = event_id >= expiry - 2
+            if (
+                blank_players < minimum_blanks
+                and not has_double
+                and not expiry_pressure
+                and selected_chip_id != "chip:free_hit"
+            ):
+                continue
             baseline = _squad_objective(players, scores, 0.0)
             proxy = max(0.0, _rough_best_squad_score(candidates, scores) - baseline)
             fh_proxy.append((proxy + blank_players * 6.0, event_id, owned, team_value))
@@ -596,7 +627,11 @@ def _build_chip_targets(
             players = [item.player for item in owned]
             try:
                 optimized_squad, optimized = _optimize_squad(
-                    candidates, scores, team_value, bench_weight=0.0
+                    candidates,
+                    scores,
+                    team_value,
+                    bench_weight=0.0,
+                    strategy=strategy,
                 )
                 del optimized_squad
                 baseline = _squad_objective(players, scores, 0.0)
@@ -643,7 +678,11 @@ def _build_chip_targets(
             players = [item.player for item in owned]
             try:
                 optimized_squad, optimized = _optimize_squad(
-                    candidates, horizon_scores, team_value, bench_weight=0.15
+                    candidates,
+                    horizon_scores,
+                    team_value,
+                    bench_weight=0.15,
+                    strategy=strategy,
                 )
                 del optimized_squad
                 baseline = _squad_objective(players, horizon_scores, 0.15)
@@ -691,7 +730,28 @@ def _build_chip_targets(
         "chip:bench_boost",
         "chip:triple_captain",
     ):
-        if chip_id not in available or chip_id not in assigned:
+        if chip_id not in available:
+            continue
+        if chip_id not in assigned:
+            targets.append(
+                ChipTarget(
+                    chip_id=chip_id,
+                    chip=labels[chip_id],
+                    primary_event_id=None,
+                    primary_event_name="Unassigned",
+                    backup_event_id=None,
+                    backup_event_name="None",
+                    target_player=None,
+                    projected_uplift=0.0,
+                    confidence="Low",
+                    rationale=(
+                        "No credible current window. Wait for confirmed Blank/Double "
+                        "Gameweeks and updated role information."
+                        if chip_id == "chip:free_hit"
+                        else "No credible current window; reassess after the next deadline."
+                    ),
+                )
+            )
             continue
         primary = assigned[chip_id]
         backups = sorted(
@@ -743,6 +803,7 @@ def build_rolling_plan(
     selected_chip_id: str,
     current_captain: str,
     selected_chip_uplift: float = 0.0,
+    current_confidence: str = "High",
 ) -> RollingPlan:
     """Plan a legal, reachable route and provisional chip windows."""
     names = _event_names(raw_events)
@@ -752,7 +813,7 @@ def build_rolling_plan(
     )
     event_ids = list(range(event.id, min(38, event.id + horizon - 1) + 1))
     score_strategy = dict(strategy)
-    score_strategy["season_started"] = event.id > 1
+    score_strategy["completed_gameweeks"] = max(0, event.id - 1)
     score_cache = {
         event_id: _scores_for_event(
             candidates,
@@ -798,6 +859,7 @@ def build_rolling_plan(
         current_scores,
         chip_id=selected_chip_id,
         preferred_captain=current_captain,
+        strategy=score_strategy,
     )
     current_week = GameweekPlan(
         event_id=event.id,
@@ -813,7 +875,7 @@ def build_rolling_plan(
         free_transfers_before=settings.free_transfers,
         free_transfers_after=current_free_after,
         bank_after=round(current_bank / 10, 1),
-        confidence="High",
+        confidence=current_confidence,
         rationale="Current reviewed action; later weeks are optimized from this legal state.",
     )
     state = _PlannerState(
@@ -852,7 +914,7 @@ def build_rolling_plan(
                 )
                 players = [item.player for item in next_owned]
                 projected, lineup, bench, reserve, captain = _project_week(
-                    players, score_cache[event_id]
+                    players, score_cache[event_id], strategy=score_strategy
                 )
                 bench_value = (
                     sum(score_cache[event_id][player.id] for player in bench)
@@ -985,8 +1047,14 @@ def with_plan_changes(
             continue
         old_event = old.get("primary_event_id")
         if old_event != target.primary_event_id:
+            old_label = "Unassigned" if old_event is None else f"GW{old_event}"
+            new_label = (
+                "Unassigned"
+                if target.primary_event_id is None
+                else f"GW{target.primary_event_id}"
+            )
             changes.append(
-                f"{target.chip} target changed: GW{old_event} → GW{target.primary_event_id}."
+                f"{target.chip} target changed: {old_label} → {new_label}."
             )
     if not changes:
         changes.append("No material transfer, captain or chip-window changes since the saved plan.")

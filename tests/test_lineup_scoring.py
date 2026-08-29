@@ -17,11 +17,11 @@ def test_immediate_fixture_can_reverse_long_term_defender_ranking(make_player):
     diop = replace(
         make_player(2, "DEF", 2, name="Diop"),
         expected_next=1.0,
-        points_per_game=2.0,
-        form=2.0,
+        points_per_game=6.0,
+        form=6.0,
         selected_by_percent=17.1,
-        minutes=90,
-        starts=1,
+        minutes=450,
+        starts=5,
         defensive_contribution_per_90=5.0,
     )
     strategy = {

@@ -8,7 +8,8 @@ The deterministic Python analysis works without OpenAI. If `OPENAI_API_KEY` is p
 
 - Python 3.12 package under `src/fpl_bot/`
 - Official players, prices, availability, news, events, deadlines, fixtures, and fixture difficulty
-- Five-Gameweek scoring (configurable up to six), including defensive-contribution data
+- Five-Gameweek scoring (configurable up to six), combining official expected points,
+  fixture difficulty, expected minutes, regressed form, xG/xA/xGI and defensive contributions
 - A rolling, reachable 5–6 Gameweek route that carries the squad, bank, selling prices,
   free transfers, lineups and captains from one deadline into the next
 - A provisional primary and backup window for every available chip before its
@@ -26,6 +27,7 @@ The deterministic Python analysis works without OpenAI. If `OPENAI_API_KEY` is p
 - Safe no-transfer fallback when live inputs cannot be trusted
 - JSON Lines decision history plus a readable latest plan
 - A machine-readable latest route and a saved prior route so each run explains what changed
+- A saved forecast ledger that grades expected points and minutes against official results
 - GitHub Actions every 30 minutes and a separate local Codex strategy reviewer
 
 ## 1. Run locally
@@ -50,7 +52,28 @@ Your editable inputs are:
   vice-captain, and chip availability for both half-seasons
 - `config/strategy.yaml`: horizon, risk thresholds, notification offsets, and optional AI settings
 
-After you actually make a transfer yourself, update `data/squad.yaml`. Set each player's `purchase_price` to the price you paid and update `bank` and `free_transfers`; that lets the bot apply FPL's half-profit selling-price rule correctly. After using a chip, change its status from `available` to `used` in the applicable half-season. Do not put credentials in either file.
+After you actually make a transfer yourself, update `data/squad.yaml`. Set each player's `purchase_price` to the price you paid and update `bank` and `free_transfers`; that lets the bot apply FPL's half-profit selling-price rule correctly. A `null` purchase price is safe only for an untouched opening-squad player, where the bot reconstructs the opening price from the official season price change. After using a chip, change its status from `available` to `used` in the applicable half-season. Do not put credentials in either file.
+
+### How the decision model works
+
+The bot does look at upcoming matches as well as FDR. For each player it builds an
+immediate-Gameweek projection and a separate multi-Gameweek score. Official expected
+points are the main early-season prior; form and points per match earn more influence
+only as minutes accumulate. Fixture count and difficulty, availability, projected
+minutes, xG/xA/xGI and defensive contributions then adjust that prior. This prevents a
+single opening-week haul or a cheap zero-minute player from dominating the output.
+
+Transfers are judged by the improvement to the legal squad over the full horizon, not
+just by comparing two isolated player totals. An optional early-season move is held back
+until there is enough evidence unless its projected gain is exceptional. Lineup and
+captain decisions use the current Gameweek only. Captaincy has a minimum expected-minutes
+gate and reports the margin over the second choice, so “High” now means more than simply
+having no injury flag.
+
+Ownership is not treated as expected points. `mini_league_mode: balanced` maximizes the
+model projection. `protect` adds only a small ownership tie-break when defending a lead;
+`chase` slightly favors a lower-owned captain only when the expected-points decision is
+already close. Keep `balanced` unless league position gives a clear reason to change it.
 
 Chip projections are incremental versus the normal plan. Triple Captain adds one extra
 copy of the captain projection; Bench Boost adds the four substitute projections; Free
@@ -80,7 +103,10 @@ The longer chip calendar runs to GW19 or GW38 and assigns distinct primary and b
 windows for every available chip. Long-range targets are deliberately labelled low or
 medium confidence because cup results, Blank/Double Gameweeks, injuries and player roles
 can change. A rejected current chip is not silently reintroduced into the same
-Gameweek's long-term calendar.
+Gameweek's long-term calendar. Free Hit is not assigned to an ordinary distant week just
+because an optimized squad scores better: the planner waits for meaningful blanks,
+doubles or genuine expiry pressure. If there is no credible window, a chip is explicitly
+shown as unassigned rather than forcing a misleading date.
 
 Every preview refreshes `outputs/latest_strategy_plan.json` and embeds the route in
 `outputs/latest_recommendation.md`. A recorded dry run or Telegram run also saves the
@@ -129,11 +155,17 @@ git remote add origin https://github.com/YOUR_NAME/YOUR_REPOSITORY.git
 git push -u origin main
 ```
 
-In GitHub, open **Settings → Secrets and variables → Actions → Secrets** and add:
+In GitHub, open **Settings → Secrets and variables → Actions → Repository secrets** and add:
 
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `OPENAI_API_KEY` (optional)
+
+Use **repository secrets** for the normal setup. The scheduled workflow can access them
+without declaring a deployment environment. Use **environment secrets** only if you
+intentionally configure separate environments such as `production` and `staging`, need
+different credentials for each, or want environment approval and branch-protection
+rules. In that case, the workflow job must also reference the matching environment.
 
 To change the optional model, add an Actions **variable** named `OPENAI_MODEL`. The workflow defaults to `gpt-5.6-sol`. Never paste a secret into workflow YAML, logs, issues, or commits.
 
@@ -163,12 +195,17 @@ Every generated plan has four related pieces:
    with the newest readable and machine-readable plans.
 3. `logs/decision_log.jsonl` receives one immutable JSON object per decision, including the engine shortlist, rolling route, chip calendar, web-research verdict and sources, validation, delivery result, fallback status, and whether optional AI research was used. Credentials are never recorded.
 4. `state/last_run.json` keeps delivered notification keys and the last known future deadlines. `state/rolling_plan.json` keeps the last recorded route for change detection. A dry run records its result but does not claim a notification window. A successful Telegram send claims `gwN:24h`, `gwN:3h`, or `gwN:45m`, preventing duplicates.
+5. `state/forecast_history.json` stores the final projection for each Gameweek. Once the
+   official event is finished, the next run records points error, minutes error,
+   projected-versus-actual XI points and expected-starter hit rate. The recent summary is
+   surfaced in validation so model changes can be based on measured misses rather than
+   memory. It deliberately does not auto-tune weights from a tiny sample.
 
 GitHub Actions commits only the decision log, notification state, saved rolling plan,
-latest recommendation, and machine-readable latest plan. Old notification keys are
-pruned after their Gameweek has safely passed. If Telegram fails, the failure is recorded
-but the window is not marked sent, so a later scheduled run can retry while the window
-remains open.
+forecast ledger, latest recommendation, and machine-readable latest plan. Old notification
+keys are pruned after their Gameweek has safely passed. If Telegram fails, the failure is
+recorded but the window is not marked sent, so a later scheduled run can retry while the
+window remains open.
 
 JSON Lines is deliberately append-only and Git-friendly: each line is a complete record that can be reviewed or analyzed independently. Do not hand-edit old decisions; correct future inputs and let the next run create a new record.
 
@@ -211,6 +248,7 @@ outputs/latest_strategy_plan.json
 outputs/strategy_review.md
 state/last_run.json           duplicate prevention and last known deadlines
 state/rolling_plan.json       previous route used for change detection
+state/forecast_history.json   predictions settled against official results
 tests/                        focused automated checks
 .github/workflows/fpl-bot.yml production schedule
 ```

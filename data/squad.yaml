@@ -1,6 +1,7 @@
 # Keep this file in sync with transfers you actually confirm in FPL.
-# Prices are in millions. A null purchase_price uses the current market price,
-# which is correct for this initial £100.0m squad.
+# Prices are in millions. Keep purchase prices exact so FPL's half-profit selling
+# rule cannot create imaginary budget. Use null only for untouched opening-squad
+# players; the bot then reconstructs their season-opening price from official data.
 bank: 0.0
 free_transfers: 1
 captain: Joao Pedro
@@ -17,18 +18,18 @@ chips:
     bench_boost: available
     triple_captain: available
 squad:
-  - {name: Verbruggen, position: GK, purchase_price: null}
-  - {name: Dubravka, position: GK, purchase_price: null}
-  - {name: Gabriel, position: DEF, purchase_price: null}
-  - {name: Calafiori, position: DEF, purchase_price: null}
-  - {name: Shaw, position: DEF, purchase_price: null}
-  - {name: Diop, position: DEF, purchase_price: null}
-  - {name: van Ewijk, position: DEF, purchase_price: null}
-  - {name: Bruno Fernandes, position: MID, purchase_price: null}
-  - {name: Mbeumo, position: MID, purchase_price: null}
-  - {name: Szoboszlai, position: MID, purchase_price: null}
-  - {name: Tzolis, position: MID, purchase_price: null}
-  - {name: Will Hughes, position: MID, purchase_price: null}
-  - {name: Haaland, position: FWD, purchase_price: null}
-  - {name: Joao Pedro, position: FWD, purchase_price: null}
-  - {name: Kusi-Asare, position: FWD, purchase_price: null}
+  - {name: Verbruggen, position: GK, purchase_price: 4.5}
+  - {name: Dubravka, position: GK, purchase_price: 4.0}
+  - {name: Gabriel, position: DEF, purchase_price: 8.0}
+  - {name: Calafiori, position: DEF, purchase_price: 5.5}
+  - {name: Shaw, position: DEF, purchase_price: 4.5}
+  - {name: Diop, position: DEF, purchase_price: 4.0}
+  - {name: van Ewijk, position: DEF, purchase_price: 4.0}
+  - {name: Bruno Fernandes, position: MID, purchase_price: 12.0}
+  - {name: Mbeumo, position: MID, purchase_price: 8.0}
+  - {name: Szoboszlai, position: MID, purchase_price: 7.0}
+  - {name: Tzolis, position: MID, purchase_price: 6.5}
+  - {name: Will Hughes, position: MID, purchase_price: 4.5}
+  - {name: Haaland, position: FWD, purchase_price: 15.5}
+  - {name: Joao Pedro, position: FWD, purchase_price: 7.5}
+  - {name: Kusi-Asare, position: FWD, purchase_price: 4.5}

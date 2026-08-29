@@ -43,6 +43,11 @@ def render_telegram(
         "",
         recommendation.explanation,
     ]
+    if recommendation.confidence_reasons:
+        notes = "; ".join(
+            reason.rstrip(".") for reason in recommendation.confidence_reasons[:3]
+        )
+        lines.append("Confidence notes: " + notes + ".")
     if recommendation.rolling_plan:
         plan = recommendation.rolling_plan
         lines.extend(["", "Rolling outlook:"])
@@ -54,7 +59,12 @@ def render_telegram(
         if plan.chip_targets:
             lines.append("Provisional chips:")
             lines.extend(
-                f"- {target.chip}: GW{target.primary_event_id}"
+                f"- {target.chip}: "
+                + (
+                    "unassigned"
+                    if target.primary_event_id is None
+                    else f"GW{target.primary_event_id}"
+                )
                 + (f" on {target.target_player}" if target.target_player else "")
                 + f" ({target.confidence.lower()})"
                 for target in plan.chip_targets
@@ -118,6 +128,39 @@ def render_markdown(recommendation: Recommendation, window: str) -> str:
         "",
         recommendation.explanation,
     ]
+    if recommendation.confidence_reasons:
+        lines.extend(["", "### Confidence notes", ""])
+        lines.extend(f"- {reason}" for reason in recommendation.confidence_reasons)
+    if recommendation.player_projections:
+        lines.extend(
+            [
+                "",
+                "## Current-Gameweek projections",
+                "",
+                "Expected points are model estimates; expected minutes express role "
+                "uncertainty rather than guaranteed playing time.",
+                "",
+                "| Player | Role | Expected minutes | Expected points |",
+                "|---|---|---:|---:|",
+            ]
+        )
+        role_order = {
+            "captain": 0,
+            "vice-captain": 1,
+            "starter": 2,
+            "bench": 3,
+            "reserve goalkeeper": 4,
+            "transfer candidate": 5,
+            "squad": 6,
+        }
+        for projection in sorted(
+            recommendation.player_projections,
+            key=lambda item: (role_order.get(item.role, 9), -item.expected_points),
+        ):
+            lines.append(
+                f"| {projection.player} | {projection.role.title()} | "
+                f"{projection.expected_minutes:.0f} | {projection.expected_points:.2f} |"
+            )
     if recommendation.engine_options:
         lines.extend(["", "## Engine shortlist", ""])
         for option in recommendation.engine_options:

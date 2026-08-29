@@ -50,3 +50,9 @@ class FPLClient:
         if not isinstance(data, list):
             raise FPLAPIError("FPL fixtures response is not a list")
         return data
+
+    def event_live(self, event_id: int) -> dict[str, Any]:
+        data = self._get(f"event/{int(event_id)}/live/")
+        if not isinstance(data, dict) or not isinstance(data.get("elements"), list):
+            raise FPLAPIError("FPL live-event response is missing player data")
+        return data

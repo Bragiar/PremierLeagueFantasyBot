@@ -10,6 +10,7 @@ strategy:
   planner_transfer_options_per_state: 8
   planner_pair_seeds: 5
   planner_min_transfer_gain: 2.0
+  planner_min_expected_minutes: 45
   planner_transfer_uncertainty_cost: 1.0
   planner_saved_transfer_value: 0.8
   planner_bench_weight: 0.08
@@ -20,18 +21,24 @@ strategy:
   max_recommended_transfers: 1
   max_points_hit: 0
   min_transfer_gain: 2.5
+  optional_transfer_min_completed_gameweeks: 2
+  optional_transfer_exception_gain: 7.0
+  max_transfer_gain_per_gameweek: 4.0
   research_candidate_transfers: 3
   secure_starter_weight: 1.6
   fixture_weight: 0.45
-  form_weight: 0.8
-  ownership_weight: 0.08
+  form_weight: 0.45
+  underlying_stats_weight: 0.7
   defensive_contribution_weight: 0.35
+  max_player_gameweek_projection: 15
   # Immediate-Gameweek weights are separate from the five-Gameweek transfer plan.
   lineup_fixture_weight: 1.0
-  lineup_form_weight: 0.25
-  lineup_ownership_weight: 0.02
+  lineup_form_weight: 0.2
+  lineup_underlying_stats_weight: 0.8
   lineup_secure_starter_weight: 1.6
   lineup_defensive_contribution_weight: 0.2
+  lineup_low_minutes_threshold: 55
+  optimizer_min_expected_minutes: 25
   avoid_optional_transfers: true
   save_chips_by_default: true
   allow_exceptional_early_chip: false
@@ -40,7 +47,16 @@ strategy:
   free_hit_exceptional_uplift: 25
   wildcard_exceptional_uplift: 35
   captain_min_availability: 90
-  captain_ownership_weight: 0.18
+  captain_min_expected_minutes: 60
+  captain_ceiling_weight: 0.35
+  captain_high_confidence_margin: 0.75
+  protect_captain_ownership_weight: 0.012
+  chase_captain_ownership_weight: 0.004
+  high_confidence_min_completed_gameweeks: 3
+  confidence_transfer_conflict_gain: 6.0
+  free_hit_min_blank_players: 2
+  # balanced maximizes expected points; protect/chase only adjust close ownership calls.
+  mini_league_mode: balanced
 
 notifications:
   offsets_minutes: [1440, 180, 45]

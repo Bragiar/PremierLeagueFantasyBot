@@ -10,6 +10,7 @@ from fpl_bot.models import (
     Event,
     OwnedPlayer,
     Player,
+    PlayerProjection,
     Recommendation,
     SquadSettings,
     Transfer,
@@ -17,7 +18,6 @@ from fpl_bot.models import (
 from fpl_bot.squad import (
     all_api_players,
     apply_and_validate_transfers,
-    normalize_name,
     selling_price,
     validate_squad,
 )
@@ -46,6 +46,66 @@ _NEWS_DOUBT_PHRASES = (
     "rested",
     "rotation",
 )
+
+_POSITION_BASELINE = {"GK": 2.2, "DEF": 2.4, "MID": 2.6, "FWD": 2.6}
+
+
+def expected_minutes(player: Player, strategy: dict[str, Any]) -> float:
+    """Estimate minutes without treating a green availability flag as a secure start."""
+    available = availability(player)
+    if available <= 0:
+        return 0.0
+
+    configured_completed = strategy.get("completed_gameweeks")
+    completed = (
+        max(player.starts, 1)
+        if configured_completed is None
+        else max(0, int(configured_completed))
+    )
+    price_floor = {"GK": 40, "DEF": 40, "MID": 45, "FWD": 45}[player.position]
+    price_signal = min(22.0, max(0, player.cost - price_floor) * 0.45)
+    ownership_signal = min(16.0, player.selected_by_percent * 0.2)
+    prior = min(86.0, 46.0 + price_signal + ownership_signal)
+
+    if completed <= 0:
+        projected = prior
+    else:
+        observed_minutes = min(90.0, player.minutes / completed)
+        start_share = min(1.0, player.starts / completed)
+        observed_role = 0.65 * observed_minutes + 0.35 * 90.0 * start_share
+        reliability = min(0.9, completed / 5)
+        projected = prior * (1 - reliability) + observed_role * reliability
+        if player.starts == 0:
+            projected = min(projected, max(8.0, 20.0 - 3.0 * (completed - 1)))
+
+    # Official expected points can rescue a new signing with little historical data,
+    # but never turn a zero-minute squad player into a presumed starter by itself.
+    if player.expected_next >= 4.0 and player.starts > 0:
+        projected = max(projected, 65.0)
+    elif player.expected_next >= 2.5 and player.starts > 0:
+        projected = max(projected, 50.0)
+    return max(0.0, min(90.0, projected * available / 100))
+
+
+def _underlying_attack_signal(player: Player) -> float:
+    if player.minutes <= 0:
+        return 0.0
+    per_90 = player.expected_goal_involvements * 90 / player.minutes
+    return min(1.25, max(0.0, per_90))
+
+
+def _projection_reliability(player: Player) -> float:
+    return min(0.35, player.minutes / 900)
+
+
+def _low_minutes_multiplier(minutes: float) -> float:
+    """Discount cameo roles while leaving plausible starters untouched."""
+    return min(1.0, max(0.0, minutes) / 45.0)
+
+
+def _risk_mode(strategy: dict[str, Any]) -> str:
+    mode = str(strategy.get("mini_league_mode", "balanced")).strip().lower()
+    return mode if mode in {"balanced", "protect", "chase"} else "balanced"
 
 
 def news_availability(player: Player) -> int | None:
@@ -106,42 +166,44 @@ def score_player(
     """Score a player across the planning horizon for transfer decisions."""
     if not difficulties:
         return 0.0
-    games = max(1, len(difficulties))
-    sample_reliability = min(1.0, player.minutes / 450)
-    performance_reliability = min(1.0, player.minutes / 90)
-    official_prior = player.expected_next if player.expected_next > 0 else 2.0
-    observed_rate = min(10.0, max(player.points_per_game, player.form, 2.0))
-    expected = max(
-        2.0,
-        official_prior * (1 - sample_reliability)
-        + observed_rate * sample_reliability,
+    games = len(difficulties)
+    reliability = _projection_reliability(player)
+    official_prior = (
+        player.expected_next
+        if player.expected_next > 0
+        else _POSITION_BASELINE[player.position]
     )
-    base = expected * games
+    observed_rate = min(9.0, max(player.points_per_game, player.form, 0.0))
+    expected_rate = official_prior * (1 - reliability) + observed_rate * reliability
+    base = expected_rate * games
     fixture_edge = sum(3.2 - difficulty for difficulty in difficulties)
-
-    if player.minutes > 0:
-        secure_starter = min(1.0, player.starts * 75 / max(1, player.minutes))
-    else:
-        secure_starter = (
-            0.25
-            if bool(strategy.get("season_started", True))
-            else min(1.0, 0.7 + player.selected_by_percent / 200)
-        )
-
+    minutes_share = expected_minutes(player, strategy) / 90
+    form_delta = min(3.0, max(-3.0, player.form - official_prior))
+    attack_signal = _underlying_attack_signal(player)
     score = (
         base
         + float(strategy["fixture_weight"]) * fixture_edge
-        + float(strategy["form_weight"])
-        * min(player.form, 10.0)
-        * performance_reliability
-        + float(strategy["ownership_weight"]) * player.selected_by_percent
-        + float(strategy["secure_starter_weight"]) * secure_starter
+        + float(strategy["form_weight"]) * form_delta * reliability * games
+        + float(strategy.get("underlying_stats_weight", 0.7))
+        * attack_signal
+        * reliability
+        * games
+        + float(strategy.get("secure_starter_weight", 1.6))
+        * (minutes_share - 0.65)
+        * games
         + float(strategy["defensive_contribution_weight"])
         * min(2.0, player.defensive_contribution_per_90 / 5.0)
-        * performance_reliability
+        * reliability
         * games
     )
-    return score * availability(player) / 100
+    maximum = float(strategy.get("max_player_gameweek_projection", 15.0)) * games
+    adjusted = (
+        score
+        * _low_minutes_multiplier(expected_minutes(player, strategy))
+        * availability(player)
+        / 100
+    )
+    return max(0.0, min(maximum, adjusted))
 
 
 def score_player_for_gameweek(
@@ -154,42 +216,49 @@ def score_player_for_gameweek(
         return 0.0
 
     games = len(difficulties)
-    sample_reliability = min(1.0, player.minutes / 450)
-    performance_reliability = min(1.0, player.minutes / 90)
+    reliability = _projection_reliability(player)
     official_prior = (
-        player.expected_next if player.expected_next > 0 else 2.0 * games
+        player.expected_next
+        if player.expected_next > 0
+        else _POSITION_BASELINE[player.position] * games
     )
-    observed_rate = min(10.0, max(player.points_per_game, player.form, 2.0))
+    observed_rate = min(9.0, max(player.points_per_game, player.form, 0.0))
     expected = (
-        official_prior * (1 - sample_reliability)
-        + observed_rate * games * sample_reliability
+        official_prior * (1 - reliability)
+        + observed_rate * games * reliability
     )
     fixture_edge = sum(3.2 - difficulty for difficulty in difficulties)
-    if player.minutes > 0:
-        secure_starter = min(1.0, player.starts * 75 / max(1, player.minutes))
-    else:
-        secure_starter = (
-            0.25
-            if bool(strategy.get("season_started", True))
-            else min(1.0, 0.7 + player.selected_by_percent / 200)
-        )
-
+    minutes_share = expected_minutes(player, strategy) / 90
+    official_rate = official_prior / games
+    form_delta = min(3.0, max(-3.0, player.form - official_rate))
+    attack_signal = _underlying_attack_signal(player)
     score = (
         expected
         + float(strategy.get("lineup_fixture_weight", 1.0)) * fixture_edge
         + float(strategy.get("lineup_form_weight", 0.25))
-        * min(player.form, 10.0)
-        * performance_reliability
-        + float(strategy.get("lineup_ownership_weight", 0.02))
-        * player.selected_by_percent
+        * form_delta
+        * reliability
+        * games
+        + float(strategy.get("lineup_underlying_stats_weight", 0.8))
+        * attack_signal
+        * reliability
+        * games
         + float(strategy.get("lineup_secure_starter_weight", 1.6))
-        * secure_starter
+        * (minutes_share - 0.65)
+        * games
         + float(strategy.get("lineup_defensive_contribution_weight", 0.2))
         * min(2.0, player.defensive_contribution_per_90 / 5.0)
-        * performance_reliability
+        * reliability
         * games
     )
-    return score * availability(player) / 100
+    maximum = float(strategy.get("max_player_gameweek_projection", 15.0)) * games
+    adjusted = (
+        score
+        * _low_minutes_multiplier(expected_minutes(player, strategy))
+        * availability(player)
+        / 100
+    )
+    return max(0.0, min(maximum, adjusted))
 
 
 def _choose_transfer(
@@ -212,9 +281,6 @@ def _choose_transfer(
         or item.player.status in {"i", "s", "u"}
         or not item.player.can_select
     ]
-    if not risky and bool(strategy.get("avoid_optional_transfers", True)):
-        return []
-
     outgoing_pool = risky or sorted(owned, key=lambda item: scores[item.player.id])[:1]
     choices: list[tuple[float, Transfer]] = []
     for outgoing in outgoing_pool:
@@ -242,6 +308,16 @@ def _choose_transfer(
         return []
     gain, best = max(choices, key=lambda item: item[0])
     threshold = float(strategy.get("min_transfer_gain", 2.5))
+    if not risky and bool(strategy.get("avoid_optional_transfers", True)):
+        completed = int(strategy.get("completed_gameweeks", 0))
+        minimum_sample = int(
+            strategy.get("optional_transfer_min_completed_gameweeks", 2)
+        )
+        exception_gain = float(
+            strategy.get("optional_transfer_exception_gain", threshold + 4.0)
+        )
+        if completed < minimum_sample or gain < exception_gain:
+            return []
     if gain < threshold and availability(best.player_out) > 0:
         return []
     return [best]
@@ -291,6 +367,10 @@ def _engine_options(
 
     choices.sort(key=lambda item: item[0], reverse=True)
     minimum_gain = float(strategy.get("min_transfer_gain", 2.5))
+    horizon = max(1, int(strategy.get("fixture_horizon", 5)))
+    maximum_gain = float(
+        strategy.get("max_transfer_gain_per_gameweek", 4.0)
+    ) * horizon
     limit = max(1, int(strategy.get("research_candidate_transfers", 3)))
     for gain, transfer in choices:
         option_id = f"transfer:{transfer.player_out.id}:{transfer.player_in.id}"
@@ -299,6 +379,8 @@ def _engine_options(
             and transfer.player_out.id == deterministic_transfers[0].player_out.id
             and transfer.player_in.id == deterministic_transfers[0].player_in.id
         )
+        if gain > maximum_gain:
+            continue
         if gain < minimum_gain and not is_engine_pick:
             continue
         options.append(
@@ -383,36 +465,58 @@ def _choose_lineup(
 def _captains(
     lineup: list[Player],
     scores: dict[int, float],
-    settings: SquadSettings,
     strategy: dict[str, Any],
 ) -> tuple[Player, Player]:
     min_availability = int(strategy.get("captain_min_availability", 90))
-    eligible = [player for player in lineup if availability(player) >= min_availability]
+    minimum_minutes = float(strategy.get("captain_min_expected_minutes", 60))
+    eligible = [
+        player
+        for player in lineup
+        if availability(player) >= min_availability
+        and expected_minutes(player, strategy) >= minimum_minutes
+    ]
     if len(eligible) < 2:
-        eligible = sorted(lineup, key=availability, reverse=True)[: max(2, len(lineup))]
+        eligible = sorted(
+            lineup,
+            key=lambda player: (expected_minutes(player, strategy), availability(player)),
+            reverse=True,
+        )[: max(2, len(lineup))]
 
-    current_captain = normalize_name(settings.captain)
-    current_vice = normalize_name(settings.vice_captain)
-    ownership_weight = float(strategy.get("captain_ownership_weight", 0.18))
-
-    def captain_score(player: Player) -> float:
-        one_week = max(player.expected_next, player.points_per_game, player.form, 2.0)
-        premium = player.cost / 40
-        continuity = 2.0 if normalize_name(player.name) == current_captain else 0.0
-        if normalize_name(player.full_name) == current_captain:
-            continuity = 2.0
-        vice_continuity = 0.7 if normalize_name(player.full_name) == current_vice else 0.0
-        return (
-            one_week * availability(player) / 100
-            + ownership_weight * player.selected_by_percent
-            + premium
-            + continuity
-            + vice_continuity
-            + 0.05 * scores[player.id]
-        )
-
-    ranked = sorted(eligible, key=captain_score, reverse=True)
+    ranked = sorted(
+        eligible,
+        key=lambda player: _captain_score(player, scores, strategy),
+        reverse=True,
+    )
     return ranked[0], ranked[1]
+
+
+def _captain_score(
+    player: Player, scores: dict[int, float], strategy: dict[str, Any]
+) -> float:
+    mode = _risk_mode(strategy)
+    ownership_tiebreak = {
+        "balanced": 0.0,
+        "protect": float(strategy.get("protect_captain_ownership_weight", 0.012)),
+        "chase": -float(strategy.get("chase_captain_ownership_weight", 0.004)),
+    }[mode]
+    ceiling = _underlying_attack_signal(player) * float(
+        strategy.get("captain_ceiling_weight", 0.35)
+    )
+    minutes_factor = expected_minutes(player, strategy) / 90
+    return (
+        scores[player.id] * (0.75 + 0.25 * minutes_factor)
+        + ceiling
+        + ownership_tiebreak * player.selected_by_percent
+    )
+
+
+def _captain_margin(
+    lineup: list[Player], scores: dict[int, float], strategy: dict[str, Any]
+) -> float:
+    ranked = sorted(
+        (_captain_score(player, scores, strategy) for player in lineup), reverse=True
+    )
+    return ranked[0] - ranked[1] if len(ranked) >= 2 else 0.0
 
 
 def _squad_objective(
@@ -425,7 +529,7 @@ def _squad_objective(
 
 
 def _optimizer_pool(
-    candidates: list[Player], scores: dict[int, float]
+    candidates: list[Player], scores: dict[int, float], strategy: dict[str, Any]
 ) -> dict[str, list[Player]]:
     pools: dict[str, list[Player]] = {}
     for position in ("GK", "DEF", "MID", "FWD"):
@@ -436,6 +540,8 @@ def _optimizer_pool(
             and player.can_select
             and availability(player) >= 90
             and player.cost > 0
+            and expected_minutes(player, strategy)
+            >= float(strategy.get("optimizer_min_expected_minutes", 25))
         ]
         strongest = sorted(eligible, key=lambda player: scores[player.id], reverse=True)[:45]
         cheapest = sorted(eligible, key=lambda player: (player.cost, -scores[player.id]))[:20]
@@ -475,9 +581,11 @@ def _optimize_squad(
     budget: int,
     *,
     bench_weight: float,
+    strategy: dict[str, Any] | None = None,
 ) -> tuple[list[Player], float]:
     """Use a bounded multi-start local search for a legal 15-player squad."""
-    pools = _optimizer_pool(candidates, scores)
+    strategy = strategy or {}
+    pools = _optimizer_pool(candidates, scores, strategy)
     starting = _cheapest_legal_squad(pools, scores)
     if sum(player.cost for player in starting) > budget:
         raise ValueError("No legal optimizer squad fits the available team value")
@@ -586,7 +694,11 @@ def _chip_options(
     )
     if event.id != 1 and _chip_is_available(settings, event.id, "free_hit"):
         free_hit_squad, optimized = _optimize_squad(
-            candidates, gameweek_scores, team_value, bench_weight=0.0
+            candidates,
+            gameweek_scores,
+            team_value,
+            bench_weight=0.0,
+            strategy=strategy,
         )
         baseline = _squad_objective(current_squad, gameweek_scores, 0.0)
         options.append(
@@ -602,7 +714,11 @@ def _chip_options(
         )
     if _chip_is_available(settings, event.id, "wildcard"):
         wildcard_squad, optimized = _optimize_squad(
-            candidates, horizon_scores, team_value, bench_weight=0.15
+            candidates,
+            horizon_scores,
+            team_value,
+            bench_weight=0.15,
+            strategy=strategy,
         )
         baseline = _squad_objective(current_squad, horizon_scores, 0.15)
         options.append(
@@ -647,6 +763,108 @@ def _default_chip_id(
     return max(non_none, key=lambda option: option.projected_uplift).id if non_none else "chip:none"
 
 
+def _confidence_assessment(
+    event: Event,
+    lineup: list[Player],
+    captain: Player,
+    gameweek_scores: dict[int, float],
+    engine_options: list[EngineOption],
+    selected_option_id: str,
+    strategy: dict[str, Any],
+) -> tuple[str, list[str]]:
+    reasons: list[str] = []
+    completed = max(0, event.id - 1)
+    if completed < int(strategy.get("high_confidence_min_completed_gameweeks", 3)):
+        reasons.append(
+            f"Only {completed} completed Gameweek{'s' if completed != 1 else ''} of current-season evidence."
+        )
+
+    low_minutes = [
+        player
+        for player in lineup
+        if expected_minutes(player, strategy)
+        < float(strategy.get("lineup_low_minutes_threshold", 55))
+    ]
+    if low_minutes:
+        reasons.append(
+            "Expected-minutes uncertainty: "
+            + ", ".join(player.name for player in low_minutes[:3])
+            + "."
+        )
+
+    captain_minutes = expected_minutes(captain, strategy)
+    margin = _captain_margin(lineup, gameweek_scores, strategy)
+    if captain_minutes < float(strategy.get("captain_min_expected_minutes", 60)):
+        reasons.append(f"{captain.name} projects below 60 minutes.")
+    if margin < float(strategy.get("captain_high_confidence_margin", 0.75)):
+        reasons.append(
+            f"Captaincy is close: the top-two model margin is only {margin:.2f} points."
+        )
+
+    best_transfer_gain = max(
+        (
+            option.projected_gain
+            for option in engine_options
+            if option.id != "hold"
+        ),
+        default=0.0,
+    )
+    if (
+        selected_option_id == "hold"
+        and best_transfer_gain
+        >= float(strategy.get("confidence_transfer_conflict_gain", 6.0))
+    ):
+        reasons.append(
+            f"The hold policy conflicts with a shortlisted model gain of {best_transfer_gain:.1f}."
+        )
+
+    severe = captain_minutes < 45 or any(
+        expected_minutes(player, strategy) < 25 for player in lineup
+    )
+    if severe:
+        return "Low", reasons
+    if reasons:
+        return "Medium", reasons
+    return "High", ["Stable expected minutes and clear model margins."]
+
+
+def _build_player_projections(
+    proposed: list[Player],
+    lineup: list[Player],
+    bench: list[Player],
+    reserve_goalkeeper: Player,
+    captain: Player,
+    vice: Player,
+    engine_options: list[EngineOption],
+    scores: dict[int, float],
+    strategy: dict[str, Any],
+) -> tuple[PlayerProjection, ...]:
+    roles: dict[int, str] = {player.id: "squad" for player in proposed}
+    roles.update({player.id: "starter" for player in lineup})
+    roles.update({player.id: "bench" for player in bench})
+    roles[reserve_goalkeeper.id] = "reserve goalkeeper"
+    roles[vice.id] = "vice-captain"
+    roles[captain.id] = "captain"
+    tracked = {player.id: player for player in proposed}
+    for option in engine_options:
+        if option.transfer is None:
+            continue
+        tracked[option.transfer.player_in.id] = option.transfer.player_in
+        tracked[option.transfer.player_out.id] = option.transfer.player_out
+        roles.setdefault(option.transfer.player_in.id, "transfer candidate")
+        roles.setdefault(option.transfer.player_out.id, "transfer candidate")
+    return tuple(
+        PlayerProjection(
+            player_id=player.id,
+            player=player.name,
+            expected_points=scores.get(player.id, 0.0),
+            expected_minutes=expected_minutes(player, strategy),
+            role=roles.get(player.id, "tracked"),
+        )
+        for player in sorted(tracked.values(), key=lambda item: item.id)
+    )
+
+
 def recommend(
     event: Event,
     owned: list[OwnedPlayer],
@@ -668,7 +886,7 @@ def recommend(
     difficulties = fixture_difficulties(fixtures, event.id, horizon)
     candidates = all_api_players(bootstrap["elements"], bootstrap["teams"])
     scoring_strategy = dict(strategy)
-    scoring_strategy["season_started"] = event.id > 1
+    scoring_strategy["completed_gameweeks"] = max(0, event.id - 1)
     transfer_scores = {
         player.id: score_player(
             player, difficulties.get(player.team_id, []), scoring_strategy
@@ -676,14 +894,14 @@ def recommend(
         for player in candidates
     }
     deterministic_transfers = _choose_transfer(
-        owned, candidates, transfer_scores, settings, strategy
+        owned, candidates, transfer_scores, settings, scoring_strategy
     )
     engine_options = _engine_options(
         owned,
         candidates,
         transfer_scores,
         settings,
-        strategy,
+        scoring_strategy,
         deterministic_transfers,
     )
     default_option_id = (
@@ -715,7 +933,7 @@ def recommend(
         for player in candidates
     }
     lineup, bench, reserve_goalkeeper = _choose_lineup(proposed, gameweek_scores)
-    captain, vice = _captains(lineup, gameweek_scores, settings, strategy)
+    captain, vice = _captains(lineup, gameweek_scores, scoring_strategy)
     chip_options = _chip_options(
         event,
         owned,
@@ -727,7 +945,7 @@ def recommend(
         bench,
         reserve_goalkeeper,
         settings,
-        strategy,
+        scoring_strategy,
     )
     chosen_chip_id = selected_chip_id or _default_chip_id(event, chip_options, strategy)
     chosen_chip = next(
@@ -748,13 +966,16 @@ def recommend(
         if errors or remaining_bank < 0:
             raise ValueError("Selected chip squad failed final legality validation")
         lineup, bench, reserve_goalkeeper = _choose_lineup(proposed, gameweek_scores)
-        captain, vice = _captains(lineup, gameweek_scores, settings, strategy)
+        captain, vice = _captains(lineup, gameweek_scores, scoring_strategy)
 
-    questionable = [player for player in lineup if availability(player) < 90]
-    confidence = (
-        "High"
-        if not questionable and not transfers and chosen_chip.id == "chip:none"
-        else "Medium"
+    confidence, confidence_reasons = _confidence_assessment(
+        event,
+        lineup,
+        captain,
+        gameweek_scores,
+        engine_options,
+        chosen_option.id,
+        scoring_strategy,
     )
 
     if transfers:
@@ -773,7 +994,8 @@ def recommend(
         f"{transfer_text} Transfers are assessed across the next {horizon} Gameweeks. "
         "The starting XI, bench order and captaincy are assessed separately for this "
         f"Gameweek because those changes are free. Chip choice: {chosen_chip.chip}; "
-        f"estimated uplift {chosen_chip.projected_uplift:.1f}."
+        f"estimated uplift {chosen_chip.projected_uplift:.1f}. Risk mode: "
+        f"{_risk_mode(scoring_strategy)}."
     )
 
     chip_text = {
@@ -799,11 +1021,12 @@ def recommend(
             candidates,
             fixtures,
             settings,
-            strategy,
+            scoring_strategy,
             transfers,
             chosen_chip.id,
             captain.name,
             chosen_chip.projected_uplift,
+            confidence,
         )
         plan_validation = (
             f"Reachable {rolling_plan.horizon}-Gameweek rolling route validated"
@@ -828,6 +1051,19 @@ def recommend(
         selected_chip_id=chosen_chip.id,
         chip_options=chip_options,
         rolling_plan=rolling_plan,
+        player_projections=_build_player_projections(
+            proposed,
+            lineup,
+            bench,
+            reserve_goalkeeper,
+            captain,
+            vice,
+            engine_options,
+            gameweek_scores,
+            scoring_strategy,
+        ),
+        confidence_reasons=confidence_reasons,
+        risk_mode=_risk_mode(scoring_strategy),
         validation=[
             "15-player squad and position quotas valid",
             "Maximum three players per club valid",
@@ -835,6 +1071,8 @@ def recommend(
             f"Points hit {sum(transfer.points_hit for transfer in transfers)}",
             f"Selected reviewed engine option {chosen_option.id}",
             f"Selected legal chip option {chosen_chip.id}",
+            "Projection sanity bounds passed",
+            f"Mini-league risk mode {_risk_mode(scoring_strategy)}",
             plan_validation,
         ],
     )

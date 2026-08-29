@@ -1,53 +1,58 @@
 {
   "changes": [
-    "No material transfer, captain or chip-window changes since the saved plan."
+    "GW2 captain changed: João Pedro → B.Fernandes.",
+    "GW3 transfer plan changed: Hughes → George Hemmings → Roll / no transfer.",
+    "Wildcard target changed: GW3 → Unassigned.",
+    "Free Hit target changed: GW9 → GW17.",
+    "Bench Boost target changed: GW6 → GW13.",
+    "Triple Captain target changed: GW16 → GW7."
   ],
   "chip_targets": [
     {
-      "backup_event_id": 4,
-      "backup_event_name": "Gameweek 4",
+      "backup_event_id": null,
+      "backup_event_name": "None",
       "chip": "Wildcard",
       "chip_id": "chip:wildcard",
-      "confidence": "Medium",
-      "primary_event_id": 3,
-      "primary_event_name": "Gameweek 3",
-      "projected_uplift": 27.91974420451669,
-      "rationale": "Permanent optimized squad across the next 5 Gameweeks.",
+      "confidence": "Low",
+      "primary_event_id": null,
+      "primary_event_name": "Unassigned",
+      "projected_uplift": 0.0,
+      "rationale": "No credible current window; reassess after the next deadline.",
       "target_player": null
     },
     {
-      "backup_event_id": 11,
-      "backup_event_name": "Gameweek 11",
+      "backup_event_id": 18,
+      "backup_event_name": "Gameweek 18",
       "chip": "Free Hit",
       "chip_id": "chip:free_hit",
       "confidence": "Low",
-      "primary_event_id": 9,
-      "primary_event_name": "Gameweek 9",
-      "projected_uplift": 6.991359621800669,
+      "primary_event_id": 17,
+      "primary_event_name": "Gameweek 17",
+      "projected_uplift": 8.992910444444448,
       "rationale": "One-Gameweek optimized squad compared with the planned route squad.",
       "target_player": null
     },
     {
-      "backup_event_id": 15,
-      "backup_event_name": "Gameweek 15",
+      "backup_event_id": 6,
+      "backup_event_name": "Gameweek 6",
       "chip": "Bench Boost",
       "chip_id": "chip:bench_boost",
-      "confidence": "Medium",
-      "primary_event_id": 6,
-      "primary_event_name": "Gameweek 6",
-      "projected_uplift": 16.444166666666668,
+      "confidence": "Low",
+      "primary_event_id": 13,
+      "primary_event_name": "Gameweek 13",
+      "projected_uplift": 5.46722962962963,
       "rationale": "Projected points from the four substitutes in the route squad.",
       "target_player": null
     },
     {
-      "backup_event_id": 7,
-      "backup_event_name": "Gameweek 7",
+      "backup_event_id": 16,
+      "backup_event_name": "Gameweek 16",
       "chip": "Triple Captain",
       "chip_id": "chip:triple_captain",
       "confidence": "Low",
-      "primary_event_id": 16,
-      "primary_event_name": "Gameweek 16",
-      "projected_uplift": 13.898833333333332,
+      "primary_event_id": 7,
+      "primary_event_name": "Gameweek 7",
+      "projected_uplift": 9.472764444444445,
       "rationale": "One extra copy of Haaland's captain projection in a home fixture against a promoted club.",
       "target_player": "Haaland"
     }
@@ -61,26 +66,26 @@
         "Kusi-Asare",
         "Hughes"
       ],
-      "captain": "João Pedro",
+      "captain": "B.Fernandes",
       "chip": "None",
-      "confidence": "High",
+      "confidence": "Medium",
       "event_id": 2,
       "event_name": "Gameweek 2",
       "free_transfers_after": 2,
       "free_transfers_before": 1,
       "points_hit": 0,
-      "projected_score": 85.38,
+      "projected_score": 42.74,
       "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Verbruggen",
-        "Calafiori",
         "Gabriel",
         "Shaw",
+        "Calafiori",
         "van Ewijk",
-        "Szoboszlai",
         "B.Fernandes",
         "Mbeumo",
+        "Szoboszlai",
         "Tzolis",
         "João Pedro",
         "Haaland"
@@ -88,10 +93,10 @@
       "transfers": []
     },
     {
-      "action": "Hughes → George Hemmings",
+      "action": "Roll / no transfer",
       "bank_after": 0.0,
       "bench": [
-        "Diop",
+        "Hughes",
         "Kusi-Asare",
         "van Ewijk"
       ],
@@ -100,40 +105,33 @@
       "confidence": "Medium",
       "event_id": 3,
       "event_name": "Gameweek 3",
-      "free_transfers_after": 2,
+      "free_transfers_after": 3,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 100.83,
-      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 5.9.",
+      "projected_score": 60.32,
+      "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Verbruggen",
         "Gabriel",
         "Calafiori",
         "Shaw",
+        "Diop",
         "B.Fernandes",
         "Szoboszlai",
         "Mbeumo",
         "Tzolis",
-        "George Hemmings",
         "Haaland",
         "João Pedro"
       ],
-      "transfers": [
-        {
-          "player_in": "George Hemmings",
-          "player_in_id": 51,
-          "player_out": "Hughes",
-          "player_out_id": 212
-        }
-      ]
+      "transfers": []
     },
     {
       "action": "Roll / no transfer",
       "bank_after": 0.0,
       "bench": [
-        "George Hemmings",
         "Shaw",
+        "Hughes",
         "Kusi-Asare"
       ],
       "captain": "Haaland",
@@ -141,10 +139,10 @@
       "confidence": "Medium",
       "event_id": 4,
       "event_name": "Gameweek 4",
-      "free_transfers_after": 3,
-      "free_transfers_before": 2,
+      "free_transfers_after": 4,
+      "free_transfers_before": 3,
       "points_hit": 0,
-      "projected_score": 100.6,
+      "projected_score": 61.82,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -166,8 +164,8 @@
       "action": "Roll / no transfer",
       "bank_after": 0.0,
       "bench": [
-        "Diop",
-        "George Hemmings",
+        "van Ewijk",
+        "Hughes",
         "Kusi-Asare"
       ],
       "captain": "Haaland",
@@ -175,10 +173,10 @@
       "confidence": "Low",
       "event_id": 5,
       "event_name": "Gameweek 5",
-      "free_transfers_after": 4,
-      "free_transfers_before": 3,
+      "free_transfers_after": 5,
+      "free_transfers_before": 4,
       "points_hit": 0,
-      "projected_score": 102.22,
+      "projected_score": 63.37,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -186,7 +184,7 @@
         "Gabriel",
         "Calafiori",
         "Shaw",
-        "van Ewijk",
+        "Diop",
         "B.Fernandes",
         "Mbeumo",
         "Szoboszlai",
@@ -201,8 +199,8 @@
       "bank_after": 0.0,
       "bench": [
         "Shaw",
-        "George Hemmings",
-        "Kusi-Asare"
+        "Kusi-Asare",
+        "Hughes"
       ],
       "captain": "Haaland",
       "chip": "None",
@@ -210,20 +208,20 @@
       "event_id": 6,
       "event_name": "Gameweek 6",
       "free_transfers_after": 5,
-      "free_transfers_before": 4,
+      "free_transfers_before": 5,
       "points_hit": 0,
-      "projected_score": 102.64,
+      "projected_score": 63.86,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Verbruggen",
         "Gabriel",
         "Calafiori",
-        "van Ewijk",
         "Diop",
+        "van Ewijk",
         "B.Fernandes",
-        "Mbeumo",
         "Tzolis",
+        "Mbeumo",
         "Szoboszlai",
         "Haaland",
         "João Pedro"
@@ -234,5 +232,5 @@
   "generated_for_event": 2,
   "horizon": 5,
   "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.",
-  "total_projected_score": 491.67
+  "total_projected_score": 292.11
 }

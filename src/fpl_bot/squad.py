@@ -51,6 +51,12 @@ def player_from_api(raw: dict[str, Any], team_names: dict[int, str]) -> Player:
         defensive_contribution_per_90=_number(
             raw.get("defensive_contribution_per_90")
         ),
+        expected_goals=_number(raw.get("expected_goals")),
+        expected_assists=_number(raw.get("expected_assists")),
+        expected_goal_involvements=_number(raw.get("expected_goal_involvements")),
+        expected_goals_conceded=_number(raw.get("expected_goals_conceded")),
+        transfers_in_event=int(raw.get("transfers_in_event", 0) or 0),
+        transfers_out_event=int(raw.get("transfers_out_event", 0) or 0),
         raw=raw,
     )
 
@@ -93,7 +99,13 @@ def resolve_squad(
             raise ValueError(f"Could not safely resolve {entry.name!r} in official FPL data")
         if len(ranked) > 1 and ranked[0][0] < 2.0 and ranked[0][0] - ranked[1][0] < 0.08:
             raise ValueError(f"Ambiguous player name {entry.name!r}; use the FPL display name")
-        resolved.append(OwnedPlayer(ranked[0][1], entry.purchase_price))
+        player = ranked[0][1]
+        purchase_price = (
+            entry.purchase_price
+            if entry.purchase_price is not None
+            else inferred_initial_purchase_price(player)
+        )
+        resolved.append(OwnedPlayer(player, purchase_price))
 
     return resolved
 
@@ -104,6 +116,15 @@ def selling_price(current_price: int, purchase_price: int | None) -> int:
     if current_price <= purchase_price:
         return current_price
     return purchase_price + math.floor((current_price - purchase_price) / 2)
+
+
+def inferred_initial_purchase_price(player: Player) -> int:
+    """Recover the season-opening price when an initial squad entry uses null."""
+    try:
+        change = int(player.raw.get("cost_change_start", 0) or 0)
+    except (TypeError, ValueError):
+        change = 0
+    return max(0, player.cost - change)
 
 
 def validate_squad(players: Iterable[Player]) -> list[str]:

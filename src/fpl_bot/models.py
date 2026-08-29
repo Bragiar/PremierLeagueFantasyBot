@@ -47,7 +47,13 @@ class Player:
     selected_by_percent: float
     expected_next: float
     defensive_contribution_per_90: float
-    raw: dict[str, Any] = field(repr=False, compare=False)
+    expected_goals: float = 0.0
+    expected_assists: float = 0.0
+    expected_goal_involvements: float = 0.0
+    expected_goals_conceded: float = 0.0
+    transfers_in_event: int = 0
+    transfers_out_event: int = 0
+    raw: dict[str, Any] = field(default_factory=dict, repr=False, compare=False)
 
 
 @dataclass(frozen=True)
@@ -210,6 +216,24 @@ class ChipTarget:
 
 
 @dataclass(frozen=True)
+class PlayerProjection:
+    player_id: int
+    player: str
+    expected_points: float
+    expected_minutes: float
+    role: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "player_id": self.player_id,
+            "player": self.player,
+            "expected_points": round(self.expected_points, 2),
+            "expected_minutes": round(self.expected_minutes, 1),
+            "role": self.role,
+        }
+
+
+@dataclass(frozen=True)
 class RollingPlan:
     generated_for_event: int
     horizon: int
@@ -255,6 +279,9 @@ class Recommendation:
     chip_options: list[ChipOption] = field(default_factory=list)
     research_review: ResearchReview | None = None
     rolling_plan: RollingPlan | None = None
+    player_projections: tuple[PlayerProjection, ...] = ()
+    confidence_reasons: list[str] = field(default_factory=list)
+    risk_mode: str = "balanced"
     validation: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -267,6 +294,9 @@ class Recommendation:
         data["transfers"] = [transfer.to_dict() for transfer in self.transfers]
         data["engine_options"] = [option.to_dict() for option in self.engine_options]
         data["chip_options"] = [option.to_dict() for option in self.chip_options]
+        data["player_projections"] = [
+            projection.to_dict() for projection in self.player_projections
+        ]
         data["rolling_plan"] = (
             None if self.rolling_plan is None else self.rolling_plan.to_dict()
         )
