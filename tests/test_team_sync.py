@@ -76,6 +76,7 @@ def test_authenticated_team_builds_exact_squad_state():
     assert synced["free_transfers"] == 2
     assert synced["captain"] == "Player 13"
     assert synced["vice_captain"] == "Player 14"
+    assert synced["squad"][0]["element_id"] == 1
     assert synced["squad"][0]["purchase_price"] == 4.1
     assert synced["chips"]["first_half"]["free_hit"] == "used"
 
@@ -113,3 +114,55 @@ def test_configure_auth_explains_decode_failure_without_storing_input(monkeypatc
         configure_auth(8825888, "wrong-field")
 
     assert stored == []
+
+
+def test_first_authenticated_import_does_not_invent_transfers_from_name_aliases():
+    previous = {
+        "squad": [
+            {"name": "Bruno Fernandes", "position": "MID", "purchase_price": 12.0}
+        ]
+    }
+    current = {
+        "fpl_entry_id": 8825888,
+        "bank": 0.0,
+        "free_transfers": 2,
+        "squad": [
+            {
+                "element_id": 426,
+                "name": "B.Fernandes",
+                "position": "MID",
+                "purchase_price": 12.0,
+            }
+        ],
+    }
+
+    assert team_sync._transfer_record(previous, current, datetime.now(UTC)) is None
+
+
+def test_transfer_history_compares_stable_player_ids_not_names():
+    previous = {
+        "fpl_entry_id": 8825888,
+        "squad": [
+            {
+                "element_id": 426,
+                "name": "Bruno Fernandes",
+                "position": "MID",
+                "purchase_price": 12.0,
+            }
+        ],
+    }
+    current = {
+        "fpl_entry_id": 8825888,
+        "bank": 0.0,
+        "free_transfers": 2,
+        "squad": [
+            {
+                "element_id": 426,
+                "name": "B.Fernandes",
+                "position": "MID",
+                "purchase_price": 12.0,
+            }
+        ],
+    }
+
+    assert team_sync._transfer_record(previous, current, datetime.now(UTC)) is None

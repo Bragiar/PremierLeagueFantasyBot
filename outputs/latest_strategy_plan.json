@@ -1,6 +1,6 @@
 {
   "changes": [
-    "No material transfer, captain or chip-window changes since the saved plan."
+    "Bench Boost target changed: GW9 → GW15."
   ],
   "chip_targets": [
     {
@@ -23,7 +23,7 @@
       "confidence": "Low",
       "primary_event_id": 17,
       "primary_event_name": "Gameweek 17",
-      "projected_uplift": 9.330913111111101,
+      "projected_uplift": 10.207893999999996,
       "rationale": "One-Gameweek optimized squad compared with the planned route squad.",
       "target_player": null
     },
@@ -33,9 +33,9 @@
       "chip": "Bench Boost",
       "chip_id": "chip:bench_boost",
       "confidence": "Low",
-      "primary_event_id": 9,
-      "primary_event_name": "Gameweek 9",
-      "projected_uplift": 7.013772345679014,
+      "primary_event_id": 15,
+      "primary_event_name": "Gameweek 15",
+      "projected_uplift": 7.073743901234568,
       "rationale": "Projected points from the four substitutes in the route squad.",
       "target_player": null
     },
@@ -47,7 +47,7 @@
       "confidence": "Medium",
       "primary_event_id": 7,
       "primary_event_name": "Gameweek 7",
-      "projected_uplift": 9.765493333333334,
+      "projected_uplift": 9.76592,
       "rationale": "One extra copy of Haaland's captain projection in a home fixture against a promoted club.",
       "target_player": "Haaland"
     }
@@ -69,7 +69,7 @@
       "free_transfers_after": 2,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 58.33,
+      "projected_score": 58.46,
       "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -110,7 +110,7 @@
       "free_transfers_after": 2,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 62.98,
+      "projected_score": 62.67,
       "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 11.4.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -151,8 +151,8 @@
       "free_transfers_after": 2,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 67.95,
-      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 4.0.",
+      "projected_score": 67.81,
+      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 4.1.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Tzolakis",
@@ -192,7 +192,7 @@
       "free_transfers_after": 3,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 65.66,
+      "projected_score": 65.55,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -226,7 +226,7 @@
       "free_transfers_after": 4,
       "free_transfers_before": 3,
       "points_hit": 0,
-      "projected_score": 65.39,
+      "projected_score": 65.34,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -248,5 +248,5 @@
   "generated_for_event": 3,
   "horizon": 5,
   "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.",
-  "total_projected_score": 320.31
+  "total_projected_score": 319.83
 }

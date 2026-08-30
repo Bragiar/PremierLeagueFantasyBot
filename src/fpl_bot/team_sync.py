@@ -20,7 +20,7 @@ from fpl_bot.auth import (
     stored_entry_id,
     stored_refresh_token,
 )
-from fpl_bot.models import POSITION_NAMES
+from fpl_bot.models import POSITION_IDS, POSITION_NAMES
 from fpl_bot.storage import append_jsonl, atomic_write_text
 
 
@@ -140,6 +140,7 @@ def build_synced_settings(
         purchase_price = _integer(pick.get("purchase_price"), "purchase price")
         squad.append(
             {
+                "element_id": player_id,
                 "name": name,
                 "position": position,
                 "purchase_price": purchase_price / 10,
@@ -159,6 +160,7 @@ def build_synced_settings(
         raise ValueError("Authenticated FPL squad exceeds the three-player club limit")
     if not captain or not vice_captain or captain == vice_captain:
         raise ValueError("Authenticated FPL captain and vice-captain are invalid")
+    squad.sort(key=lambda item: (POSITION_IDS[item["position"]], item["element_id"]))
 
     event_id = _current_event(bootstrap)
     return {
@@ -230,18 +232,27 @@ def _changed_fields(previous: dict[str, Any], current: dict[str, Any]) -> tuple[
 def _transfer_record(
     previous: dict[str, Any], current: dict[str, Any], confirmed_at: datetime
 ) -> dict[str, Any] | None:
+    old_squad = previous.get("squad", [])
+    new_squad = current.get("squad", [])
+    if not previous.get("fpl_entry_id") or not all(
+        isinstance(item, dict) and item.get("element_id") is not None
+        for item in old_squad
+    ):
+        # The first authenticated import establishes stable player IDs. Names from a
+        # manually maintained file may be aliases and must not be logged as transfers.
+        return None
     old_entries = {
-        str(item.get("name")): item
-        for item in previous.get("squad", [])
+        _integer(item.get("element_id"), "previous player ID"): item
+        for item in old_squad
         if isinstance(item, dict)
     }
     new_entries = {
-        str(item.get("name")): item
-        for item in current.get("squad", [])
+        _integer(item.get("element_id"), "current player ID"): item
+        for item in new_squad
         if isinstance(item, dict)
     }
-    sold = [old_entries[name] for name in sorted(old_entries.keys() - new_entries)]
-    bought = [new_entries[name] for name in sorted(new_entries.keys() - old_entries)]
+    sold = [old_entries[player_id] for player_id in sorted(old_entries.keys() - new_entries)]
+    bought = [new_entries[player_id] for player_id in sorted(new_entries.keys() - old_entries)]
     if not sold and not bought:
         return None
     return {
