@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import getpass
+import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -81,7 +82,32 @@ def build_setup_auth_parser() -> argparse.ArgumentParser:
         description="Store an FPL refresh token in macOS Keychain.",
     )
     parser.add_argument("--entry-id", type=int, required=True)
+    parser.add_argument(
+        "--from-clipboard",
+        action="store_true",
+        help="Read the copied OIDC JSON from the macOS clipboard, then clear it.",
+    )
     return parser
+
+
+def read_clipboard_secret() -> str:
+    result = subprocess.run(
+        ["pbpaste"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        raise FPLAuthError("The macOS clipboard is empty or could not be read")
+    value = result.stdout
+    subprocess.run(
+        ["pbcopy"],
+        check=False,
+        input="",
+        capture_output=True,
+        text=True,
+    )
+    return value
 
 
 def build_sync_parser() -> argparse.ArgumentParser:
@@ -99,11 +125,15 @@ def main(argv: list[str] | None = None) -> int:
     raw_argv = list(sys.argv[1:] if argv is None else argv)
     if raw_argv[:1] == ["setup-fpl-auth"]:
         args = build_setup_auth_parser().parse_args(raw_argv[1:])
-        token = getpass.getpass(
-            "Paste the entire JSON from the oidc.user row's Value cell "
-            "(input hidden): "
-        )
         try:
+            token = (
+                read_clipboard_secret()
+                if args.from_clipboard
+                else getpass.getpass(
+                    "Paste the entire JSON from the oidc.user row's Value cell "
+                    "(input hidden): "
+                )
+            )
             configure_auth(args.entry_id, token)
         except (FPLAuthError, OSError, ValueError) as exc:
             print(f"FPL authentication setup failed: {exc}", file=sys.stderr)

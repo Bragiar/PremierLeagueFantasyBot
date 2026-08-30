@@ -80,6 +80,14 @@ To obtain the one-time refresh token:
 fpl-bot setup-fpl-auth --entry-id 1234567
 ```
 
+The hidden prompt displays no characters when pasting. Alternatively, immediately
+after copying the JSON Value cell, let the setup read it from the macOS clipboard and
+clear the clipboard afterward:
+
+```bash
+fpl-bot setup-fpl-auth --entry-id 1234567 --from-clipboard
+```
+
 The setup immediately exchanges and verifies the token, then saves the rotated token
 in macOS Keychain. Synchronize and validate the current team with:
 
