@@ -54,6 +54,40 @@ Your editable inputs are:
 
 After you actually make a transfer yourself, update `data/squad.yaml`. Set each player's `purchase_price` to the price you paid and update `bank` and `free_transfers`; that lets the bot apply FPL's half-profit selling-price rule correctly. A `null` purchase price is safe only for an untouched opening-squad player, where the bot reconstructs the opening price from the official season price change. After using a chip, change its status from `available` to `used` in the applicable half-season. Do not put credentials in either file.
 
+### Optional authenticated local squad sync
+
+The local sync reads your own FPL team and updates `data/squad.yaml`; it never submits
+transfers, lineup changes, captaincy, or chips. Authentication is stored in macOS
+Keychain, not in this repository. Do not paste a token into chat, a file, or a command
+argument.
+
+To obtain the one-time refresh token:
+
+1. Sign in to FPL in Chrome and open the FPL site.
+2. Open Chrome Developer Tools, choose **Application → Local Storage**, and select
+   `https://fantasy.premierleague.com`.
+3. Open the entry whose key begins with
+   `oidc.user:https://account.premierleague.com/as:`. Its JSON value contains a
+   `refresh_token`. Copy only that value; treat it like a password.
+4. Find the numeric entry ID in an FPL URL such as `/entry/1234567/event/2`.
+5. Run the setup command below. Paste the token only into its hidden prompt:
+
+```bash
+fpl-bot setup-fpl-auth --entry-id 1234567
+```
+
+The setup immediately exchanges and verifies the token, then saves the rotated token
+in macOS Keychain. Synchronize and validate the current team with:
+
+```bash
+fpl-bot sync-team
+fpl-bot --preview --force --no-openai
+```
+
+Each sync retrieves exact FPL purchase prices, bank, remaining free transfers, captain,
+vice-captain, and explicit chip statuses. It records detected player changes in
+`logs/actual_transfer_history.jsonl`. If authorization expires, repeat the setup step.
+
 ### How the decision model works
 
 The bot does look at upcoming matches as well as FDR. For each player it builds an
@@ -229,8 +263,9 @@ GitHub Actions remains the dependable production runner because it checks offici
 
 ## Safety and operating notes
 
-- This is advice, not an automatic FPL client. Confirm injuries, press-conference news, and the final deadline yourself.
-- The public FPL API does not reveal your private bank, purchase prices, free transfers, or whether you acted on a recommendation. Keep `data/squad.yaml` current.
+- This is advice, not an automatic FPL manager. The optional authenticated sync is read-only and never changes the team on FPL. Confirm injuries, press-conference news, and the final deadline yourself.
+- The public FPL API does not reveal your private bank, purchase prices, free transfers, or whether you acted on a recommendation. Keep `data/squad.yaml` current manually or with the authenticated local sync.
+- The refresh token is an account credential. Keep it in macOS Keychain, never commit it, and renew it if authentication is rejected.
 - Official FPL news and chance-of-playing fields can downgrade or exclude players from recommendations; a live-data error produces a low-confidence, no-transfer, no-hit fallback with the configured captaincy and a legal 4-4-2.
 - Web research is advisory evidence, not guaranteed truth. The output records its links and risks so you can inspect late news yourself.
 - Notification timing is approximate because GitHub schedules can be delayed. The default 40-minute tolerance is designed for a 30-minute schedule.
@@ -241,8 +276,9 @@ GitHub Actions remains the dependable production runner because it checks offici
 ```text
 src/fpl_bot/                  service code
 config/strategy.yaml         strategy and notification preferences
-data/squad.yaml              tracked team state (no FPL login)
+data/squad.yaml              tracked team state
 logs/decision_log.jsonl      append-only audit history
+logs/actual_transfer_history.jsonl completed moves detected by authenticated sync
 outputs/latest_recommendation.md
 outputs/latest_strategy_plan.json
 outputs/strategy_review.md

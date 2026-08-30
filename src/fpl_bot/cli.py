@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import argparse
+import getpass
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
 
+from fpl_bot.auth import FPLAuthError
 from fpl_bot.service import run
+from fpl_bot.team_sync import configure_auth, sync_team
 
 
 def default_repo_root() -> Path:
@@ -72,8 +75,51 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def build_setup_auth_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="fpl-bot setup-fpl-auth",
+        description="Store an FPL refresh token in macOS Keychain.",
+    )
+    parser.add_argument("--entry-id", type=int, required=True)
+    return parser
+
+
+def build_sync_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="fpl-bot sync-team",
+        description="Synchronize data/squad.yaml from the authenticated FPL team.",
+    )
+    parser.add_argument(
+        "--repo-root", type=Path, default=default_repo_root(), help=argparse.SUPPRESS
+    )
+    return parser
+
+
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    if raw_argv[:1] == ["setup-fpl-auth"]:
+        args = build_setup_auth_parser().parse_args(raw_argv[1:])
+        token = getpass.getpass("Paste the FPL refresh token (input hidden): ")
+        try:
+            configure_auth(args.entry_id, token)
+        except (FPLAuthError, OSError, ValueError) as exc:
+            print(f"FPL authentication setup failed: {exc}", file=sys.stderr)
+            return 2
+        print("FPL authentication verified and stored in macOS Keychain.")
+        return 0
+    if raw_argv[:1] == ["sync-team"]:
+        args = build_sync_parser().parse_args(raw_argv[1:])
+        repo_root = args.repo_root.resolve()
+        load_dotenv(repo_root / ".env")
+        try:
+            result = sync_team(repo_root)
+        except (FPLAuthError, OSError, ValueError) as exc:
+            print(f"FPL team sync stopped safely: {exc}", file=sys.stderr)
+            return 2
+        print(result.message)
+        return 0
+
+    args = build_parser().parse_args(raw_argv)
     repo_root = args.repo_root.resolve()
     load_dotenv(repo_root / ".env")
     try:
