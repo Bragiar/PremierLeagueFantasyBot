@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
+import ctypes
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -29,47 +30,133 @@ class TokenPair:
 
 
 class KeychainStore:
-    """Small wrapper around the macOS Keychain command-line interface."""
+    """Store credentials through the native macOS Keychain API."""
+
+    _ITEM_NOT_FOUND = -25300
+
+    def __init__(self) -> None:
+        if sys.platform != "darwin":
+            raise FPLAuthError("FPL credential storage requires macOS Keychain")
+        self._security = ctypes.CDLL(
+            "/System/Library/Frameworks/Security.framework/Security"
+        )
+        self._core_foundation = ctypes.CDLL(
+            "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation"
+        )
+        self._configure_signatures()
+
+    def _configure_signatures(self) -> None:
+        self._security.SecKeychainFindGenericPassword.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_uint32,
+            ctypes.c_char_p,
+            ctypes.c_uint32,
+            ctypes.c_char_p,
+            ctypes.POINTER(ctypes.c_uint32),
+            ctypes.POINTER(ctypes.c_void_p),
+            ctypes.POINTER(ctypes.c_void_p),
+        ]
+        self._security.SecKeychainFindGenericPassword.restype = ctypes.c_int32
+        self._security.SecKeychainAddGenericPassword.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_uint32,
+            ctypes.c_char_p,
+            ctypes.c_uint32,
+            ctypes.c_char_p,
+            ctypes.c_uint32,
+            ctypes.c_void_p,
+            ctypes.POINTER(ctypes.c_void_p),
+        ]
+        self._security.SecKeychainAddGenericPassword.restype = ctypes.c_int32
+        self._security.SecKeychainItemModifyAttributesAndData.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_uint32,
+            ctypes.c_void_p,
+        ]
+        self._security.SecKeychainItemModifyAttributesAndData.restype = ctypes.c_int32
+        self._security.SecKeychainItemFreeContent.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
+        self._security.SecKeychainItemFreeContent.restype = ctypes.c_int32
+        self._core_foundation.CFRelease.argtypes = [ctypes.c_void_p]
+        self._core_foundation.CFRelease.restype = None
+
+    def _find_item(self, account: str) -> tuple[int, ctypes.c_void_p]:
+        service = KEYCHAIN_SERVICE.encode("utf-8")
+        account_bytes = account.encode("utf-8")
+        item = ctypes.c_void_p()
+        status = self._security.SecKeychainFindGenericPassword(
+            None,
+            len(service),
+            service,
+            len(account_bytes),
+            account_bytes,
+            None,
+            None,
+            ctypes.byref(item),
+        )
+        return status, item
 
     def get(self, account: str) -> str | None:
-        result = subprocess.run(
-            [
-                "security",
-                "find-generic-password",
-                "-s",
-                KEYCHAIN_SERVICE,
-                "-a",
-                account,
-                "-w",
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
+        service = KEYCHAIN_SERVICE.encode("utf-8")
+        account_bytes = account.encode("utf-8")
+        password_length = ctypes.c_uint32()
+        password_data = ctypes.c_void_p()
+        item = ctypes.c_void_p()
+        status = self._security.SecKeychainFindGenericPassword(
+            None,
+            len(service),
+            service,
+            len(account_bytes),
+            account_bytes,
+            ctypes.byref(password_length),
+            ctypes.byref(password_data),
+            ctypes.byref(item),
         )
-        if result.returncode != 0:
+        if status == self._ITEM_NOT_FOUND:
             return None
-        return result.stdout.strip() or None
+        if status != 0:
+            raise FPLAuthError("Could not read the FPL credential from macOS Keychain")
+        try:
+            value = ctypes.string_at(password_data, password_length.value).decode("utf-8")
+            return value.strip() or None
+        finally:
+            self._security.SecKeychainItemFreeContent(None, password_data)
+            if item:
+                self._core_foundation.CFRelease(item)
 
     def set(self, account: str, value: str) -> None:
-        if not value.strip():
+        normalized = value.strip()
+        if not normalized:
             raise ValueError("Cannot store an empty FPL credential")
-        result = subprocess.run(
-            [
-                "security",
-                "add-generic-password",
-                "-U",
-                "-s",
-                KEYCHAIN_SERVICE,
-                "-a",
-                account,
-                "-w",
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
-            input=value.strip() + "\n",
-        )
-        if result.returncode != 0:
+        password = normalized.encode("utf-8")
+        status, item = self._find_item(account)
+        if status == 0:
+            try:
+                status = self._security.SecKeychainItemModifyAttributesAndData(
+                    item,
+                    None,
+                    len(password),
+                    password,
+                )
+            finally:
+                self._core_foundation.CFRelease(item)
+        elif status == self._ITEM_NOT_FOUND:
+            service = KEYCHAIN_SERVICE.encode("utf-8")
+            account_bytes = account.encode("utf-8")
+            status = self._security.SecKeychainAddGenericPassword(
+                None,
+                len(service),
+                service,
+                len(account_bytes),
+                account_bytes,
+                len(password),
+                password,
+                None,
+            )
+        if status != 0:
             raise FPLAuthError("Could not save the FPL credential in macOS Keychain")
 
 
@@ -94,7 +181,30 @@ def stored_refresh_token(store: KeychainStore) -> str:
         raise FPLAuthError(
             "FPL refresh token is not configured; run `fpl-bot setup-fpl-auth`"
         )
-    return token
+    return normalize_refresh_token(token)
+
+
+def normalize_refresh_token(value: str) -> str:
+    """Accept a bare token, a JSON string, or the full oidc-client user object."""
+    candidate: Any = value.strip()
+    if not candidate:
+        raise FPLAuthError("FPL refresh token is empty")
+    if candidate.startswith("{") or (
+        candidate.startswith('"') and candidate.endswith('"')
+    ):
+        try:
+            decoded = json.loads(candidate)
+        except json.JSONDecodeError as exc:
+            raise FPLAuthError("FPL refresh token contains invalid JSON") from exc
+        candidate = decoded.get("refresh_token") if isinstance(decoded, dict) else decoded
+    if not isinstance(candidate, str) or not candidate.strip():
+        raise FPLAuthError("OIDC data does not contain a refresh_token value")
+    candidate = candidate.strip()
+    if candidate.lower().startswith("bearer "):
+        candidate = candidate[7:].strip()
+    if any(character.isspace() for character in candidate):
+        raise FPLAuthError("FPL refresh token contains unexpected whitespace")
+    return candidate
 
 
 def _safe_error_description(payload: bytes) -> str:

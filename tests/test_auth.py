@@ -6,7 +6,7 @@ import urllib.error
 
 import pytest
 
-from fpl_bot.auth import FPLAuthError, refresh_access_token
+from fpl_bot.auth import FPLAuthError, normalize_refresh_token, refresh_access_token
 
 
 class FakeResponse:
@@ -53,3 +53,14 @@ def test_refresh_access_token_reports_safe_oauth_error():
 
     with pytest.raises(FPLAuthError, match="Token expired"):
         refresh_access_token("expired-value", opener=opener)
+
+
+def test_normalize_refresh_token_accepts_oidc_json_and_quoted_value():
+    assert normalize_refresh_token('{"refresh_token":"opaque-value"}') == "opaque-value"
+    assert normalize_refresh_token('"opaque-value"') == "opaque-value"
+    assert normalize_refresh_token("Bearer opaque-value") == "opaque-value"
+
+
+def test_normalize_refresh_token_rejects_access_only_oidc_json():
+    with pytest.raises(FPLAuthError, match="does not contain"):
+        normalize_refresh_token('{"access_token":"not-a-refresh-token"}')

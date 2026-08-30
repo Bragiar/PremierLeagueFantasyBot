@@ -15,6 +15,7 @@ from fpl_bot.auth import (
     FPLAuthError,
     KeychainStore,
     authenticated_get,
+    normalize_refresh_token,
     refresh_access_token,
     stored_entry_id,
     stored_refresh_token,
@@ -303,12 +304,11 @@ def sync_team(repo_root: Path, *, now: datetime | None = None) -> SyncResult:
 def configure_auth(entry_id: int, refresh_token: str) -> None:
     if entry_id <= 0:
         raise ValueError("FPL entry ID must be positive")
-    if not refresh_token.strip():
-        raise ValueError("FPL refresh token cannot be empty")
+    normalized = normalize_refresh_token(refresh_token)
     store = KeychainStore()
     store.set(ENTRY_ID_ACCOUNT, str(entry_id))
-    store.set(REFRESH_TOKEN_ACCOUNT, refresh_token.strip())
-    tokens = refresh_access_token(refresh_token.strip())
+    store.set(REFRESH_TOKEN_ACCOUNT, normalized)
+    tokens = refresh_access_token(normalized)
     store.set(REFRESH_TOKEN_ACCOUNT, tokens.refresh_token)
     value = authenticated_get(f"{API_BASE}/my-team/{entry_id}/", tokens.access_token)
     if not isinstance(value, dict) or not isinstance(value.get("picks"), list):
