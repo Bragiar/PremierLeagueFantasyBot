@@ -306,10 +306,18 @@ def configure_auth(entry_id: int, refresh_token: str) -> None:
         raise ValueError("FPL entry ID must be positive")
     normalized = normalize_refresh_token(refresh_token)
     store = KeychainStore()
-    store.set(ENTRY_ID_ACCOUNT, str(entry_id))
-    store.set(REFRESH_TOKEN_ACCOUNT, normalized)
-    tokens = refresh_access_token(normalized)
+    try:
+        tokens = refresh_access_token(normalized)
+    except FPLAuthError as exc:
+        if "failed to decode refresh token" in str(exc).lower():
+            raise FPLAuthError(
+                "FPL rejected the pasted value because it was not a refresh token. "
+                "In Chrome Developer Tools, copy the entire long JSON from the Value "
+                "column of the oidc.user row (not the Key column or a short field)."
+            ) from exc
+        raise
     store.set(REFRESH_TOKEN_ACCOUNT, tokens.refresh_token)
     value = authenticated_get(f"{API_BASE}/my-team/{entry_id}/", tokens.access_token)
     if not isinstance(value, dict) or not isinstance(value.get("picks"), list):
         raise FPLAuthError("FPL authorization succeeded but the team response was invalid")
+    store.set(ENTRY_ID_ACCOUNT, str(entry_id))

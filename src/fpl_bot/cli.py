@@ -99,7 +99,10 @@ def main(argv: list[str] | None = None) -> int:
     raw_argv = list(sys.argv[1:] if argv is None else argv)
     if raw_argv[:1] == ["setup-fpl-auth"]:
         args = build_setup_auth_parser().parse_args(raw_argv[1:])
-        token = getpass.getpass("Paste the FPL refresh token (input hidden): ")
+        token = getpass.getpass(
+            "Paste the entire JSON from the oidc.user row's Value cell "
+            "(input hidden): "
+        )
         try:
             configure_auth(args.entry_id, token)
         except (FPLAuthError, OSError, ValueError) as exc:

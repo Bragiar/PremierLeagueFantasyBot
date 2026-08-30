@@ -66,9 +66,13 @@ To obtain the one-time refresh token:
 1. Sign in to FPL in Chrome and open the FPL site.
 2. Open Chrome Developer Tools, choose **Application → Local Storage**, and select
    `https://fantasy.premierleague.com`.
-3. Open the entry whose key begins with
-   `oidc.user:https://account.premierleague.com/as:`. Its JSON value contains a
-   `refresh_token`. Copy only that value; treat it like a password.
+3. Find the row whose **Key** begins with
+   `oidc.user:https://account.premierleague.com/as:`. Double-click its **Value** cell
+   on the right, which is a long JSON object beginning with `{`, then press
+   <kbd>Command</kbd>+<kbd>A</kbd> and <kbd>Command</kbd>+<kbd>C</kbd>. Copy that entire
+   Value cell—not the Key cell, `session_state`, `sub`, or another short field. The
+   setup command safely extracts its `refresh_token`; treat the copied JSON like a
+   password.
 4. Find the numeric entry ID in an FPL URL such as `/entry/1234567/event/2`.
 5. Run the setup command below. Paste the token only into its hidden prompt:
 

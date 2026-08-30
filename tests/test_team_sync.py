@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
 import yaml
 
-from fpl_bot.team_sync import build_synced_settings, render_squad_yaml
+import fpl_bot.team_sync as team_sync
+from fpl_bot.auth import FPLAuthError
+from fpl_bot.team_sync import build_synced_settings, configure_auth, render_squad_yaml
 
 
 def _bootstrap():
@@ -91,3 +94,22 @@ def test_rendered_squad_yaml_round_trips():
 
     assert loaded == synced
     assert "FPL credentials" in rendered
+
+
+def test_configure_auth_explains_decode_failure_without_storing_input(monkeypatch):
+    stored: list[tuple[str, str]] = []
+
+    class FakeStore:
+        def set(self, account: str, value: str) -> None:
+            stored.append((account, value))
+
+    def reject_token(_token: str):
+        raise FPLAuthError("FPL sign-in refresh failed: Failed to decode refresh token")
+
+    monkeypatch.setattr(team_sync, "KeychainStore", FakeStore)
+    monkeypatch.setattr(team_sync, "refresh_access_token", reject_token)
+
+    with pytest.raises(FPLAuthError, match="entire long JSON"):
+        configure_auth(8825888, "wrong-field")
+
+    assert stored == []
