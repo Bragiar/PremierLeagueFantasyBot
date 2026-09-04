@@ -1,25 +1,37 @@
 # Strategy review
 
-- Review time: 2026-08-28T09:43:53Z
-- Newest reviewed decision: 2026-08-22T22:34:34.951874+00:00
-- Scope: 0 decision-log entries newer than the prior reviewed timestamp; no newer entries remain.
+- Review time: 2026-09-01T23:27:43Z
+- Newest reviewed decision: 2026-08-29T23:27:10.917678+00:00
+- Evidence scope: 9 newer decision-log records; authenticated squad sync at 2026-08-30T13:23:20.234906+00:00; projection/forecast, planner, transfer-validation, auth/sync and workflow changes through 2026-08-30; current saved route and chip calendar.
 
 ## Findings
 
-There is no new operational evidence. The two logged records are deterministic, manual Gameweek 2 dry runs: both rolled the transfer, took no hit, selected Haaland as captain, passed position/budget/three-per-club validation, and reported `fallback: false`. The different starting XIs and vice-captains show lineup instability, but there are no actual starts, points, transfer-gain, captaincy-return, or delivery outcomes to evaluate. The 17-test suite passes.
+The current immediate decision is legal on paper: selected transfer `transfer:423:279` (Shaw → Ajayi), selected chip `chip:none`, 0 points hit, projected bank £0.5m, and 2 free transfers before and after the transfer. The recommendation reports valid 15-player/position quotas, budget, maximum-three-per-club, projection-sanity, balanced-risk and reachable-route checks. The GW3 XI has 11 players, three substitutes and a reserve goalkeeper; Ajayi is captain and Haaland vice-captain. All future transfers remain conditional in the generated plan.
 
-The no-hit, optional-transfer-avoidance, chip-saving, and reliable high-ownership premium-captain defaults still make sense as early-season risk controls, but remain uncalibrated. Availability handling combines official status, chance-of-playing, and news conservatively; however, players with zero minutes/starts receive an ownership-based starter-security proxy, and confidence can still be High when the data does not establish a role. Captain eligibility is conservative at 90% availability, but the low-eligible fallback can still choose from a reduced-availability lineup.
+The authenticated read-only squad sync still shows Shaw in the squad, bank £0.0m, 2 free transfers, B.Fernandes captain and João Pedro vice-captain. This is evidence of the saved squad before the GW3 deadline, not proof of the user's eventual action; no user-followed transfer or lineup outcome can be inferred from the public/API records.
 
-The configured five-Gameweek horizon is within the intended 4–6 range. Fixture weighting (0.45) and defensive-contribution weighting (0.35) are reasonable priors, not measured conclusions. The implementation caps the horizon at six but does not reject values below four; teams with no listed fixtures still receive a one-game base score, so blank-Gameweek handling is not explicit. No decision has exercised transfer selection, a tight bank, purchase-price selling rules, or a transfer-created three-per-club edge.
+The newer log contains one `test_failed`, three `test_sent`, and seven `dry_run` records. The failure was followed by successful controlled test deliveries, but repeated `gw2:manual` and `gw2:3h` notification keys show only test/dry-run activity and do not establish production duplicate suppression. `state/last_run.json` has no sent notifications, and no fallback recommendation was recorded. No settled forecasts or official outcomes are present (`state/forecast_history.json` has an empty `settled` map), so transfer gains, starts, points and captain returns cannot yet calibrate the model.
 
-Fallback frequency is zero in the two records. Fallback behavior has unit and API-outage coverage, but no production-like frequency or reason telemetry exists. Delivery evidence is also absent: both records are `dry_run`, `sent_notifications` is empty, and there are no sent, failed, retried, or duplicate-delivery records. The repeated `gw2:manual` key is expected for dry runs and does not validate live duplicate suppression. Git history still contains only the initial build commit (`22fd960`); current implementation, test, state, log, and generated-artifact changes are uncommitted working-tree changes.
+The recent implementation changes materially improve forecast persistence, projection bounds, authenticated squad/purchase-price syncing and focused test coverage. The full test suite passes: 56 tests. The current squad has exact purchase prices and element IDs, which improves selling-value legality, but the new sync/auth path has not produced a settled outcome or production delivery evidence.
+
+## Rolling-plan assessment
+
+`outputs/latest_strategy_plan.json` is a five-Gameweek, 0-hit route with legal projected squads and no unexplained hits: GW3 Shaw → Ajayi, conditional GW4 Hughes → Armstrong, conditional GW5 Verbruggen → Tzolakis, then rolls in GW6–7. It carries 2 free transfers through GW5 and grows to 4 by GW7, with bank £0.5m after GW3 and £0.0m thereafter. Confidence appropriately decays to Low in the early-evidence context, although the GW3 captain choice of Ajayi is a high-impact, low-confidence exposure (65 expected minutes; 10.24 projected points).
+
+There is a material saved-state mismatch. `state/rolling_plan.json` retains the earlier route projections, one free transfer before/after the GW3 action, total projected score 320.31, and Bench Boost primary GW9; the latest output uses two free transfers, total 319.83, and Bench Boost primary GW15. The route should be treated as unresolved until one canonical artifact is regenerated or reconciled. The current latest output is the more recent decision packet, but this review does not overwrite the older state.
+
+## Chip-calendar assessment
+
+The latest provisional calendar is: Wildcard unassigned; Free Hit GW17 with GW18 backup; Bench Boost GW15 with GW6 backup; Triple Captain GW7 with GW16 backup on Haaland. Primary windows do not collide, and the route itself uses no chip. These are conditional decision gates, not confirmed moves.
+
+The code correctly partitions first-half chips through GW19, second-half chips through GW38, preserves Free Hit on GW1, models one-chip-per-Gameweek assignment, and applies a GW19 Free Hit opportunity-cost penalty because a GW19 first-half Free Hit prevents another Free Hit in GW20. However, the tests cover chip availability and collision heuristics but do not directly assert the GW19/GW20 restriction or half-season expiry boundary. The low-confidence uplift estimates (Free Hit +10.2, Bench Boost +7.1, Triple Captain +9.8; Wildcard 0.0) are not strong enough to justify early use, so saving chips remains the appropriate current verdict.
 
 ## Risks and proposed improvements
 
-1. Retain `max_points_hit: 0`, optional-transfer avoidance, chip saving, and high-ownership premium captaincy. Collect 4–6 real Gameweeks of predicted versus actual starts, points, captain returns, ownership, and transfer gains before tuning weights or thresholds.
-2. Validate the fixture horizon as 4–6, add blank/double-Gameweek regression cases, and ensure a blank is not scored as a normal one-game horizon. Reassess fixture versus defensive-contribution weights against outcomes.
-3. Separate availability from starter confidence: treat missing minutes/starts or stale news as uncertainty, downgrade confidence accordingly, and test captain/vice-captain behavior when fewer than two players meet the availability threshold.
-4. Exercise the full transfer path with non-null purchase prices, a tight bank, a profitable price rise, and an incoming player that would breach the three-per-club limit. Include malformed transfer-price inputs in validation tests.
-5. Record structured fallback reasons and attempted/sent/failed/retry/duplicate outcomes; exercise retry and duplicate suppression only in controlled tests. Keep GitHub Actions as the only deadline runner.
+1. Reconcile `outputs/latest_strategy_plan.json` and `state/rolling_plan.json` before relying on the rolling route; add a consistency check that rejects stale generated artifacts with different free-transfer state, chip targets or route changes.
+2. Keep the immediate choice conservative: `transfer:423:279` and `chip:none` remain the selected legal IDs, but verify Ajayi's start and role before the deadline. Do not treat the conditional GW4/GW5 moves or chip windows as commitments.
+3. Add direct tests for GW19 Free Hit versus GW20 availability, first/second-half chip expiry, and chip assignment when a candidate window is at a boundary. Preserve the one-chip-per-Gameweek rule.
+4. Keep strategy weights unchanged. There are only two projected Gameweeks and no settled outcomes; wait for 4–6 completed Gameweeks before calibrating fixture, defensive-contribution, availability or captaincy weights.
+5. Extend delivery telemetry to distinguish attempted, failed, retried, sent and duplicate-suppressed outcomes in production-like controlled tests. Retain GitHub Actions as the only deadline runner and production Telegram sender.
 
-Current recommendation: retain the conservative assumptions and monitor the next real scheduled window. No strategy, squad, decision log, state, workflow, credential, source-code, delivery, commit, or push changes were made by this review.
+Current verdict: the latest GW3 packet passes the available legality checks, but confidence is Low and the rolling-plan artifact mismatch is the highest-priority operational risk. No strategy, squad, log, state, workflow, credential, source-code, test, recommendation, plan, delivery, commit or push changes were made by this review.
