@@ -50,13 +50,15 @@
     }
   ],
   "last_run": {
-    "at": "2026-08-29T23:27:10.917678+00:00",
-    "delivery": "dry_run",
+    "at": "2026-09-04T14:53:06.307738+00:00",
+    "delivery": "sent",
     "event_id": 3,
     "fallback": false,
-    "notification_key": "gw3:manual",
-    "window": "manual"
+    "notification_key": "gw3:3h",
+    "window": "3h"
   },
   "schema_version": 1,
-  "sent_notifications": {}
+  "sent_notifications": {
+    "gw3:3h": "2026-09-04T14:53:06.307738+00:00"
+  }
 }
