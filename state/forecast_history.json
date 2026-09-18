@@ -277,6 +277,152 @@
       "selected_chip_id": "chip:none",
       "selected_option_id": "hold",
       "vice_captain": "Haaland"
+    },
+    "5": {
+      "captain": "Haaland",
+      "event_id": 5,
+      "event_name": "Gameweek 5",
+      "points_hit": 0,
+      "projections": [
+        {
+          "expected_minutes": 85.7,
+          "expected_points": 6.84,
+          "player": "Gabriel",
+          "player_id": 4,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 80.4,
+          "expected_points": 7.73,
+          "player": "Calafiori",
+          "player_id": 8,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 81.6,
+          "expected_points": 7.12,
+          "player": "Tavernier",
+          "player_id": 68,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 82.5,
+          "expected_points": 3.84,
+          "player": "Verbruggen",
+          "player_id": 109,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 65.2,
+          "expected_points": 5.62,
+          "player": "João Pedro",
+          "player_id": 165,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 81.6,
+          "expected_points": 2.23,
+          "player": "van Ewijk",
+          "player_id": 175,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 11.0,
+          "expected_points": 0.0,
+          "player": "Hughes",
+          "player_id": 212,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 81.7,
+          "expected_points": 2.75,
+          "player": "Diop",
+          "player_id": 259,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 9.4,
+          "expected_points": 0.19,
+          "player": "Kusi-Asare",
+          "player_id": 272,
+          "role": "bench"
+        },
+        {
+          "expected_minutes": 78.4,
+          "expected_points": 7.19,
+          "player": "Ajayi",
+          "player_id": 279,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 80.5,
+          "expected_points": 6.69,
+          "player": "Giles",
+          "player_id": 282,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 81.5,
+          "expected_points": 6.59,
+          "player": "Davis",
+          "player_id": 305,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 84.8,
+          "expected_points": 5.44,
+          "player": "Szoboszlai",
+          "player_id": 368,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 88.5,
+          "expected_points": 10.27,
+          "player": "Haaland",
+          "player_id": 411,
+          "role": "captain"
+        },
+        {
+          "expected_minutes": 30.8,
+          "expected_points": 0.4,
+          "player": "Shaw",
+          "player_id": 423,
+          "role": "transfer candidate"
+        },
+        {
+          "expected_minutes": 87.2,
+          "expected_points": 8.23,
+          "player": "B.Fernandes",
+          "player_id": 426,
+          "role": "vice-captain"
+        },
+        {
+          "expected_minutes": 85.1,
+          "expected_points": 6.78,
+          "player": "Mbeumo",
+          "player_id": 427,
+          "role": "starter"
+        },
+        {
+          "expected_minutes": 9.9,
+          "expected_points": 0.34,
+          "player": "Dubravka",
+          "player_id": 497,
+          "role": "reserve goalkeeper"
+        },
+        {
+          "expected_minutes": 74.3,
+          "expected_points": 4.12,
+          "player": "Tzolis",
+          "player_id": 557,
+          "role": "starter"
+        }
+      ],
+      "recorded_at": "2026-09-18T16:48:17.541084+00:00",
+      "risk_mode": "balanced",
+      "selected_chip_id": "chip:none",
+      "selected_option_id": "transfer:423:279",
+      "vice_captain": "B.Fernandes"
     }
   },
   "schema_version": 1,
@@ -491,6 +637,219 @@
       ],
       "points_hit": 0,
       "points_mae": 3.465,
+      "selected_chip_id": "chip:none",
+      "selected_option_id": "hold"
+    },
+    "3": {
+      "actual_team_points": 44.0,
+      "captain": "B.Fernandes",
+      "event_id": 3,
+      "expected_starter_hit_rate": 1.0,
+      "expected_team_points": 83.62,
+      "forecast_recorded_at": "2026-09-04T14:53:06.307738+00:00",
+      "minutes_mae": 16.322,
+      "players": [
+        {
+          "absolute_minutes_error": 12.6,
+          "absolute_points_error": 4.11,
+          "actual_minutes": 90.0,
+          "actual_points": 2.0,
+          "expected_minutes": 77.4,
+          "expected_points": 6.11,
+          "player": "Gabriel",
+          "player_id": 4,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 6.2,
+          "absolute_points_error": 7.34,
+          "actual_minutes": 66.0,
+          "actual_points": 2.0,
+          "expected_minutes": 72.2,
+          "expected_points": 9.34,
+          "player": "Calafiori",
+          "player_id": 8,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 24.4,
+          "absolute_points_error": 4.92,
+          "actual_minutes": 90.0,
+          "actual_points": 2.0,
+          "expected_minutes": 65.6,
+          "expected_points": 6.92,
+          "player": "Ajer",
+          "player_id": 87,
+          "role": "transfer candidate"
+        },
+        {
+          "absolute_minutes_error": 22.4,
+          "absolute_points_error": 1.36,
+          "actual_minutes": 90.0,
+          "actual_points": 3.0,
+          "expected_minutes": 67.6,
+          "expected_points": 4.36,
+          "player": "Verbruggen",
+          "player_id": 109,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 9.5,
+          "absolute_points_error": 7.57,
+          "actual_minutes": 90.0,
+          "actual_points": 1.0,
+          "expected_minutes": 80.5,
+          "expected_points": 8.57,
+          "player": "João Pedro",
+          "player_id": 165,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 25.0,
+          "absolute_points_error": 0.11,
+          "actual_minutes": 90.0,
+          "actual_points": 4.0,
+          "expected_minutes": 65.0,
+          "expected_points": 3.89,
+          "player": "Thomas",
+          "player_id": 173,
+          "role": "transfer candidate"
+        },
+        {
+          "absolute_minutes_error": 25.0,
+          "absolute_points_error": 3.0,
+          "actual_minutes": 90.0,
+          "actual_points": 3.0,
+          "expected_minutes": 65.0,
+          "expected_points": 0.0,
+          "player": "van Ewijk",
+          "player_id": 175,
+          "role": "bench"
+        },
+        {
+          "absolute_minutes_error": 1.0,
+          "absolute_points_error": 0.22,
+          "actual_minutes": 16.0,
+          "actual_points": 1.0,
+          "expected_minutes": 17.0,
+          "expected_points": 0.78,
+          "player": "Hughes",
+          "player_id": 212,
+          "role": "bench"
+        },
+        {
+          "absolute_minutes_error": 16.9,
+          "absolute_points_error": 5.02,
+          "actual_minutes": 86.0,
+          "actual_points": 3.0,
+          "expected_minutes": 69.1,
+          "expected_points": 8.02,
+          "player": "Ndiaye",
+          "player_id": 237,
+          "role": "transfer candidate"
+        },
+        {
+          "absolute_minutes_error": 24.5,
+          "absolute_points_error": 1.61,
+          "actual_minutes": 90.0,
+          "actual_points": 3.0,
+          "expected_minutes": 65.5,
+          "expected_points": 1.39,
+          "player": "Diop",
+          "player_id": 259,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 17.0,
+          "absolute_points_error": 0.78,
+          "actual_minutes": 0.0,
+          "actual_points": 0.0,
+          "expected_minutes": 17.0,
+          "expected_points": 0.78,
+          "player": "Kusi-Asare",
+          "player_id": 272,
+          "role": "bench"
+        },
+        {
+          "absolute_minutes_error": 14.7,
+          "absolute_points_error": 4.69,
+          "actual_minutes": 90.0,
+          "actual_points": 3.0,
+          "expected_minutes": 75.3,
+          "expected_points": 7.69,
+          "player": "Szoboszlai",
+          "player_id": 368,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 4.5,
+          "absolute_points_error": 0.32,
+          "actual_minutes": 90.0,
+          "actual_points": 9.0,
+          "expected_minutes": 85.5,
+          "expected_points": 9.32,
+          "player": "Haaland",
+          "player_id": 411,
+          "role": "vice-captain"
+        },
+        {
+          "absolute_minutes_error": 25.5,
+          "absolute_points_error": 2.12,
+          "actual_minutes": 90.0,
+          "actual_points": 4.0,
+          "expected_minutes": 64.5,
+          "expected_points": 1.88,
+          "player": "Shaw",
+          "player_id": 423,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 7.4,
+          "absolute_points_error": 10.68,
+          "actual_minutes": 90.0,
+          "actual_points": 2.0,
+          "expected_minutes": 82.6,
+          "expected_points": 12.68,
+          "player": "B.Fernandes",
+          "player_id": 426,
+          "role": "captain"
+        },
+        {
+          "absolute_minutes_error": 13.7,
+          "absolute_points_error": 0.75,
+          "actual_minutes": 90.0,
+          "actual_points": 8.0,
+          "expected_minutes": 76.3,
+          "expected_points": 7.25,
+          "player": "Mbeumo",
+          "player_id": 427,
+          "role": "starter"
+        },
+        {
+          "absolute_minutes_error": 17.0,
+          "absolute_points_error": 0.63,
+          "actual_minutes": 0.0,
+          "actual_points": 0.0,
+          "expected_minutes": 17.0,
+          "expected_points": 0.63,
+          "player": "Dubravka",
+          "player_id": 497,
+          "role": "reserve goalkeeper"
+        },
+        {
+          "absolute_minutes_error": 26.5,
+          "absolute_points_error": 2.65,
+          "actual_minutes": 90.0,
+          "actual_points": 5.0,
+          "expected_minutes": 63.5,
+          "expected_points": 2.35,
+          "player": "Tzolis",
+          "player_id": 557,
+          "role": "starter"
+        }
+      ],
+      "points_hit": 0,
+      "points_mae": 3.216,
       "selected_chip_id": "chip:none",
       "selected_option_id": "hold"
     }

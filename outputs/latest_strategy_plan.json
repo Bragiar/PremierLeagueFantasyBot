@@ -1,11 +1,10 @@
 {
   "changes": [
-    "GW3 transfer plan changed: Shaw → Ajayi → Roll / no transfer.",
-    "GW3 captain changed: Ajayi → B.Fernandes.",
-    "GW4 transfer plan changed: Hughes → Armstrong → Diop → Thomas.",
-    "GW5 transfer plan changed: Verbruggen → Tzolakis → Roll / no transfer.",
-    "GW6 captain changed: Haaland → B.Fernandes.",
-    "Bench Boost target changed: GW9 → GW13."
+    "Advanced the rolling plan from GW3 to GW5.",
+    "GW5 transfer plan changed: Roll / no transfer → Shaw → Ajayi.",
+    "GW6 transfer plan changed: Roll / no transfer → Diop → Giles, Verbruggen → Tzolakis.",
+    "GW6 captain changed: B.Fernandes → Haaland.",
+    "Bench Boost target changed: GW13 → GW9."
   ],
   "chip_targets": [
     {
@@ -28,7 +27,7 @@
       "confidence": "Low",
       "primary_event_id": 17,
       "primary_event_name": "Gameweek 17",
-      "projected_uplift": 9.935598666666664,
+      "projected_uplift": 9.817679584890541,
       "rationale": "One-Gameweek optimized squad compared with the planned route squad.",
       "target_player": null
     },
@@ -38,9 +37,9 @@
       "chip": "Bench Boost",
       "chip_id": "chip:bench_boost",
       "confidence": "Low",
-      "primary_event_id": 13,
-      "primary_event_name": "Gameweek 13",
-      "projected_uplift": 5.15235585185185,
+      "primary_event_id": 9,
+      "primary_event_name": "Gameweek 9",
+      "projected_uplift": 4.862146492444444,
       "rationale": "Projected points from the four substitutes in the route squad.",
       "target_player": null
     },
@@ -52,90 +51,184 @@
       "confidence": "Medium",
       "primary_event_id": 7,
       "primary_event_name": "Gameweek 7",
-      "projected_uplift": 9.77296,
+      "projected_uplift": 10.126573333333335,
       "rationale": "One extra copy of Haaland's captain projection in a home fixture against a promoted club.",
       "target_player": "Haaland"
     }
   ],
   "gameweeks": [
     {
-      "action": "Roll / no transfer",
-      "bank_after": 0.0,
+      "action": "Shaw → Ajayi",
+      "bank_after": 0.2,
       "bench": [
-        "Hughes",
+        "van Ewijk",
         "Kusi-Asare",
-        "van Ewijk"
+        "Hughes"
       ],
-      "captain": "B.Fernandes",
+      "captain": "Haaland",
       "chip": "None",
-      "confidence": "Medium",
-      "event_id": 3,
-      "event_name": "Gameweek 3",
-      "free_transfers_after": 3,
+      "confidence": "High",
+      "event_id": 5,
+      "event_name": "Gameweek 5",
+      "free_transfers_after": 2,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 83.65,
+      "projected_score": 79.07,
       "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Verbruggen",
         "Calafiori",
+        "Ajayi",
         "Gabriel",
-        "Shaw",
         "Diop",
         "B.Fernandes",
-        "Szoboszlai",
         "Mbeumo",
-        "Tzolis",
-        "Haaland",
-        "João Pedro"
-      ],
-      "transfers": []
-    },
-    {
-      "action": "Diop → Thomas",
-      "bank_after": 0.0,
-      "bench": [
-        "Shaw",
-        "Hughes",
-        "Kusi-Asare"
-      ],
-      "captain": "Haaland",
-      "chip": "None",
-      "confidence": "Medium",
-      "event_id": 4,
-      "event_name": "Gameweek 4",
-      "free_transfers_after": 3,
-      "free_transfers_before": 3,
-      "points_hit": 0,
-      "projected_score": 68.49,
-      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 4.7.",
-      "reserve_goalkeeper": "Dubravka",
-      "starting_xi": [
-        "Verbruggen",
-        "Gabriel",
-        "Calafiori",
-        "Thomas",
-        "van Ewijk",
-        "B.Fernandes",
         "Szoboszlai",
-        "Mbeumo",
         "Tzolis",
         "Haaland",
         "João Pedro"
       ],
       "transfers": [
         {
-          "player_in": "Thomas",
-          "player_in_id": 173,
+          "player_in": "Ajayi",
+          "player_in_id": 279,
+          "player_out": "Shaw",
+          "player_out_id": 423
+        }
+      ]
+    },
+    {
+      "action": "Diop → Giles, Verbruggen → Tzolakis",
+      "bank_after": 0.1,
+      "bench": [
+        "van Ewijk",
+        "Kusi-Asare",
+        "Hughes"
+      ],
+      "captain": "Haaland",
+      "chip": "None",
+      "confidence": "Medium",
+      "event_id": 6,
+      "event_name": "Gameweek 6",
+      "free_transfers_after": 1,
+      "free_transfers_before": 2,
+      "points_hit": 0,
+      "projected_score": 72.33,
+      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 12.5.",
+      "reserve_goalkeeper": "Dubravka",
+      "starting_xi": [
+        "Tzolakis",
+        "Gabriel",
+        "Calafiori",
+        "Ajayi",
+        "Giles",
+        "B.Fernandes",
+        "Mbeumo",
+        "Tzolis",
+        "Szoboszlai",
+        "Haaland",
+        "João Pedro"
+      ],
+      "transfers": [
+        {
+          "player_in": "Giles",
+          "player_in_id": 282,
           "player_out": "Diop",
           "player_out_id": 259
+        },
+        {
+          "player_in": "Tzolakis",
+          "player_in_id": 572,
+          "player_out": "Verbruggen",
+          "player_out_id": 109
         }
       ]
     },
     {
       "action": "Roll / no transfer",
-      "bank_after": 0.0,
+      "bank_after": 0.1,
+      "bench": [
+        "van Ewijk",
+        "Kusi-Asare",
+        "Hughes"
+      ],
+      "captain": "Haaland",
+      "chip": "None",
+      "confidence": "Medium",
+      "event_id": 7,
+      "event_name": "Gameweek 7",
+      "free_transfers_after": 2,
+      "free_transfers_before": 1,
+      "points_hit": 0,
+      "projected_score": 73.39,
+      "rationale": "Roll to preserve transfer flexibility.",
+      "reserve_goalkeeper": "Dubravka",
+      "starting_xi": [
+        "Tzolakis",
+        "Gabriel",
+        "Calafiori",
+        "Ajayi",
+        "Giles",
+        "B.Fernandes",
+        "Mbeumo",
+        "Szoboszlai",
+        "Tzolis",
+        "Haaland",
+        "João Pedro"
+      ],
+      "transfers": []
+    },
+    {
+      "action": "Tzolis → Schade, João Pedro → Thiago",
+      "bank_after": 0.2,
+      "bench": [
+        "Giles",
+        "Hughes",
+        "Kusi-Asare"
+      ],
+      "captain": "Haaland",
+      "chip": "None",
+      "confidence": "Low",
+      "event_id": 8,
+      "event_name": "Gameweek 8",
+      "free_transfers_after": 1,
+      "free_transfers_before": 2,
+      "points_hit": 0,
+      "projected_score": 72.77,
+      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 6.4.",
+      "reserve_goalkeeper": "Dubravka",
+      "starting_xi": [
+        "Tzolakis",
+        "Gabriel",
+        "Calafiori",
+        "Ajayi",
+        "van Ewijk",
+        "B.Fernandes",
+        "Schade",
+        "Szoboszlai",
+        "Mbeumo",
+        "Haaland",
+        "Thiago"
+      ],
+      "transfers": [
+        {
+          "player_in": "Schade",
+          "player_in_id": 94,
+          "player_out": "Tzolis",
+          "player_out_id": 557
+        },
+        {
+          "player_in": "Thiago",
+          "player_in_id": 106,
+          "player_out": "João Pedro",
+          "player_out_id": 165
+        }
+      ]
+    },
+    {
+      "action": "Roll / no transfer",
+      "bank_after": 0.2,
       "bench": [
         "van Ewijk",
         "Hughes",
@@ -143,101 +236,33 @@
       ],
       "captain": "Haaland",
       "chip": "None",
-      "confidence": "Medium",
-      "event_id": 5,
-      "event_name": "Gameweek 5",
-      "free_transfers_after": 4,
-      "free_transfers_before": 3,
-      "points_hit": 0,
-      "projected_score": 68.44,
-      "rationale": "Roll to preserve transfer flexibility.",
-      "reserve_goalkeeper": "Dubravka",
-      "starting_xi": [
-        "Verbruggen",
-        "Gabriel",
-        "Calafiori",
-        "Thomas",
-        "Shaw",
-        "B.Fernandes",
-        "Mbeumo",
-        "Szoboszlai",
-        "Tzolis",
-        "Haaland",
-        "João Pedro"
-      ],
-      "transfers": []
-    },
-    {
-      "action": "Roll / no transfer",
-      "bank_after": 0.0,
-      "bench": [
-        "Shaw",
-        "Kusi-Asare",
-        "Hughes"
-      ],
-      "captain": "B.Fernandes",
-      "chip": "None",
       "confidence": "Low",
-      "event_id": 6,
-      "event_name": "Gameweek 6",
-      "free_transfers_after": 5,
-      "free_transfers_before": 4,
+      "event_id": 9,
+      "event_name": "Gameweek 9",
+      "free_transfers_after": 2,
+      "free_transfers_before": 1,
       "points_hit": 0,
-      "projected_score": 69.0,
+      "projected_score": 70.84,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
-        "Verbruggen",
+        "Tzolakis",
         "Gabriel",
+        "Ajayi",
+        "Giles",
         "Calafiori",
-        "Thomas",
-        "van Ewijk",
         "B.Fernandes",
-        "Mbeumo",
-        "Tzolis",
-        "Szoboszlai",
-        "Haaland",
-        "João Pedro"
-      ],
-      "transfers": []
-    },
-    {
-      "action": "Roll / no transfer",
-      "bank_after": 0.0,
-      "bench": [
-        "van Ewijk",
-        "Kusi-Asare",
-        "Hughes"
-      ],
-      "captain": "Haaland",
-      "chip": "None",
-      "confidence": "Low",
-      "event_id": 7,
-      "event_name": "Gameweek 7",
-      "free_transfers_after": 5,
-      "free_transfers_before": 5,
-      "points_hit": 0,
-      "projected_score": 68.47,
-      "rationale": "Roll to preserve transfer flexibility.",
-      "reserve_goalkeeper": "Dubravka",
-      "starting_xi": [
-        "Verbruggen",
-        "Gabriel",
-        "Calafiori",
-        "Shaw",
-        "Thomas",
-        "B.Fernandes",
+        "Schade",
         "Mbeumo",
         "Szoboszlai",
-        "Tzolis",
         "Haaland",
-        "João Pedro"
+        "Thiago"
       ],
       "transfers": []
     }
   ],
-  "generated_for_event": 3,
+  "generated_for_event": 5,
   "horizon": 5,
   "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.",
-  "total_projected_score": 358.05
+  "total_projected_score": 368.4
 }

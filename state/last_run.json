@@ -1,18 +1,6 @@
 {
   "last_known_events": [
     {
-      "deadline_time": "2026-09-04T17:30:00Z",
-      "finished": false,
-      "id": 3,
-      "name": "Gameweek 3"
-    },
-    {
-      "deadline_time": "2026-09-12T12:30:00Z",
-      "finished": false,
-      "id": 4,
-      "name": "Gameweek 4"
-    },
-    {
       "deadline_time": "2026-09-18T17:30:00Z",
       "finished": false,
       "id": 5,
@@ -47,18 +35,31 @@
       "finished": false,
       "id": 10,
       "name": "Gameweek 10"
+    },
+    {
+      "deadline_time": "2026-11-21T13:30:00Z",
+      "finished": false,
+      "id": 11,
+      "name": "Gameweek 11"
+    },
+    {
+      "deadline_time": "2026-11-28T13:30:00Z",
+      "finished": false,
+      "id": 12,
+      "name": "Gameweek 12"
     }
   ],
   "last_run": {
-    "at": "2026-09-04T14:53:06.307738+00:00",
+    "at": "2026-09-18T16:48:17.541084+00:00",
     "delivery": "sent",
-    "event_id": 3,
+    "event_id": 5,
     "fallback": false,
-    "notification_key": "gw3:3h",
-    "window": "3h"
+    "notification_key": "gw5:45m",
+    "window": "45m"
   },
   "schema_version": 1,
   "sent_notifications": {
-    "gw3:3h": "2026-09-04T14:53:06.307738+00:00"
+    "gw3:3h": "2026-09-04T14:53:06.307738+00:00",
+    "gw5:45m": "2026-09-18T16:48:17.541084+00:00"
   }
 }
