@@ -18,6 +18,7 @@ from fpl_bot.deadlines import (
 from fpl_bot.evaluation import (
     normalize_forecast_history,
     performance_summary,
+    recent_player_overprediction,
     record_forecast,
     settle_finished_forecasts,
 )
@@ -47,6 +48,23 @@ class ServiceResult:
 def already_notified(state: dict[str, Any], key: str) -> bool:
     sent = state.get("sent_notifications", {})
     return isinstance(sent, dict) and key in sent
+
+
+def early_hold_required(
+    deadline: datetime,
+    now: datetime,
+    hold_days: float,
+    selected_option_id: str | None,
+    selected_chip_id: str | None,
+    current_option_id: str,
+) -> bool:
+    return (
+        hold_days > 0
+        and selected_option_id is None
+        and selected_chip_id is None
+        and current_option_id != "hold"
+        and (deadline - now).total_seconds() > hold_days * 86400
+    )
 
 
 def should_apply_research_override(
@@ -202,6 +220,26 @@ def run(
                 selected_option_id=selected_option_id,
                 selected_chip_id=selected_chip_id,
             )
+            hold_days = float(strategy_config["strategy"].get("early_transfer_hold_days", 0))
+            if early_hold_required(
+                event.deadline, now, hold_days, selected_option_id,
+                selected_chip_id, recommendation.selected_option_id,
+            ):
+                recommendation = recommend(
+                    event,
+                    owned,
+                    bootstrap,
+                    fixtures,
+                    squad_settings,
+                    strategy_config["strategy"],
+                    selected_option_id="hold",
+                    selected_chip_id="chip:none",
+                )
+                recommendation.confidence = "Low"
+                recommendation.confidence_reasons.insert(0,
+                    f"Deadline is more than {hold_days:g} days away; wait for team news "
+                    "before committing a transfer. Shortlisted moves are provisional."
+                )
         except (FPLAPIError, KeyError, TypeError, ValueError) as exc:
             if selected_option_id is not None or selected_chip_id is not None:
                 raise ValueError(
@@ -265,6 +303,18 @@ def run(
             f"{model_summary['minutes_mae']:.1f} minutes MAE across "
             f"{model_summary['gameweeks']} Gameweeks"
         )
+    if not recommendation.fallback:
+        captain_miss = recent_player_overprediction(
+            forecast_history, recommendation.captain
+        )
+        if captain_miss is not None:
+            recommendation.confidence = "Low"
+            recommendation.confidence_reasons.insert(
+                0,
+                f"The model overestimated {recommendation.captain} by at least "
+                f"4 points in each of three recent forecasts (average {captain_miss:.1f}); "
+                "recheck captaincy near the deadline.",
+            )
 
     telegram_message = render_telegram(
         recommendation, window, test_message=test_telegram

@@ -14,6 +14,7 @@ from fpl_bot.planner import (
     _assign_chip_windows,
     _future_projection_player,
     _next_free_transfers,
+    _single_transfer_candidates,
     build_rolling_plan,
     with_plan_changes,
 )
@@ -69,6 +70,36 @@ def test_current_form_decays_toward_a_stable_future_prior(make_player):
 
     assert distant.form < near.form
     assert distant.expected_next < near.expected_next
+
+
+def test_planner_can_upgrade_a_player_outside_the_weakest_subset(
+    legal_players, make_player
+):
+    owned = tuple(OwnedPlayer(player, player.cost) for player in legal_players)
+    outgoing = legal_players[7]
+    incoming = make_player(
+        100, outgoing.position, 20, cost=outgoing.cost, name="Same Tier Upgrade"
+    )
+    candidates = [*legal_players, incoming]
+    scores = {player.id: 5.0 for player in legal_players}
+    scores[legal_players[0].id] = 0.0
+    scores[legal_players[2].id] = 0.0
+    scores[outgoing.id] = 6.0
+    scores[incoming.id] = 12.0
+    strategy = {
+        **planner_strategy(),
+        "planner_consider_all_outgoing": True,
+        "planner_transfer_options_per_state": 10,
+    }
+
+    choices = _single_transfer_candidates(
+        owned, 0, candidates, scores, strategy
+    )
+
+    assert any(
+        transfer.player_out.id == outgoing.id and transfer.player_in.id == incoming.id
+        for _, transfer in choices
+    )
 
 
 def test_rolling_plan_carries_a_legal_route_and_bank_forward(legal_players):

@@ -182,3 +182,25 @@ def performance_summary(history: dict[str, Any]) -> dict[str, Any] | None:
             3,
         ),
     }
+
+
+def recent_player_overprediction(
+    history: dict[str, Any], player_name: str, *, count: int = 3
+) -> float | None:
+    """Flag repeated large misses without treating one blank as a trend."""
+    settled = sorted(
+        (
+            item for item in history.get("settled", {}).values()
+            if isinstance(item, dict)
+        ),
+        key=lambda item: int(item.get("event_id", 0)),
+    )
+    misses = [
+        float(player.get("expected_points", 0)) - float(player.get("actual_points", 0))
+        for week in settled[-6:]
+        for player in week.get("players", [])
+        if isinstance(player, dict) and player.get("player") == player_name
+    ][-count:]
+    if len(misses) != count or any(miss < 4.0 for miss in misses):
+        return None
+    return round(sum(misses) / count, 1)

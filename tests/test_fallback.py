@@ -38,6 +38,35 @@ def test_fallback_is_safe_and_legal_shape():
     assert "no transfer" in result.explanation.lower()
 
 
+def test_fallback_keeps_captain_in_starting_eleven():
+    entries = (
+        *(SquadEntry(name, "GK") for name in ["G1", "G2"]),
+        *(SquadEntry(name, "DEF") for name in ["D1", "D2", "D3", "D4", "D5"]),
+        *(SquadEntry(name, "MID") for name in ["M1", "M2", "M3", "M4", "M5"]),
+        *(SquadEntry(name, "FWD") for name in ["F1", "F2", "Haaland"]),
+    )
+    settings = SquadSettings(
+        entries=entries, bank=0, free_transfers=1,
+        captain="Haaland", vice_captain="M5",
+    )
+    event = Event(6, "Gameweek 6", datetime(2026, 10, 10, 10, tzinfo=UTC))
+
+    result = fallback_recommendation(event, settings, "API failure")
+
+    assert {"Haaland", "M5"}.issubset(result.starting_xi)
+    assert len(result.starting_xi) == 11
+    assert len(result.bench) == 3
+    assert len(set(result.starting_xi + result.bench + [result.reserve_goalkeeper])) == 15
+
+    goalkeeper_captain = SquadSettings(
+        entries=entries, bank=0, free_transfers=1,
+        captain="G2", vice_captain="M5",
+    )
+    result = fallback_recommendation(event, goalkeeper_captain, "API failure")
+    assert "G2" in result.starting_xi
+    assert result.reserve_goalkeeper == "G1"
+
+
 def test_service_records_fallback_when_official_api_fails(tmp_path, monkeypatch):
     repository = Path(__file__).resolve().parents[1]
     for directory in ["config", "data", "logs", "outputs", "state"]:

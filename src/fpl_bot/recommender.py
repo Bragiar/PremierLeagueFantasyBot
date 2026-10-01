@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from dataclasses import dataclass
 import re
 from typing import Any, Iterable
 
@@ -50,6 +51,22 @@ _NEWS_DOUBT_PHRASES = (
 _POSITION_BASELINE = {"GK": 2.2, "DEF": 2.4, "MID": 2.6, "FWD": 2.6}
 
 
+@dataclass(frozen=True)
+class _TransferChoice:
+    gain: float
+    price_priority: float
+    transfer: Transfer
+    timing_notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class _TransferBundleChoice:
+    gain: float
+    price_priority: float
+    transfers: tuple[Transfer, ...]
+    timing_notes: tuple[str, ...] = ()
+
+
 def expected_minutes(player: Player, strategy: dict[str, Any]) -> float:
     """Estimate minutes without treating a green availability flag as a secure start."""
     available = availability(player)
@@ -96,6 +113,40 @@ def _underlying_attack_signal(player: Player) -> float:
 
 def _projection_reliability(player: Player) -> float:
     return min(0.35, player.minutes / 900)
+
+
+def _price_prior_rate(player: Player) -> float:
+    """Estimate a sustainable points rate without repeating short-term form forever."""
+    price_floor = {"GK": 40, "DEF": 40, "MID": 45, "FWD": 45}[player.position]
+    price_weight = {"GK": 0.08, "DEF": 0.10, "MID": 0.07, "FWD": 0.06}[
+        player.position
+    ]
+    ceiling = {"GK": 5.0, "DEF": 5.5, "MID": 7.0, "FWD": 8.0}[player.position]
+    return min(ceiling, 2.3 + max(0, player.cost - price_floor) * price_weight)
+
+
+def _observed_points_rate(player: Player) -> float:
+    """Smooth a short hot or cold streak against the season points rate."""
+    season = max(0.0, player.points_per_game)
+    recent = max(0.0, player.form)
+    if season == 0:
+        return min(9.0, recent)
+    if recent == 0:
+        return min(9.0, season)
+    return min(9.0, 0.7 * season + 0.3 * recent)
+
+
+def _blended_points_rate(player: Player, official_rate: float) -> float:
+    """Blend FPL's short-term estimate and observed returns with a stable prior."""
+    observed_rate = _observed_points_rate(player)
+    observed_weight = min(0.45, player.minutes / 1800)
+    official_weight = 0.25
+    stable_weight = max(0.0, 1 - observed_weight - official_weight)
+    return (
+        _price_prior_rate(player) * stable_weight
+        + official_rate * official_weight
+        + observed_rate * observed_weight
+    )
 
 
 def _low_minutes_multiplier(minutes: float) -> float:
@@ -168,17 +219,25 @@ def score_player(
         return 0.0
     games = len(difficulties)
     reliability = _projection_reliability(player)
-    official_prior = (
+    immediate_prior = (
         player.expected_next
         if player.expected_next > 0
         else _POSITION_BASELINE[player.position]
     )
-    observed_rate = min(9.0, max(player.points_per_game, player.form, 0.0))
-    expected_rate = official_prior * (1 - reliability) + observed_rate * reliability
-    base = expected_rate * games
+    observed_rate = _observed_points_rate(player)
+    immediate_rate = _blended_points_rate(player, immediate_prior)
+    sustainable_reliability = min(0.45, player.minutes / 1800)
+    sustainable_rate = (
+        _price_prior_rate(player) * (1 - sustainable_reliability)
+        + observed_rate * sustainable_reliability
+    )
+    # FPL's ep_next is an immediate-Gameweek estimate. Repeating it across the whole
+    # planning horizon badly overstates a recent hot streak, so later matches regress
+    # toward a price-informed prior as the evidence horizon expands.
+    base = immediate_rate + sustainable_rate * max(0, games - 1)
     fixture_edge = sum(3.2 - difficulty for difficulty in difficulties)
     minutes_share = expected_minutes(player, strategy) / 90
-    form_delta = min(3.0, max(-3.0, player.form - official_prior))
+    form_delta = min(3.0, max(-3.0, player.form - immediate_prior))
     attack_signal = _underlying_attack_signal(player)
     score = (
         base
@@ -222,14 +281,10 @@ def score_player_for_gameweek(
         if player.expected_next > 0
         else _POSITION_BASELINE[player.position] * games
     )
-    observed_rate = min(9.0, max(player.points_per_game, player.form, 0.0))
-    expected = (
-        official_prior * (1 - reliability)
-        + observed_rate * games * reliability
-    )
+    official_rate = official_prior / games
+    expected = _blended_points_rate(player, official_rate) * games
     fixture_edge = sum(3.2 - difficulty for difficulty in difficulties)
     minutes_share = expected_minutes(player, strategy) / 90
-    official_rate = official_prior / games
     form_delta = min(3.0, max(-3.0, player.form - official_rate))
     attack_signal = _underlying_attack_signal(player)
     score = (
@@ -261,90 +316,94 @@ def score_player_for_gameweek(
     return max(0.0, min(maximum, adjusted))
 
 
-def _choose_transfer(
+def _price_projection(player: Player, offset: int = 0) -> tuple[float | None, int]:
+    if bool(player.raw.get("price_change_calibrating")):
+        return None, 0
+    projections = player.raw.get("price_change_projections", [])
+    if not isinstance(projections, list):
+        return None, 0
+    for raw in projections:
+        if not isinstance(raw, dict):
+            continue
+        try:
+            projection_offset = int(raw.get("offset", -1))
+        except (TypeError, ValueError):
+            continue
+        if projection_offset != offset:
+            continue
+        try:
+            return float(raw.get("projected_percent")), int(raw.get("likelihood", 0))
+        except (TypeError, ValueError):
+            return None, 0
+    return None, 0
+
+
+def _price_timing(
+    outgoing: OwnedPlayer,
+    incoming: Player,
+    strategy: dict[str, Any],
+) -> tuple[float, tuple[str, ...]]:
+    """Describe imminent affordability changes without converting cash into points."""
+    warning = float(strategy.get("price_change_warning_threshold", 90.0))
+    priority = 0.0
+    notes: list[str] = []
+    out_projection, out_likelihood = _price_projection(outgoing.player)
+    current_sale = selling_price(outgoing.player.cost, outgoing.purchase_price)
+    after_drop = selling_price(
+        max(0, outgoing.player.cost - 1), outgoing.purchase_price
+    )
+    if (
+        out_projection is not None
+        and out_projection <= -warning
+        and out_likelihood < 0
+        and after_drop < current_sale
+    ):
+        priority += current_sale - after_drop
+        notes.append(
+            f"{outgoing.player.name} projects {out_projection:.0f}% toward a fall; "
+            f"that fall would cut the selling price by £{(current_sale - after_drop) / 10:.1f}m."
+        )
+
+    in_projection, in_likelihood = _price_projection(incoming)
+    if (
+        in_projection is not None
+        and in_projection >= warning
+        and in_likelihood > 0
+    ):
+        priority += 1.0
+        notes.append(
+            f"{incoming.name} projects {in_projection:.0f}% toward a rise, so waiting "
+            "could add £0.1m to the buying price."
+        )
+    return priority, tuple(notes)
+
+
+def _transfer_squad_objective(
+    players: list[Player], scores: dict[int, float], bench_weight: float
+) -> float:
+    """Value the best XI and cover without inventing a five-week captaincy bonus."""
+    lineup, bench, reserve_goalkeeper = _choose_lineup(players, scores)
+    bench_score = sum(scores[player.id] for player in bench) + scores[reserve_goalkeeper.id]
+    return sum(scores[player.id] for player in lineup) + bench_weight * bench_score
+
+
+def _transfer_choices(
     owned: list[OwnedPlayer],
     candidates: list[Player],
     scores: dict[int, float],
     settings: SquadSettings,
     strategy: dict[str, Any],
-) -> list[Transfer]:
-    if int(strategy.get("max_recommended_transfers", 1)) < 1:
-        return []
-    if settings.free_transfers < 1 and int(strategy.get("max_points_hit", 0)) <= 0:
-        return []
-
+) -> list[_TransferChoice]:
     current_ids = {item.player.id for item in owned}
-    risky = [
-        item
-        for item in owned
-        if availability(item.player) < 75
-        or item.player.status in {"i", "s", "u"}
-        or not item.player.can_select
-    ]
-    outgoing_pool = risky or sorted(owned, key=lambda item: scores[item.player.id])[:1]
-    choices: list[tuple[float, Transfer]] = []
-    for outgoing in outgoing_pool:
-        sale = selling_price(outgoing.player.cost, outgoing.purchase_price)
-        funds = sale + settings.bank
-        for incoming in candidates:
-            if incoming.id in current_ids or incoming.position != outgoing.player.position:
-                continue
-            if incoming.cost > funds or availability(incoming) < 90 or not incoming.can_select:
-                continue
-            transfer = Transfer(
-                player_out=outgoing.player,
-                player_in=incoming,
-                selling_price=sale,
-                buying_price=incoming.cost,
-                points_hit=0,
-            )
-            _, _, errors = apply_and_validate_transfers(owned, [transfer], settings.bank)
-            if errors:
-                continue
-            gain = scores[incoming.id] - scores[outgoing.player.id]
-            choices.append((gain, transfer))
-
-    if not choices:
-        return []
-    gain, best = max(choices, key=lambda item: item[0])
-    threshold = float(strategy.get("min_transfer_gain", 2.5))
-    if not risky and bool(strategy.get("avoid_optional_transfers", True)):
-        completed = int(strategy.get("completed_gameweeks", 0))
-        minimum_sample = int(
-            strategy.get("optional_transfer_min_completed_gameweeks", 2)
+    bench_weight = float(
+        strategy.get(
+            "transfer_bench_weight", strategy.get("planner_bench_weight", 0.08)
         )
-        exception_gain = float(
-            strategy.get("optional_transfer_exception_gain", threshold + 4.0)
-        )
-        if completed < minimum_sample or gain < exception_gain:
-            return []
-    if gain < threshold and availability(best.player_out) > 0:
-        return []
-    return [best]
-
-
-def _engine_options(
-    owned: list[OwnedPlayer],
-    candidates: list[Player],
-    scores: dict[int, float],
-    settings: SquadSettings,
-    strategy: dict[str, Any],
-    deterministic_transfers: list[Transfer],
-) -> list[EngineOption]:
-    """Expose hold plus the strongest legal one-transfer alternatives for review."""
-    options = [
-        EngineOption(
-            id="hold",
-            action="Roll the free transfer",
-            projected_gain=0.0,
-            rationale="Preserves flexibility and avoids acting on a marginal projection.",
-        )
-    ]
-    if settings.free_transfers < 1 or int(strategy.get("max_recommended_transfers", 1)) < 1:
-        return options
-
-    current_ids = {item.player.id for item in owned}
-    choices: list[tuple[float, Transfer]] = []
+    )
+    baseline = _transfer_squad_objective(
+        [item.player for item in owned], scores, bench_weight
+    )
+    choices: list[_TransferChoice] = []
     for outgoing in owned:
         sale = selling_price(outgoing.player.cost, outgoing.purchase_price)
         funds = sale + settings.bank
@@ -360,22 +419,294 @@ def _engine_options(
                 buying_price=incoming.cost,
                 points_hit=0,
             )
-            _, _, errors = apply_and_validate_transfers(owned, [transfer], settings.bank)
+            proposed, _, errors = apply_and_validate_transfers(
+                owned, [transfer], settings.bank
+            )
             if errors:
                 continue
-            choices.append((scores[incoming.id] - scores[outgoing.player.id], transfer))
+            gain = _transfer_squad_objective(proposed, scores, bench_weight) - baseline
+            price_priority, timing_notes = _price_timing(
+                outgoing, incoming, strategy
+            )
+            choices.append(
+                _TransferChoice(gain, price_priority, transfer, timing_notes)
+            )
+    return choices
 
-    choices.sort(key=lambda item: item[0], reverse=True)
+
+def _owned_after_players(
+    players: list[Player], previous: list[OwnedPlayer]
+) -> list[OwnedPlayer]:
+    purchase_prices = {item.player.id: item.purchase_price for item in previous}
+    return [
+        OwnedPlayer(player, purchase_prices.get(player.id, player.cost))
+        for player in players
+    ]
+
+
+def _pair_transfer_choices(
+    owned: list[OwnedPlayer],
+    candidates: list[Player],
+    scores: dict[int, float],
+    settings: SquadSettings,
+    strategy: dict[str, Any],
+    singles: list[_TransferChoice],
+) -> list[_TransferBundleChoice]:
+    if settings.free_transfers < 2 or int(strategy.get("max_recommended_transfers", 1)) < 2:
+        return []
+
+    bench_weight = float(
+        strategy.get(
+            "transfer_bench_weight", strategy.get("planner_bench_weight", 0.08)
+        )
+    )
+    baseline = _transfer_squad_objective(
+        [item.player for item in owned], scores, bench_weight
+    )
+    seed_limit = max(4, int(strategy.get("immediate_pair_first_seeds", 12)))
+    second_limit = max(3, int(strategy.get("immediate_pair_second_seeds", 8)))
+    ranked_singles = sorted(
+        singles, key=lambda choice: (choice.gain, choice.price_priority), reverse=True
+    )
+
+    # Always seed one low-minutes cleanup and one high-demand incoming alongside
+    # the raw top choices. This lets a useful second move survive beam pruning.
+    seeds = list(ranked_singles[:seed_limit])
+    health_threshold = float(strategy.get("squad_health_minutes_threshold", 25))
+    health = next(
+        (
+            choice
+            for choice in ranked_singles
+            if expected_minutes(choice.transfer.player_out, strategy) < health_threshold
+        ),
+        None,
+    )
+    market = max(
+        ranked_singles,
+        key=lambda choice: (
+            choice.transfer.player_in.transfers_in_event
+            - choice.transfer.player_in.transfers_out_event,
+            choice.gain,
+        ),
+        default=None,
+    )
+    for extra in (health, market):
+        if extra is not None and all(
+            item.transfer != extra.transfer for item in seeds
+        ):
+            seeds.append(extra)
+
+    bundles: dict[tuple[tuple[int, int], ...], _TransferBundleChoice] = {}
+    for first in seeds:
+        proposed, next_bank, errors = apply_and_validate_transfers(
+            owned, [first.transfer], settings.bank
+        )
+        if errors:
+            continue
+        next_owned = _owned_after_players(proposed, owned)
+        next_settings = SquadSettings(
+            entries=(),
+            bank=next_bank,
+            free_transfers=max(0, settings.free_transfers - 1),
+            captain="",
+            vice_captain="",
+            chips={},
+        )
+        seconds = _transfer_choices(
+            next_owned, candidates, scores, next_settings, strategy
+        )
+        seconds = [
+            choice
+            for choice in seconds
+            if choice.transfer.player_out.id != first.transfer.player_in.id
+            and choice.transfer.player_in.id != first.transfer.player_out.id
+        ]
+        seconds.sort(
+            key=lambda choice: (choice.gain, choice.price_priority), reverse=True
+        )
+        for second in seconds[:second_limit]:
+            transfers = (first.transfer, second.transfer)
+            combined, _, combined_errors = apply_and_validate_transfers(
+                owned, transfers, settings.bank
+            )
+            if combined_errors:
+                continue
+            gain = (
+                _transfer_squad_objective(combined, scores, bench_weight) - baseline
+            )
+            key = tuple(
+                sorted(
+                    (transfer.player_out.id, transfer.player_in.id)
+                    for transfer in transfers
+                )
+            )
+            bundle = _TransferBundleChoice(
+                gain=gain,
+                price_priority=first.price_priority + second.price_priority,
+                transfers=transfers,
+                timing_notes=(*first.timing_notes, *second.timing_notes),
+            )
+            current = bundles.get(key)
+            if current is None or (bundle.gain, bundle.price_priority) > (
+                current.gain,
+                current.price_priority,
+            ):
+                bundles[key] = bundle
+    return sorted(
+        bundles.values(),
+        key=lambda bundle: (bundle.gain, bundle.price_priority),
+        reverse=True,
+    )
+
+
+def _preferred_transfer_choice(
+    choices: list[_TransferChoice], strategy: dict[str, Any]
+) -> _TransferChoice | None:
+    if not choices:
+        return None
+    best_gain = max(choice.gain for choice in choices)
+    margin = max(0.0, float(strategy.get("price_change_tiebreak_gain_margin", 1.0)))
+    near_best = [choice for choice in choices if choice.gain >= best_gain - margin]
+    return max(near_best, key=lambda choice: (choice.price_priority, choice.gain))
+
+
+def _choice_rationale(choice: _TransferChoice) -> str:
+    transfer = choice.transfer
+    text = (
+        "The move improves the projected best XI plus weighted bench by "
+        f"{choice.gain:.1f} over the configured horizon; incoming availability is "
+        f"{availability(transfer.player_in)}%."
+    )
+    if choice.timing_notes:
+        text += " Price timing: " + " ".join(choice.timing_notes)
+    return text
+
+
+def _transfer_option_id(transfers: Iterable[Transfer]) -> str:
+    moves = tuple(transfers)
+    if len(moves) == 1:
+        move = moves[0]
+        return f"transfer:{move.player_out.id}:{move.player_in.id}"
+    return "transfers:" + "+".join(
+        f"{move.player_out.id}:{move.player_in.id}" for move in moves
+    )
+
+
+def _transfer_action(transfers: Iterable[Transfer]) -> str:
+    return ", ".join(
+        f"{move.player_out.name} → {move.player_in.name}" for move in transfers
+    )
+
+
+def _bundle_rationale(bundle: _TransferBundleChoice) -> str:
+    text = (
+        "Together these moves improve the projected best XI plus weighted bench by "
+        f"{bundle.gain:.1f} over the configured horizon."
+    )
+    if bundle.timing_notes:
+        text += " Price timing: " + " ".join(dict.fromkeys(bundle.timing_notes))
+    return text
+
+
+def _choose_transfer(
+    owned: list[OwnedPlayer],
+    candidates: list[Player],
+    scores: dict[int, float],
+    settings: SquadSettings,
+    strategy: dict[str, Any],
+) -> list[Transfer]:
+    if int(strategy.get("max_recommended_transfers", 1)) < 1:
+        return []
+    if settings.free_transfers < 1 and int(strategy.get("max_points_hit", 0)) <= 0:
+        return []
+
+    singles = _transfer_choices(owned, candidates, scores, settings, strategy)
+    choice = _preferred_transfer_choice(singles, strategy)
+    if choice is None:
+        return []
+    gain = choice.gain
+    selected_transfers = (choice.transfer,)
+    pairs = _pair_transfer_choices(
+        owned, candidates, scores, settings, strategy, singles
+    )
+    if pairs:
+        best_pair_gain = pairs[0].gain
+        price_margin = max(
+            0.0, float(strategy.get("price_change_tiebreak_gain_margin", 1.0))
+        )
+        near_best_pairs = [
+            pair for pair in pairs if pair.gain >= best_pair_gain - price_margin
+        ]
+        best_pair = max(
+            near_best_pairs,
+            key=lambda pair: (pair.price_priority, pair.gain),
+        )
+        extra_gain_required = float(
+            strategy.get("additional_free_transfer_min_gain", 4.0)
+        )
+        if best_pair.gain >= gain + extra_gain_required:
+            gain = best_pair.gain
+            selected_transfers = best_pair.transfers
+    threshold = float(strategy.get("min_transfer_gain", 2.5))
+    outgoing_is_unavailable = any(
+        availability(transfer.player_out) < 75
+        or transfer.player_out.status in {"i", "s", "u"}
+        or not transfer.player_out.can_select
+        for transfer in selected_transfers
+    )
+    if not outgoing_is_unavailable and bool(strategy.get("avoid_optional_transfers", True)):
+        completed = int(strategy.get("completed_gameweeks", 0))
+        minimum_sample = int(
+            strategy.get("optional_transfer_min_completed_gameweeks", 2)
+        )
+        exception_gain = float(
+            strategy.get("optional_transfer_exception_gain", threshold + 4.0)
+        )
+        if completed < minimum_sample or gain < exception_gain:
+            return []
+    if gain < threshold and all(
+        availability(transfer.player_out) > 0 for transfer in selected_transfers
+    ):
+        return []
+    return list(selected_transfers)
+
+
+def _engine_options(
+    owned: list[OwnedPlayer],
+    candidates: list[Player],
+    scores: dict[int, float],
+    settings: SquadSettings,
+    strategy: dict[str, Any],
+    deterministic_transfers: list[Transfer],
+) -> list[EngineOption]:
+    """Expose hold plus the strongest legal transfer alternatives for review."""
+    options = [
+        EngineOption(
+            id="hold",
+            action="Roll the free transfer",
+            projected_gain=0.0,
+            rationale="Preserves flexibility and avoids acting on a marginal projection.",
+        )
+    ]
+    if settings.free_transfers < 1 or int(strategy.get("max_recommended_transfers", 1)) < 1:
+        return options
+
+    choices = _transfer_choices(owned, candidates, scores, settings, strategy)
+    pair_choices = _pair_transfer_choices(
+        owned, candidates, scores, settings, strategy, choices
+    )
+    choices.sort(key=lambda choice: (choice.gain, choice.price_priority), reverse=True)
     minimum_gain = float(strategy.get("min_transfer_gain", 2.5))
     horizon = max(1, int(strategy.get("fixture_horizon", 5)))
     maximum_gain = float(
         strategy.get("max_transfer_gain_per_gameweek", 4.0)
     ) * horizon
     limit = max(1, int(strategy.get("research_candidate_transfers", 3)))
-    for gain, transfer in choices:
-        option_id = f"transfer:{transfer.player_out.id}:{transfer.player_in.id}"
+    for choice in choices:
+        gain, transfer = choice.gain, choice.transfer
+        option_id = _transfer_option_id((transfer,))
         is_engine_pick = bool(
-            deterministic_transfers
+            len(deterministic_transfers) == 1
             and transfer.player_out.id == deterministic_transfers[0].player_out.id
             and transfer.player_in.id == deterministic_transfers[0].player_in.id
         )
@@ -388,33 +719,146 @@ def _engine_options(
                 id=option_id,
                 action=f"{transfer.player_out.name} → {transfer.player_in.name}",
                 projected_gain=gain,
-                rationale=(
-                    f"Engine scores {transfer.player_in.name} {gain:.1f} points above "
-                    f"{transfer.player_out.name} over the configured horizon; "
-                    f"incoming availability is {availability(transfer.player_in)}%."
-                ),
+                rationale=_choice_rationale(choice),
                 transfer=transfer,
             )
         )
         if len(options) - 1 >= limit:
             break
-    if deterministic_transfers:
-        transfer = deterministic_transfers[0]
-        option_id = f"transfer:{transfer.player_out.id}:{transfer.player_in.id}"
-        if not any(option.id == option_id for option in options):
-            gain = scores[transfer.player_in.id] - scores[transfer.player_out.id]
+
+    pair_limit = max(0, int(strategy.get("research_pair_transfers", 2)))
+    additional_gain = float(strategy.get("additional_free_transfer_min_gain", 4.0))
+    best_single_gain = choices[0].gain if choices else 0.0
+    if pair_limit:
+        for bundle in (
+            pair
+            for pair in pair_choices
+            if pair.gain >= best_single_gain + additional_gain
+        ):
+            option_id = _transfer_option_id(bundle.transfers)
             options.append(
                 EngineOption(
                     id=option_id,
-                    action=f"{transfer.player_out.name} → {transfer.player_in.name}",
-                    projected_gain=gain,
-                    rationale=(
-                        "The deterministic safety policy selected this legal move for an "
-                        f"availability risk; projected gain is {gain:.1f}."
-                    ),
-                    transfer=transfer,
+                    action=_transfer_action(bundle.transfers),
+                    projected_gain=bundle.gain,
+                    rationale=_bundle_rationale(bundle),
+                    transfer=bundle.transfers[0],
+                    additional_transfers=bundle.transfers[1:],
                 )
             )
+            if sum(bool(option.additional_transfers) for option in options) >= pair_limit:
+                break
+    if deterministic_transfers:
+        option_id = _transfer_option_id(deterministic_transfers)
+        if not any(option.id == option_id for option in options):
+            if len(deterministic_transfers) == 1:
+                transfer = deterministic_transfers[0]
+                deterministic_choice = next(
+                    (
+                        item
+                        for item in choices
+                        if item.transfer.player_out.id == transfer.player_out.id
+                        and item.transfer.player_in.id == transfer.player_in.id
+                    ),
+                    None,
+                )
+                gain = 0.0 if deterministic_choice is None else deterministic_choice.gain
+                rationale = (
+                    "The deterministic policy selected this legal whole-squad upgrade."
+                    if deterministic_choice is None
+                    else _choice_rationale(deterministic_choice)
+                )
+            else:
+                bundle = next(
+                    (
+                        item
+                        for item in pair_choices
+                        if _transfer_option_id(item.transfers) == option_id
+                    ),
+                    None,
+                )
+                gain = 0.0 if bundle is None else bundle.gain
+                rationale = (
+                    "The deterministic policy selected this legal two-transfer upgrade."
+                    if bundle is None
+                    else _bundle_rationale(bundle)
+                )
+            options.append(
+                EngineOption(
+                    id=option_id,
+                    action=_transfer_action(deterministic_transfers),
+                    projected_gain=gain,
+                    rationale=rationale,
+                    transfer=deterministic_transfers[0],
+                    additional_transfers=tuple(deterministic_transfers[1:]),
+                )
+            )
+
+    def append_scouting_choice(choice: _TransferChoice, label: str) -> None:
+        transfer = choice.transfer
+        option_id = _transfer_option_id((transfer,))
+        if any(option.id == option_id for option in options):
+            return
+        options.append(
+            EngineOption(
+                id=option_id,
+                action=f"{transfer.player_out.name} → {transfer.player_in.name}",
+                projected_gain=choice.gain,
+                rationale=f"{_choice_rationale(choice)} {label}",
+                transfer=transfer,
+            )
+        )
+
+    health_limit = max(0, int(strategy.get("research_squad_health_transfers", 1)))
+    health_minutes = float(strategy.get("squad_health_minutes_threshold", 25))
+    health_choices = sorted(
+        (
+            choice
+            for choice in choices
+            if expected_minutes(choice.transfer.player_out, strategy) < health_minutes
+            and choice.gain >= minimum_gain
+        ),
+        key=lambda choice: choice.gain,
+        reverse=True,
+    )
+    for choice in health_choices[:health_limit]:
+        append_scouting_choice(
+            choice,
+            "Squad-health candidate: it replaces a player projected below "
+            f"{health_minutes:.0f} minutes.",
+        )
+
+    market_limit = max(0, int(strategy.get("research_market_momentum_transfers", 1)))
+    market_minimum = float(strategy.get("market_momentum_min_gain", 1.0))
+    best_by_incoming: dict[int, _TransferChoice] = {}
+    for choice in choices:
+        incoming_id = choice.transfer.player_in.id
+        current = best_by_incoming.get(incoming_id)
+        if current is None or choice.gain > current.gain:
+            best_by_incoming[incoming_id] = choice
+    market_choices = sorted(
+        (
+            choice
+            for choice in best_by_incoming.values()
+            if choice.gain >= market_minimum
+            and choice.transfer.player_in.transfers_in_event
+            > choice.transfer.player_in.transfers_out_event
+        ),
+        key=lambda choice: (
+            choice.transfer.player_in.transfers_in_event
+            - choice.transfer.player_in.transfers_out_event,
+            choice.gain,
+        ),
+        reverse=True,
+    )
+    for choice in market_choices[:market_limit]:
+        incoming = choice.transfer.player_in
+        net_transfers = incoming.transfers_in_event - incoming.transfers_out_event
+        append_scouting_choice(
+            choice,
+            f"Market-watch candidate: {incoming.name} has {net_transfers:,} net transfers "
+            "in this Gameweek; that momentum does not add to the points projection.",
+        )
     return options
 
 
@@ -847,12 +1291,11 @@ def _build_player_projections(
     roles[captain.id] = "captain"
     tracked = {player.id: player for player in proposed}
     for option in engine_options:
-        if option.transfer is None:
-            continue
-        tracked[option.transfer.player_in.id] = option.transfer.player_in
-        tracked[option.transfer.player_out.id] = option.transfer.player_out
-        roles.setdefault(option.transfer.player_in.id, "transfer candidate")
-        roles.setdefault(option.transfer.player_out.id, "transfer candidate")
+        for transfer in option.transfers:
+            tracked[transfer.player_in.id] = transfer.player_in
+            tracked[transfer.player_out.id] = transfer.player_out
+            roles.setdefault(transfer.player_in.id, "transfer candidate")
+            roles.setdefault(transfer.player_out.id, "transfer candidate")
     return tuple(
         PlayerProjection(
             player_id=player.id,
@@ -907,10 +1350,7 @@ def recommend(
     default_option_id = (
         "hold"
         if not deterministic_transfers
-        else (
-            f"transfer:{deterministic_transfers[0].player_out.id}:"
-            f"{deterministic_transfers[0].player_in.id}"
-        )
+        else _transfer_option_id(deterministic_transfers)
     )
     chosen_option_id = selected_option_id or default_option_id
     chosen_option = next(
@@ -918,7 +1358,7 @@ def recommend(
     )
     if chosen_option is None:
         raise ValueError(f"Unknown or non-shortlisted engine option {chosen_option_id!r}")
-    transfers = [] if chosen_option.transfer is None else [chosen_option.transfer]
+    transfers = list(chosen_option.transfers)
     proposed, remaining_bank, errors = apply_and_validate_transfers(
         owned, transfers, settings.bank
     )
@@ -979,11 +1419,15 @@ def recommend(
     )
 
     if transfers:
-        transfer = transfers[0]
+        count = len(transfers)
+        moves = "; ".join(
+            f"{transfer.player_out.name} to {transfer.player_in.name}"
+            for transfer in transfers
+        )
         transfer_text = (
-            f"Use one free transfer: {transfer.player_out.name} to "
-            f"{transfer.player_in.name}. The move remains within budget with "
-            f"£{remaining_bank / 10:.1f}m left and passes all squad rules."
+            f"Use {count} free transfer{'s' if count != 1 else ''}: {moves}. "
+            f"The moves remain within budget with £{remaining_bank / 10:.1f}m left "
+            "and pass all squad rules."
         )
     else:
         transfer_text = (
@@ -1082,8 +1526,10 @@ def fallback_recommendation(
     event: Event, settings: SquadSettings, reason: str
 ) -> Recommendation:
     by_position: dict[str, list[str]] = defaultdict(list)
+    position_by_name: dict[str, str] = {}
     for entry in settings.entries:
         by_position[entry.position].append(entry.name)
+        position_by_name[entry.name] = entry.position
 
     starting = [
         by_position["GK"][0],
@@ -1091,10 +1537,23 @@ def fallback_recommendation(
         *by_position["MID"][:4],
         *by_position["FWD"][:2],
     ]
+    for protected in (settings.captain, settings.vice_captain):
+        if protected in starting or protected not in position_by_name:
+            continue
+        position = position_by_name[protected]
+        replaceable = next(
+            (
+                name for name in starting
+                if position_by_name[name] == position
+                and name not in {settings.captain, settings.vice_captain}
+            ),
+            None,
+        )
+        if replaceable is not None:
+            starting[starting.index(replaceable)] = protected
     bench = [
-        *by_position["MID"][4:],
-        *by_position["DEF"][4:],
-        *by_position["FWD"][2:],
+        name for position in ("DEF", "MID", "FWD")
+        for name in by_position[position] if name not in starting
     ]
     return Recommendation(
         event=event,
@@ -1104,15 +1563,21 @@ def fallback_recommendation(
         vice_captain=settings.vice_captain,
         starting_xi=starting,
         bench=bench,
-        reserve_goalkeeper=by_position["GK"][1],
+        reserve_goalkeeper=next(
+            name for name in by_position["GK"] if name not in starting
+        ),
         chip="None — save the chip",
         confidence="Low",
         explanation=(
             "Safe fallback: make no transfer and take no points hit because live inputs "
             f"could not be trusted ({reason}). Check late team news manually before the "
-            "deadline; the configured captaincy and a legal 4-4-2 are retained."
+            "deadline; the configured captain and vice-captain start in a legal 4-4-2."
         ),
         source="fallback",
         fallback=True,
-        validation=["Fallback formation is 4-4-2", "No transfer or points hit proposed"],
+        validation=[
+            "Fallback formation is 4-4-2",
+            "Captain and vice-captain are starters",
+            "No transfer or points hit proposed",
+        ],
     )

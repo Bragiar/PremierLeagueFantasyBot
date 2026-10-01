@@ -71,3 +71,24 @@ def test_one_minute_sample_cannot_explode_defensive_contribution_score(make_play
     }
 
     assert score_player(player, [3, 3, 3, 3, 3], strategy) < 20
+
+
+def test_immediate_expected_points_are_not_repeated_for_five_weeks(make_player):
+    hot_budget_player = replace(
+        make_player(1, "MID", 1, cost=45),
+        expected_next=8.0,
+        form=8.0,
+        points_per_game=8.0,
+        minutes=360,
+        starts=4,
+    )
+    strategy = {
+        "fixture_weight": 0.45,
+        "form_weight": 0.45,
+        "underlying_stats_weight": 0.7,
+        "secure_starter_weight": 1.6,
+        "defensive_contribution_weight": 0.35,
+        "completed_gameweeks": 4,
+    }
+
+    assert score_player(hot_budget_player, [3, 3, 3, 3, 3], strategy) < 35

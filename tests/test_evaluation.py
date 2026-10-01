@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from fpl_bot.evaluation import (
     performance_summary,
+    recent_player_overprediction,
     record_forecast,
     settle_finished_forecasts,
 )
@@ -17,6 +18,19 @@ class FakeLiveClient:
                 {"id": 2, "stats": {"total_points": 2, "minutes": 30}},
             ]
         }
+
+
+def test_repeated_captain_overprediction_requires_three_recent_large_misses():
+    history = {"settled": {
+        str(event): {"event_id": event, "players": [{
+            "player": "Captain", "expected_points": 9, "actual_points": 2,
+        }]}
+        for event in (3, 4, 5)
+    }}
+    assert recent_player_overprediction(history, "Captain") == 7.0
+    assert recent_player_overprediction(history, "Other") is None
+    history["settled"]["5"]["players"][0]["actual_points"] = 6
+    assert recent_player_overprediction(history, "Captain") is None
 
 
 def test_recorded_forecast_is_settled_and_summarized():

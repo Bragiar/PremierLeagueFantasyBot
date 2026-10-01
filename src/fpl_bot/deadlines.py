@@ -46,8 +46,11 @@ def due_window(
     minutes_remaining = (deadline - now).total_seconds() / 60
     if minutes_remaining <= 0:
         return None
-    for offset in sorted((int(value) for value in offsets_minutes), reverse=True):
-        if offset - tolerance_minutes < minutes_remaining <= offset:
+    # A scheduled runner can be delayed or skipped. Keep each window open until
+    # the next threshold so a later run still has a chance to notify the user.
+    # The tolerance argument remains for callers using the existing config.
+    for offset in sorted(int(value) for value in offsets_minutes):
+        if minutes_remaining <= offset:
             return WINDOW_LABELS.get(offset, f"{offset}m")
     return None
 

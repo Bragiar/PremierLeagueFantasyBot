@@ -1,12 +1,13 @@
-# Automatically synchronized from the authenticated, read-only FPL team endpoint.
-# Purchase prices come from FPL's own-team response and are required for selling value.
+# Reconciled from public FPL GW5 picks and transfer records on 2026-09-25.
+# New purchase prices are from the public transfer ledger; unchanged prices are
+# retained from the last authenticated sync. Public picks cannot show GW6 moves.
 # Never place FPL credentials or tokens in this file.
 fpl_entry_id: 8825888
-last_confirmed_at: "2026-08-30T13:23:20.234906+00:00"
+last_confirmed_at: "2026-09-25T21:30:27+00:00"
 bank: 0.0
-free_transfers: 2
-captain: B.Fernandes
-vice_captain: João Pedro
+free_transfers: 1
+captain: Haaland
+vice_captain: B.Fernandes
 chips:
   first_half:
     wildcard: available
@@ -19,18 +20,18 @@ chips:
     bench_boost: available
     triple_captain: available
 squad:
-  - {element_id: 109, name: Verbruggen, position: GK, purchase_price: 4.5}
+  - {element_id: 572, name: Tzolakis, position: GK, purchase_price: 4.6}
   - {element_id: 497, name: Dubravka, position: GK, purchase_price: 4.0}
   - {element_id: 4, name: Gabriel, position: DEF, purchase_price: 8.0}
   - {element_id: 8, name: Calafiori, position: DEF, purchase_price: 5.5}
   - {element_id: 175, name: van Ewijk, position: DEF, purchase_price: 4.0}
-  - {element_id: 259, name: Diop, position: DEF, purchase_price: 4.0}
-  - {element_id: 423, name: Shaw, position: DEF, purchase_price: 4.5}
+  - {element_id: 279, name: Ajayi, position: DEF, purchase_price: 4.2}
+  - {element_id: 391, name: Gvardiol, position: DEF, purchase_price: 5.7}
   - {element_id: 212, name: Hughes, position: MID, purchase_price: 4.5}
   - {element_id: 368, name: Szoboszlai, position: MID, purchase_price: 7.0}
   - {element_id: 426, name: B.Fernandes, position: MID, purchase_price: 12.0}
   - {element_id: 427, name: Mbeumo, position: MID, purchase_price: 8.0}
   - {element_id: 557, name: Tzolis, position: MID, purchase_price: 6.5}
-  - {element_id: 165, name: João Pedro, position: FWD, purchase_price: 7.5}
+  - {element_id: 346, name: Calvert-Lewin, position: FWD, purchase_price: 6.0}
   - {element_id: 272, name: Kusi-Asare, position: FWD, purchase_price: 4.5}
   - {element_id: 411, name: Haaland, position: FWD, purchase_price: 15.5}

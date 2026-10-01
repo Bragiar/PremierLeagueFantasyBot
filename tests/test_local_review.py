@@ -5,7 +5,7 @@ from pathlib import Path
 
 from fpl_bot.cli import build_parser
 from fpl_bot.fpl_api import FPLAPIError, FPLClient
-from fpl_bot.service import run
+from fpl_bot.service import early_hold_required, run
 
 
 def prepare_repository(tmp_path: Path) -> Path:
@@ -73,6 +73,19 @@ def test_cli_accepts_local_review_controls():
     assert args.no_openai is True
     assert args.select_option == "hold"
     assert args.select_chip == "chip:none"
+
+
+def test_early_hold_defers_automatic_transfer_but_allows_reviewed_choice():
+    now = datetime(2026, 9, 25, 21, tzinfo=UTC)
+    deadline = datetime(2026, 10, 10, 10, tzinfo=UTC)
+    assert early_hold_required(deadline, now, 5, None, None, "transfer:557:94")
+    assert not early_hold_required(
+        deadline, now, 5, "transfer:557:94", "chip:none", "transfer:557:94"
+    )
+    assert not early_hold_required(
+        deadline, datetime(2026, 10, 9, tzinfo=UTC), 5,
+        None, None, "transfer:557:94",
+    )
 
 
 def test_test_telegram_is_labelled_and_does_not_claim_real_window(tmp_path, monkeypatch):

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 from typing import Any
 
 
@@ -18,6 +21,19 @@ class FPLClient:
         self.retries = max(1, retries)
 
     def _get(self, path: str) -> Any:
+        snapshot_dir = os.environ.get("FPL_SNAPSHOT_DIR")
+        if snapshot_dir:
+            key = path.strip("/")
+            if not re.fullmatch(r"[a-z0-9/-]+", key) or ".." in key:
+                raise FPLAPIError("Invalid official-data snapshot path")
+            snapshot = Path(snapshot_dir) / f"{key}.json"
+            try:
+                if time.time() - snapshot.stat().st_mtime > 1800:
+                    raise FPLAPIError(f"Official-data snapshot is stale: {snapshot.name}")
+                with snapshot.open(encoding="utf-8") as handle:
+                    return json.load(handle)
+            except (OSError, json.JSONDecodeError) as exc:
+                raise FPLAPIError(f"Could not read official-data snapshot: {snapshot.name}") from exc
         url = f"{self.base_url}/{path.lstrip('/')}"
         request = urllib.request.Request(
             url,

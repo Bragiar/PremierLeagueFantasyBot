@@ -96,6 +96,15 @@ class EngineOption:
     projected_gain: float
     rationale: str
     transfer: Transfer | None = field(default=None, repr=False)
+    additional_transfers: tuple[Transfer, ...] = field(
+        default=(), repr=False
+    )
+
+    @property
+    def transfers(self) -> tuple[Transfer, ...]:
+        if self.transfer is None:
+            return ()
+        return (self.transfer, *self.additional_transfers)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -104,6 +113,7 @@ class EngineOption:
             "projected_gain": round(self.projected_gain, 2),
             "rationale": self.rationale,
             "transfer": None if self.transfer is None else self.transfer.to_dict(),
+            "transfers": [transfer.to_dict() for transfer in self.transfers],
         }
 
 

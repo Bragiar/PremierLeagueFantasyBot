@@ -19,6 +19,8 @@ from fpl_bot.recommender import (
     _captain_score,
     _choose_lineup,
     _optimize_squad,
+    _observed_points_rate,
+    _price_prior_rate,
     _squad_objective,
     availability,
     expected_minutes,
@@ -77,15 +79,8 @@ def _future_projection_player(
 ) -> Player:
     if current_event_id is None or event_id <= current_event_id:
         return player
-    price_floor = {"GK": 40, "DEF": 40, "MID": 45, "FWD": 45}[player.position]
-    price_weight = {"GK": 0.08, "DEF": 0.10, "MID": 0.07, "FWD": 0.06}[
-        player.position
-    ]
-    ceiling = {"GK": 5.0, "DEF": 5.5, "MID": 7.0, "FWD": 8.0}[player.position]
-    price_prior = min(
-        ceiling, 2.3 + max(0, player.cost - price_floor) * price_weight
-    )
-    observed = min(10.0, max(player.points_per_game, player.form, 2.0))
+    price_prior = _price_prior_rate(player)
+    observed = max(2.0, _observed_points_rate(player))
     sample_reliability = min(0.5, player.minutes / 900)
     time_weight = max(0.15, 1 - 0.12 * (event_id - current_event_id))
     observed_weight = sample_reliability * time_weight
@@ -234,17 +229,23 @@ def _single_transfer_candidates(
 ) -> list[tuple[float, Transfer]]:
     current_ids = {item.player.id for item in owned}
     risky = [item for item in owned if availability(item.player) < 75]
-    outgoing_limit = max(2, int(strategy.get("planner_outgoing_candidates", 4)))
-    weakest = sorted(owned, key=lambda item: lookahead_scores[item.player.id])[
-        :outgoing_limit
-    ]
-    outgoing_pool = list(
-        {
-            item.player.id: item
-            for item in [*risky, *weakest]
-            if item.player.id not in excluded_out_ids
-        }.values()
-    )
+    consider_all = bool(strategy.get("planner_consider_all_outgoing", False))
+    if consider_all:
+        outgoing_pool = [
+            item for item in owned if item.player.id not in excluded_out_ids
+        ]
+    else:
+        outgoing_limit = max(2, int(strategy.get("planner_outgoing_candidates", 4)))
+        weakest = sorted(owned, key=lambda item: lookahead_scores[item.player.id])[
+            :outgoing_limit
+        ]
+        outgoing_pool = list(
+            {
+                item.player.id: item
+                for item in [*risky, *weakest]
+                if item.player.id not in excluded_out_ids
+            }.values()
+        )
     pools = _candidate_pool(candidates, lookahead_scores, strategy)
     minimum_gain = float(strategy.get("planner_min_transfer_gain", 0.75))
     bench_weight = float(strategy.get("planner_bench_weight", 0.08))

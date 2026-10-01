@@ -116,6 +116,29 @@ captain decisions use the current Gameweek only. Captaincy has a minimum expecte
 gate and reports the margin over the second choice, so “High” now means more than simply
 having no injury flag.
 
+The immediate search considers every possible outgoing player and can recommend a
+two-transfer bundle when two free transfers are available and the second move adds a
+meaningful extra gain. Bench-only improvements receive only a small bench-coverage
+weight, while upgrades that enter the best XI receive their full value. Price-rise and
+price-fall forecasts are shown as timing warnings and tie-breakers; transfer momentum
+never creates expected points by itself. The shortlist also exposes one squad-health
+move and one market-watch move when available, making weak-minute players and popular
+targets visible without allowing either signal to override the football projection.
+
+Forced runs more than five days before a deadline now select a transfer hold while
+still listing legal candidates. This leaves room for international-duty and press
+conference news; a reviewed `--select-option` choice bypasses the timing hold. The
+planner places more value on usable bench cover, and recent form is smoothed against
+season points per match rather than taking whichever number is higher.
+Three consecutive large forecast overshoots for a proposed captain lower confidence
+and add a deadline review warning; they do not automatically force a different captain.
+
+If Python cannot reach the official FPL API in a local sandbox, the engine can read
+fresh, manually fetched official JSON using `FPL_SNAPSHOT_DIR`. Place files at paths
+such as `bootstrap-static.json`, `fixtures.json`, and `event/5/live.json` beneath that
+directory. Every file must be less than 30 minutes old. Never use this mode with an
+old snapshot for a deadline decision.
+
 Ownership is not treated as expected points. `mini_league_mode: balanced` maximizes the
 model projection. `protect` adds only a small ownership tie-break when defending a lead;
 `chase` slightly favors a lower-owned captain only when the expected-points decision is
@@ -228,7 +251,7 @@ For the first test:
 3. Leave **force** disabled; dry runs are automatically forced so they produce a plan immediately.
 4. Start the run and inspect `outputs/latest_recommendation.md` and the newest line in `logs/decision_log.jsonl`.
 
-Then run a real forced notification only if you want a Telegram message: disable **dry_run** and enable **force**. Scheduled runs happen every 30 minutes. They first fetch the lightweight official deadline feed and exit quickly without modifying the repository when no window is due.
+Then run a real forced notification only if you want a Telegram message: disable **dry_run** and enable **force**. Scheduled runs are requested every 15 minutes at :07, :22, :37, and :52 UTC. They first fetch the lightweight official deadline feed and exit quickly without modifying the repository when no window is due.
 
 The workflow has one concurrency group per branch, does not cancel an in-progress run, and is triggered only by the schedule or manual dispatch. Its own commits therefore do not start another bot run. A notification is marked delivered only after Telegram accepts it.
 
@@ -280,7 +303,7 @@ GitHub Actions remains the dependable production runner because it checks offici
 - The refresh token is an account credential. Keep it in macOS Keychain, never commit it, and renew it if authentication is rejected.
 - Official FPL news and chance-of-playing fields can downgrade or exclude players from recommendations; a live-data error produces a low-confidence, no-transfer, no-hit fallback with the configured captaincy and a legal 4-4-2.
 - Web research is advisory evidence, not guaranteed truth. The output records its links and risks so you can inspect late news yourself.
-- Notification timing is approximate because GitHub schedules can be delayed. The default 40-minute tolerance is designed for a 30-minute schedule.
+- Notification timing is approximate because GitHub schedules can be delayed or dropped. Each notification window remains eligible until the next threshold (24h, 3h, then 45m before the deadline), and duplicate keys prevent repeat delivery within a window. The bot cannot send after the deadline or if GitHub never starts a run before it.
 - Run `pytest` after strategy or code changes. Run `fpl-bot --dry-run --force` before merging operational changes.
 
 ## Project map

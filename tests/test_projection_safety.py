@@ -77,7 +77,9 @@ def test_optional_transfer_waits_for_a_minimum_sample(legal_players, make_player
     incoming = make_player(100, "DEF", 20, cost=50, name="Incoming")
     scores = {player.id: 5.0 for player in legal_players}
     scores[legal_players[2].id] = 1.0
-    scores[incoming.id] = 10.0
+    # The weak defender is outside the best XI. A score of 12 improves the actual
+    # lineup by seven, rather than claiming the full player-to-player gap of eleven.
+    scores[incoming.id] = 12.0
     settings = type("Settings", (), {"free_transfers": 1, "bank": 0})()
     base_strategy = {
         "max_recommended_transfers": 1,

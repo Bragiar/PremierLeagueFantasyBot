@@ -1,37 +1,33 @@
-# Strategy review
+# FPL strategy review — 29 September 2026
 
-- Review time: 2026-09-08T21:47:48Z
-- Newest reviewed decision: 2026-09-04T14:53:06.307738+00:00
-- Evidence scope: one decision after the prior review; settled GW2 forecast outcome; authenticated squad baseline; current recommendation, rolling plan and chip calendar; delivery state; source/test history through 2026-09-04.
+## Review scope
+
+Reviewed the project instructions, strategy configuration, public squad baseline, decision log, latest GW6 recommendation and strategy plan, rolling state, forecast history, delivery state, source/test diffs, and Git history. The newest reviewed decision is `2026-09-25T21:41:38.513338+00:00` (GW6 manual dry run). New evidence since the 22 September audit includes two GW6 dry runs, a 25 September public GW5 squad reconciliation, material planner/scoring changes, and four settled forecast weeks. Focused regression tests pass: 24 tests; `git diff --check` is clean.
 
 ## Findings
 
-The latest immediate packet selected exact legal IDs `hold` and `chip:none`: no transfer, 0 points hit, projected bank £0.0m, and 2 free transfers before the action. Its validation reports valid squad/position quotas, maximum-three-per-club, budget, projection bounds, and a reachable five-Gameweek route. The GW3 XI has 11 players, three ordered substitutes, reserve goalkeeper Dubravka, B.Fernandes captain and Haaland vice-captain. The engine shortlist is the complete selectable set for that packet; no action outside it is endorsed.
+- The latest selectable IDs are `hold`, `transfer:557:124` (Tzolis → Groß), `transfer:557:94` (Tzolis → Schade), and `transfer:557:69` (Tzolis → Scott). The selected transfer is `hold`; the selected chip is `chip:none`. The packet validates a 15-player squad, position quotas, maximum three per club, £0.0m projected bank, and zero hit. The public baseline has one free transfer, Haaland captain and B.Fernandes vice-captain; it cannot establish whether a GW6 action was subsequently made.
+- The engine's `hold` conflicts with its strongest legal shortlist: Tzolis → Groß is rated +8.7 over the five-week objective, with Schade +8.46. The hold rationale preserves flexibility, but the current packet is low confidence and explicitly flags this conflict. Keep `hold` as the engine selection pending deadline evidence; any change must use one of these exact IDs.
+- GW6 captaincy is fragile: B.Fernandes is captain and Haaland vice-captain, separated by only 0.43 projected points. Bruno was overpredicted by at least four points in each of the last three settled forecasts. Recheck availability, role and set pieces near the deadline; do not treat the current captain as confirmed user action.
+- The 25 September public baseline changes the squad materially from the prior authenticated snapshot: Tzolakis, Ajayi, Gvardiol and Calvert-Lewin are present, while Verbruggen, Diop, Shaw and João Pedro are absent. The public ledger supports the baseline and purchase prices, but public picks cannot reveal later GW6 moves.
+- Settled forecast facts are GW2 106 actual vs 42.73 expected, GW3 44 vs 83.62, GW4 57 vs 77.30, and GW5 38 vs 75.26. These are forecasts of engine-selected lineups, not proof of the user's executed XI or captaincy. Four weeks show systematic overprojection risk but remain below the requested 4–6-week calibration threshold for changing weights.
 
-The authenticated squad file remains a pre-deadline baseline: Shaw is still present, bank is £0.0m, free transfers are 2, and the saved captain/vice-captain are B.Fernandes/João Pedro. This does not prove whether the user followed the recommendation or changed the team before the deadline.
+## Rolling route
 
-One settled forecast outcome is now available for GW2. The recorded forecast expected 42.73 team points, with 88.9% expected-starter hit rate, 22.111 minutes MAE and 3.465 points MAE; the stored official outcome is 106 team points. The large points gap is dominated by outcome variance and the B.Fernandes captain return in the record, but one Gameweek is insufficient to recalibrate weights. The public/API data still cannot establish the user's actual submitted XI or captain.
+The saved rolling plan and latest strategy plan now agree and validate as reachable: GW6 hold (1 → 2 free transfers, £0.0m bank), conditional GW7 Tzolis → Schade plus van Ewijk → Thomas (2 → 1, £0.1m), GW8 hold (1 → 2), GW9 hold (2 → 3), then conditional GW10 Tzolakis → Petrović (3 → 3, £0.2m). No unexplained hits are planned. Future moves remain conditional and must be recalculated from the actual squad, prices, availability and team news; they are not confirmed transfers.
 
-Delivery evidence now includes one production `sent` record (`gw3:3h`) and `state/last_run.json` records that notification. Earlier evidence remains one `test_failed`, three `test_sent`, and seven `dry_run` records. No fallback was recorded, and there is no production retry or duplicate. Repeated older notification keys were test/dry-run activity, so they are not evidence of production duplication.
+The route is legal, but its confidence is limited by weak bench cover: Hughes and Kusi-Asare project for only 8.0 and 4.7 minutes in GW6, while van Ewijk is only 52.2 minutes. The proposed GW7 double move is therefore a useful health route, not a commitment. A Wildcard remains a scenario rather than a promised +37.82-point result.
 
-The previously reported mismatch between `outputs/latest_strategy_plan.json` and `state/rolling_plan.json` is resolved in the current artifacts: route, free-transfer state, chip targets and projected total are aligned at 358.05 across the five-Gameweek plan. The latest recommendation's saved route is therefore the current canonical packet, subject to recalculation at the next review.
+## Chip calendar
 
-## Rolling-plan assessment
+All first-half chips remain available. The current provisional calendar is Wildcard unassigned (low), Free Hit GW17 with GW18 backup (low, +5.41), Bench Boost GW9 with GW8 backup (low, +4.27), and Triple Captain GW7 with GW16 backup (medium, +10.13 on Haaland). No two primary or backup targets collide in the saved calendar. The implementation enforces first-half expiry at GW19 and second-half expiry at GW38, and treats a GW19 first-half Free Hit as having opportunity cost because the next-half Free Hit cannot also be used in GW19; the current GW17/GW18 target avoids that collision. These windows are provisional and should not be used without current fixture, availability and double/blank evidence.
 
-The route is structurally reachable and contains no unexplained hits: GW3 rolls, GW4 conditionally considers Diop → Thomas, and GW5–7 roll. Free transfers progress 2 → 3 → 3 → 4 → 5 → 5, with bank £0.0m throughout. Later actions and captaincy are provisional, not confirmed moves. Confidence is Medium for GW3–5 and Low for GW6–7; this is appropriate given sparse evidence, but the immediate hold conflicts with a shortlisted 19.9 model gain. Shaw, Diop and Tzolis have only about 64–66 expected minutes in the current packet, so role/start news remains a material risk before any future decision.
+The low Bench Boost uplift and low Free Hit uplift do not justify early use. Triple Captain GW7 has the strongest current rationale, but it is still only a medium-confidence projection and should be compared with later doubles before expiry. Wildcard should be reconsidered after the next deadline when the low-minute bench and attack structure are clearer.
 
-## Chip-calendar assessment
+## Delivery and risks
 
-The selected current chip is `chip:none`. The provisional calendar is Wildcard unassigned; Free Hit GW17 with GW18 backup; Bench Boost GW13 with GW8 backup; and Triple Captain GW7 with GW16 backup on Haaland. Primary windows do not collide, and all future windows remain conditional. The current packet's chip shortlist is legal and includes the exact available IDs only.
+The newest records are dry runs only. Historical telemetry contains one `test_failed`, several `test_sent` records, one production `sent` GW3 record, and three production `sent` records for `gw4:manual`; `state/last_run.json` retains one `gw4:manual` sent key. There is no new production send, fallback, retry or duplicate event after the prior audit, but the repeated GW4 records remain a delivery-integrity risk. The latest dry run does not claim a notification window.
 
-The implementation preserves first-half chips through GW19, second-half chips after that boundary, enforces one chip per Gameweek in the planner, and applies the GW19 Free Hit opportunity-cost logic. However, focused tests still do not directly assert the GW19/GW20 Free Hit restriction, half-season expiry boundary, or a boundary collision. Current uplift estimates (Free Hit 41.9, Wildcard 219.2, Triple Captain 12.7, Bench Boost 2.2) are model outputs rather than reliable reasons to spend a chip; saving remains the defensible current policy until fixture and availability evidence strengthens.
+Primary risks are the hold-versus-+8.7 shortlist conflict, Bruno captaincy after repeated overprediction, weak bench minutes, public-baseline uncertainty about GW6 execution, and reliance on sparse early-season forecasts. Do not calibrate strategy weights yet. Proposed improvements are to add a boundary test for the hold-policy conflict, test paired-transfer budget and three-per-club rejection paths, preserve explicit conditional labels in route output, and make notification-key idempotency auditable across retries and manual runs.
 
-## Risks and proposed improvements
-
-1. Keep `hold` and `chip:none` as the audited current selections, but do not infer that they were executed. Rebuild from a fresh authenticated squad state before treating any future transfer or captaincy as current.
-2. Add direct boundary tests for GW19/GW20 Free Hit availability, first/second-half expiry, and one-chip-per-Gameweek collisions.
-3. Add a consistency check that rejects stale route artifacts if the latest plan and saved rolling state diverge again.
-4. Keep strategy weights unchanged. Reassess after at least 4–6 completed Gameweeks; the single settled outcome is useful monitoring evidence but not calibration evidence.
-5. Extend delivery telemetry to distinguish attempted, failed, retried, sent and duplicate-suppressed production outcomes. Keep GitHub Actions as the only deadline runner and production Telegram sender.
-
-Current verdict: the latest sent GW3 packet is internally legal and the saved route is now consistent, but confidence remains Medium/Low and user execution is unknown. No strategy, squad, log, state, workflow, credential, source-code, test, recommendation, plan, delivery, commit or push changes were made by this audit.
+No strategy, squad, state, workflow, credentials, source code, tests, recommendation, plan, delivery, commit or push changes were made by this audit beyond this review report and the automation memory.
