@@ -1,6 +1,8 @@
 {
   "changes": [
-    "No material transfer, captain or chip-window changes since the saved plan."
+    "GW6 transfer plan changed: Roll / no transfer → Tzolis → Schade.",
+    "GW6 captain changed: B.Fernandes → Haaland.",
+    "GW7 transfer plan changed: Tzolis → Schade, van Ewijk → Thomas → van Ewijk → Dasilva."
   ],
   "chip_targets": [
     {
@@ -23,7 +25,7 @@
       "confidence": "Low",
       "primary_event_id": 17,
       "primary_event_name": "Gameweek 17",
-      "projected_uplift": 5.412898580154305,
+      "projected_uplift": 6.163648898672818,
       "rationale": "One-Gameweek optimized squad compared with the planned route squad.",
       "target_player": null
     },
@@ -35,7 +37,7 @@
       "confidence": "Low",
       "primary_event_id": 9,
       "primary_event_name": "Gameweek 9",
-      "projected_uplift": 4.27328477702796,
+      "projected_uplift": 4.252487322081192,
       "rationale": "Projected points from the four substitutes in the route squad.",
       "target_player": null
     },
@@ -47,48 +49,55 @@
       "confidence": "Medium",
       "primary_event_id": 7,
       "primary_event_name": "Gameweek 7",
-      "projected_uplift": 10.128693333333333,
+      "projected_uplift": 10.016599999999999,
       "rationale": "One extra copy of Haaland's captain projection in a home fixture against a promoted club.",
       "target_player": "Haaland"
     }
   ],
   "gameweeks": [
     {
-      "action": "Roll / no transfer",
-      "bank_after": 0.0,
+      "action": "Tzolis → Schade",
+      "bank_after": 0.1,
       "bench": [
         "van Ewijk",
         "Kusi-Asare",
         "Hughes"
       ],
-      "captain": "B.Fernandes",
+      "captain": "Haaland",
       "chip": "None",
       "confidence": "Medium",
       "event_id": 6,
       "event_name": "Gameweek 6",
-      "free_transfers_after": 2,
+      "free_transfers_after": 1,
       "free_transfers_before": 1,
       "points_hit": 0,
-      "projected_score": 69.99,
+      "projected_score": 67.93,
       "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Tzolakis",
         "Gabriel",
-        "Calafiori",
         "Gvardiol",
+        "Calafiori",
         "Ajayi",
+        "Schade",
         "B.Fernandes",
         "Mbeumo",
-        "Tzolis",
         "Szoboszlai",
         "Haaland",
         "Calvert-Lewin"
       ],
-      "transfers": []
+      "transfers": [
+        {
+          "player_in": "Schade",
+          "player_in_id": 94,
+          "player_out": "Tzolis",
+          "player_out_id": 557
+        }
+      ]
     },
     {
-      "action": "Tzolis → Schade, van Ewijk → Thomas",
+      "action": "van Ewijk → Dasilva",
       "bank_after": 0.1,
       "bench": [
         "Calvert-Lewin",
@@ -101,18 +110,18 @@
       "event_id": 7,
       "event_name": "Gameweek 7",
       "free_transfers_after": 1,
-      "free_transfers_before": 2,
+      "free_transfers_before": 1,
       "points_hit": 0,
-      "projected_score": 73.0,
-      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 10.4.",
+      "projected_score": 72.02,
+      "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 7.1.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
         "Tzolakis",
         "Gvardiol",
         "Gabriel",
         "Calafiori",
+        "Dasilva",
         "Ajayi",
-        "Thomas",
         "B.Fernandes",
         "Mbeumo",
         "Szoboszlai",
@@ -121,14 +130,8 @@
       ],
       "transfers": [
         {
-          "player_in": "Schade",
-          "player_in_id": 94,
-          "player_out": "Tzolis",
-          "player_out_id": 557
-        },
-        {
-          "player_in": "Thomas",
-          "player_in_id": 173,
+          "player_in": "Dasilva",
+          "player_in_id": 176,
           "player_out": "van Ewijk",
           "player_out_id": 175
         }
@@ -150,7 +153,7 @@
       "free_transfers_after": 2,
       "free_transfers_before": 1,
       "points_hit": 0,
-      "projected_score": 73.18,
+      "projected_score": 72.5,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -158,7 +161,7 @@
         "Gabriel",
         "Gvardiol",
         "Calafiori",
-        "Thomas",
+        "Dasilva",
         "B.Fernandes",
         "Schade",
         "Mbeumo",
@@ -172,7 +175,7 @@
       "action": "Roll / no transfer",
       "bank_after": 0.1,
       "bench": [
-        "Thomas",
+        "Dasilva",
         "Hughes",
         "Kusi-Asare"
       ],
@@ -184,7 +187,7 @@
       "free_transfers_after": 3,
       "free_transfers_before": 2,
       "points_hit": 0,
-      "projected_score": 67.73,
+      "projected_score": 67.07,
       "rationale": "Roll to preserve transfer flexibility.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -218,7 +221,7 @@
       "free_transfers_after": 3,
       "free_transfers_before": 3,
       "points_hit": 0,
-      "projected_score": 72.47,
+      "projected_score": 72.07,
       "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.3.",
       "reserve_goalkeeper": "Dubravka",
       "starting_xi": [
@@ -226,7 +229,7 @@
         "Gabriel",
         "Calafiori",
         "Gvardiol",
-        "Thomas",
+        "Dasilva",
         "B.Fernandes",
         "Mbeumo",
         "Szoboszlai",
@@ -247,5 +250,5 @@
   "generated_for_event": 6,
   "horizon": 5,
   "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.",
-  "total_projected_score": 356.37
+  "total_projected_score": 351.59
 }

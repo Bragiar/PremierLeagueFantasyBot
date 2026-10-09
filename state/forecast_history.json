@@ -599,7 +599,7 @@
       "vice_captain": "B.Fernandes"
     },
     "6": {
-      "captain": "B.Fernandes",
+      "captain": "Haaland",
       "event_id": 6,
       "event_name": "Gameweek 6",
       "points_hit": 0,
@@ -612,36 +612,29 @@
           "role": "starter"
         },
         {
-          "expected_minutes": 83.4,
-          "expected_points": 5.44,
+          "expected_minutes": 83.5,
+          "expected_points": 5.01,
           "player": "Calafiori",
           "player_id": 8,
           "role": "starter"
         },
         {
-          "expected_minutes": 86.0,
-          "expected_points": 4.92,
-          "player": "Scott",
-          "player_id": 69,
-          "role": "transfer candidate"
-        },
-        {
-          "expected_minutes": 86.2,
-          "expected_points": 6.92,
+          "expected_minutes": 86.3,
+          "expected_points": 7.88,
           "player": "Schade",
           "player_id": 94,
-          "role": "transfer candidate"
+          "role": "vice-captain"
         },
         {
-          "expected_minutes": 86.8,
-          "expected_points": 7.58,
+          "expected_minutes": 86.9,
+          "expected_points": 8.69,
           "player": "Groß",
           "player_id": 124,
           "role": "transfer candidate"
         },
         {
           "expected_minutes": 52.2,
-          "expected_points": 1.5,
+          "expected_points": 1.65,
           "player": "van Ewijk",
           "player_id": 175,
           "role": "bench"
@@ -662,52 +655,59 @@
         },
         {
           "expected_minutes": 82.8,
-          "expected_points": 3.95,
+          "expected_points": 3.25,
           "player": "Ajayi",
           "player_id": 279,
           "role": "starter"
         },
         {
           "expected_minutes": 83.1,
-          "expected_points": 2.92,
+          "expected_points": 3.18,
           "player": "Calvert-Lewin",
           "player_id": 346,
           "role": "starter"
         },
         {
-          "expected_minutes": 86.2,
-          "expected_points": 3.64,
+          "expected_minutes": 86.1,
+          "expected_points": 3.44,
           "player": "Szoboszlai",
           "player_id": 368,
           "role": "starter"
         },
         {
           "expected_minutes": 85.0,
-          "expected_points": 5.36,
+          "expected_points": 5.52,
           "player": "Gvardiol",
           "player_id": 391,
           "role": "starter"
         },
         {
           "expected_minutes": 89.3,
-          "expected_points": 8.44,
+          "expected_points": 7.88,
           "player": "Haaland",
           "player_id": 411,
-          "role": "vice-captain"
-        },
-        {
-          "expected_minutes": 88.6,
-          "expected_points": 8.96,
-          "player": "B.Fernandes",
-          "player_id": 426,
           "role": "captain"
         },
         {
+          "expected_minutes": 88.6,
+          "expected_points": 7.27,
+          "player": "B.Fernandes",
+          "player_id": 426,
+          "role": "starter"
+        },
+        {
           "expected_minutes": 87.5,
-          "expected_points": 7.11,
+          "expected_points": 5.87,
           "player": "Mbeumo",
           "player_id": 427,
           "role": "starter"
+        },
+        {
+          "expected_minutes": 86.5,
+          "expected_points": 6.33,
+          "player": "Barnes",
+          "player_id": 453,
+          "role": "transfer candidate"
         },
         {
           "expected_minutes": 4.9,
@@ -717,25 +717,25 @@
           "role": "reserve goalkeeper"
         },
         {
-          "expected_minutes": 76.4,
-          "expected_points": 3.83,
+          "expected_minutes": 57.2,
+          "expected_points": 2.54,
           "player": "Tzolis",
           "player_id": 557,
-          "role": "starter"
+          "role": "transfer candidate"
         },
         {
           "expected_minutes": 86.2,
-          "expected_points": 5.26,
+          "expected_points": 4.61,
           "player": "Tzolakis",
           "player_id": 572,
           "role": "starter"
         }
       ],
-      "recorded_at": "2026-09-25T21:41:38.513338+00:00",
+      "recorded_at": "2026-10-09T13:07:37.348073+00:00",
       "risk_mode": "balanced",
       "selected_chip_id": "chip:none",
-      "selected_option_id": "hold",
-      "vice_captain": "Haaland"
+      "selected_option_id": "transfer:557:94",
+      "vice_captain": "Schade"
     }
   },
   "schema_version": 1,
