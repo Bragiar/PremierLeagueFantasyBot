@@ -619,6 +619,13 @@
           "role": "starter"
         },
         {
+          "expected_minutes": 83.4,
+          "expected_points": 4.31,
+          "player": "Tavernier",
+          "player_id": 68,
+          "role": "transfer candidate"
+        },
+        {
           "expected_minutes": 86.3,
           "expected_points": 7.88,
           "player": "Schade",
@@ -659,6 +666,13 @@
           "player": "Ajayi",
           "player_id": 279,
           "role": "starter"
+        },
+        {
+          "expected_minutes": 79.4,
+          "expected_points": 5.86,
+          "player": "Belloumi",
+          "player_id": 286,
+          "role": "transfer candidate"
         },
         {
           "expected_minutes": 83.1,
@@ -717,8 +731,8 @@
           "role": "reserve goalkeeper"
         },
         {
-          "expected_minutes": 57.2,
-          "expected_points": 2.54,
+          "expected_minutes": 0.0,
+          "expected_points": 0.0,
           "player": "Tzolis",
           "player_id": 557,
           "role": "transfer candidate"
@@ -731,7 +745,7 @@
           "role": "starter"
         }
       ],
-      "recorded_at": "2026-10-09T13:07:37.348073+00:00",
+      "recorded_at": "2026-10-10T08:39:41.976199+00:00",
       "risk_mode": "balanced",
       "selected_chip_id": "chip:none",
       "selected_option_id": "transfer:557:94",

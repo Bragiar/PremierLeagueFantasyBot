@@ -1,8 +1,6 @@
 {
   "changes": [
-    "GW6 transfer plan changed: Roll / no transfer → Tzolis → Schade.",
-    "GW6 captain changed: B.Fernandes → Haaland.",
-    "GW7 transfer plan changed: Tzolis → Schade, van Ewijk → Thomas → van Ewijk → Dasilva."
+    "No material transfer, captain or chip-window changes since the saved plan."
   ],
   "chip_targets": [
     {
@@ -25,7 +23,7 @@
       "confidence": "Low",
       "primary_event_id": 17,
       "primary_event_name": "Gameweek 17",
-      "projected_uplift": 6.163648898672818,
+      "projected_uplift": 6.992880949653127,
       "rationale": "One-Gameweek optimized squad compared with the planned route squad.",
       "target_player": null
     },
@@ -37,7 +35,7 @@
       "confidence": "Low",
       "primary_event_id": 9,
       "primary_event_name": "Gameweek 9",
-      "projected_uplift": 4.252487322081192,
+      "projected_uplift": 4.25245055368613,
       "rationale": "Projected points from the four substitutes in the route squad.",
       "target_player": null
     },
@@ -49,7 +47,7 @@
       "confidence": "Medium",
       "primary_event_id": 7,
       "primary_event_name": "Gameweek 7",
-      "projected_uplift": 10.016599999999999,
+      "projected_uplift": 10.01667111111111,
       "rationale": "One extra copy of Haaland's captain projection in a home fixture against a promoted club.",
       "target_player": "Haaland"
     }

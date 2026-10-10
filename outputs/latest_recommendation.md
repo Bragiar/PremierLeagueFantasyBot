@@ -1,7 +1,7 @@
 # Gameweek 6 recommendation
 
 - **Deadline:** 2026-10-10 10:00 UTC
-- **Run window:** 24h
+- **Run window:** 3h
 - **Transfers:** Tzolis → Schade (£6.3m → £6.2m)
 - **Cost / points hit:** 0
 - **Captain:** Haaland
@@ -27,7 +27,7 @@ Use 1 free transfer: Tzolis to Schade. The moves remain within budget with £0.1
 ### Confidence notes
 
 - Only 5 completed Gameweeks of current-season evidence.
-- Captaincy is close: the top-two model margin is only 0.29 points.
+- Captaincy is close: the top-two model margin is only 0.28 points.
 
 ## Current-Gameweek projections
 
@@ -41,7 +41,7 @@ Expected points are model estimates; expected minutes express role uncertainty r
 | Gabriel | Starter | 88 | 6.13 |
 | Mbeumo | Starter | 88 | 5.87 |
 | Gvardiol | Starter | 85 | 5.52 |
-| Calafiori | Starter | 83 | 5.01 |
+| Calafiori | Starter | 84 | 5.01 |
 | Tzolakis | Starter | 86 | 4.61 |
 | Szoboszlai | Starter | 86 | 3.44 |
 | Ajayi | Starter | 83 | 3.25 |
@@ -52,14 +52,18 @@ Expected points are model estimates; expected minutes express role uncertainty r
 | Dubravka | Reserve Goalkeeper | 5 | 0.06 |
 | Groß | Transfer Candidate | 87 | 8.69 |
 | Barnes | Transfer Candidate | 86 | 6.33 |
-| Tzolis | Transfer Candidate | 57 | 2.54 |
+| Belloumi | Transfer Candidate | 79 | 5.86 |
+| Tavernier | Transfer Candidate | 83 | 4.31 |
+| Tzolis | Transfer Candidate | 0 | 0.00 |
 
 ## Engine shortlist
 
 - **Roll the free transfer** (`hold`): projected gain +0.0. Preserves flexibility and avoids acting on a marginal projection.
-- **Tzolis → Schade** (`transfer:557:94`) — selected: projected gain +16.3. The move improves the projected best XI plus weighted bench by 16.3 over the configured horizon; incoming availability is 100%.
-- **Tzolis → Groß** (`transfer:557:124`): projected gain +16.0. The move improves the projected best XI plus weighted bench by 16.0 over the configured horizon; incoming availability is 100%.
-- **Tzolis → Barnes** (`transfer:557:453`): projected gain +10.9. The move improves the projected best XI plus weighted bench by 10.9 over the configured horizon; incoming availability is 100%.
+- **Tzolis → Barnes** (`transfer:557:453`): projected gain +18.6. The move improves the projected best XI plus weighted bench by 18.6 over the configured horizon; incoming availability is 100%. Price timing: Tzolis projects -134% toward a fall; that fall would cut the selling price by £0.1m. Barnes projects 97% toward a rise, so waiting could add £0.1m to the buying price.
+- **Tzolis → Tavernier** (`transfer:557:68`): projected gain +18.1. The move improves the projected best XI plus weighted bench by 18.1 over the configured horizon; incoming availability is 100%. Price timing: Tzolis projects -134% toward a fall; that fall would cut the selling price by £0.1m.
+- **Tzolis → Belloumi** (`transfer:557:286`): projected gain +16.8. The move improves the projected best XI plus weighted bench by 16.8 over the configured horizon; incoming availability is 100%. Price timing: Tzolis projects -134% toward a fall; that fall would cut the selling price by £0.1m. Belloumi projects 95% toward a rise, so waiting could add £0.1m to the buying price.
+- **Tzolis → Schade** (`transfer:557:94`) — selected: projected gain +24.0. The move improves the projected best XI plus weighted bench by 24.0 over the configured horizon; incoming availability is 100%. Price timing: Tzolis projects -134% toward a fall; that fall would cut the selling price by £0.1m. Schade projects 160% toward a rise, so waiting could add £0.1m to the buying price.
+- **Tzolis → Groß** (`transfer:557:124`): projected gain +23.8. The move improves the projected best XI plus weighted bench by 23.8 over the configured horizon; incoming availability is 100%. Price timing: Tzolis projects -134% toward a fall; that fall would cut the selling price by £0.1m. Groß projects 255% toward a rise, so waiting could add £0.1m to the buying price. Market-watch candidate: Groß has 1,454,694 net transfers in this Gameweek; that momentum does not add to the points projection.
 
 ## Chip shortlist
 
@@ -68,8 +72,8 @@ Expected points are model estimates; expected minutes express role uncertainty r
 - **Bench Boost** (`chip:bench_boost`): projected uplift +2.2. The four substitutes project for 2.2 points in total.
 - **Free Hit** (`chip:free_hit`): projected uplift +22.0. Bounded one-Gameweek legal squad search compared with the current best XI.
   - Optimized squad: Pickford, Verbruggen, Tarkowski, Davis, Hall, Thomas, Branthwaite, Schade, Groß, B.Fernandes, Cunha, Yarmoliuk, Haaland, McBurnie, Kostoulas
-- **Wildcard** (`chip:wildcard`): projected uplift +42.1. Bounded permanent-squad search across the configured planning horizon.
-  - Optimized squad: Leno, Raya, De Cuyper, Virgil, Guéhi, Gvardiol, Tarkowski, Barnes, Belloumi, Groß, Saka, Schade, Emersonn, Kostoulas, Haaland
+- **Wildcard** (`chip:wildcard`): projected uplift +43.5. Bounded permanent-squad search across the configured planning horizon.
+  - Optimized squad: Leno, Raya, De Cuyper, Virgil, Hall, Gvardiol, Tarkowski, Slater, Saka, Groß, Belloumi, Schade, Kostoulas, João Pedro, Haaland
 
 ## Rolling short-term plan
 
@@ -120,7 +124,7 @@ These are decision gates, not chips already applied to the short-term route. If 
 | Chip | Primary window | Backup | Target | Uplift | Confidence |
 |---|---|---|---|---:|---|
 | Wildcard | Unassigned | None | — | 0.0 | Low |
-| Free Hit | GW17 | GW18 | — | 6.2 | Low |
+| Free Hit | GW17 | GW18 | — | 7.0 | Low |
 | Bench Boost | GW9 | GW8 | — | 4.3 | Low |
 | Triple Captain | GW7 | GW16 | Haaland | 10.0 | Medium |
 
@@ -133,9 +137,7 @@ These are decision gates, not chips already applied to the short-term route. If 
 
 ## Changes since the previous saved plan
 
-- GW6 transfer plan changed: Roll / no transfer → Tzolis → Schade.
-- GW6 captain changed: B.Fernandes → Haaland.
-- GW7 transfer plan changed: Tzolis → Schade, van Ewijk → Thomas → van Ewijk → Dasilva.
+- No material transfer, captain or chip-window changes since the saved plan.
 
 > Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run.
 
