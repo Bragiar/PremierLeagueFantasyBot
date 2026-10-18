@@ -41,7 +41,10 @@ def test_timeout_falls_back_and_does_not_pass_secrets_to_codex(monkeypatch, tmp_
         assert "CODEX_API_KEY" not in kwargs["env"]
         assert "TELEGRAM_BOT_TOKEN" not in kwargs["env"]
         assert command[command.index("--sandbox") + 1] == "read-only"
-        raise subprocess.TimeoutExpired(command, 600)
+        assert command[command.index("--model") + 1] == "gpt-6.1-sol"
+        assert 'model_reasoning_effort="high"' in command
+        assert kwargs["timeout"] == 1200
+        raise subprocess.TimeoutExpired(command, 1200)
     monkeypatch.setattr(subprocess, "run", timeout)
     review, error = research_with_codex(recommendation(), {"enabled": True}, tmp_path, {})
     assert review is None

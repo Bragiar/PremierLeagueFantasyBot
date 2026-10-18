@@ -45,3 +45,7 @@ status lives in `.server/runtime/state/weekly_audit.json`. No Telegram message
 was sent. Findings are proposals only; no strategy or squad changes are applied.
 The audit packet includes sanitized effective schedule settings and status,
 not credential files or the private configuration override. All 86 tests pass.
+
+The deadline research review is also explicitly pinned to GPT-6.1 Sol with high
+reasoning. Its review timeout is 20 minutes, inside the 45-minute service budget.
+Python retains the engine plan if research fails or times out.

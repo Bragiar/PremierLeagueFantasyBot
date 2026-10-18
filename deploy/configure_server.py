@@ -19,7 +19,9 @@ settings = {
     "codex": {
         "enabled": True,
         "binary": str(Path.home() / "apps/fpl-tools/node_modules/.bin/codex"),
-        "timeout_seconds": 600,
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "high",
+        "timeout_seconds": 1200,
     },
     "runtime": {"directory": str(runtime)},
 }

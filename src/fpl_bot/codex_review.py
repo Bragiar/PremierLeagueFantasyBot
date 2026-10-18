@@ -96,12 +96,14 @@ def research_with_codex(rec: Recommendation, config: dict[str, Any], root: Path,
             )
             result = subprocess.run([
                 str(config.get("binary", "codex")), "-c", 'forced_login_method="chatgpt"',
+                "-c", 'model_reasoning_effort=' + json.dumps(config.get("reasoning_effort", "high")),
                 "--disable", "shell_tool", "--disable", "unified_exec",
-                "--search", "exec", "--sandbox", "read-only",
+                "--search", "exec", "--model", str(config.get("model", "gpt-6.1-sol")),
+                "--sandbox", "read-only",
                 "--skip-git-repo-check", "--ephemeral", "--json", "-C", folder,
                 "--output-schema", str(work / "schema.json"), "-o", str(work / "review.json"), "-",
             ], input=prompt, env=env, capture_output=True, text=True,
-                timeout=int(config.get("timeout_seconds", 600)), check=True)
+                timeout=int(config.get("timeout_seconds", 1200)), check=True)
             raw = json.loads((work / "review.json").read_text())
             review = parse_review(raw, result.stdout, rec)
             out = root / "outputs"

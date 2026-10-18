@@ -11,7 +11,8 @@ The user systemd manager persists after logout (`Linger=yes`). A daily refresh a
 two hours before the next deadline. That run generates a Python recommendation,
 calls subscription-authenticated `codex exec` with live web search in a read-only
 temporary directory, then validates the shortlist selection again and sends Telegram.
-Only web-tool event URLs count as verified sources. Two sources and high confidence
+The deadline reviewer is pinned to GPT-6.1 Sol with high reasoning and a
+20-minute review timeout. Only web-tool event URLs count as verified sources. Two sources and high confidence
 are required to override the engine. Any review failure retains the engine choices.
 Retries are ten minutes apart; late catch-up stops fifteen minutes before deadline.
 An exclusive process lock and the bot's persistent notification keys prevent
@@ -31,7 +32,9 @@ openai:
 codex:
   enabled: true
   binary: /home/bragi/apps/fpl-tools/node_modules/.bin/codex
-  timeout_seconds: 600
+  model: gpt-6.1-sol
+  reasoning_effort: high
+  timeout_seconds: 1200
 runtime:
   directory: /home/bragi/apps/fpl-bot/.server/runtime
 ```
