@@ -23,8 +23,13 @@ Production cutover is complete.
 - No Telegram message was sent during setup.
 
 Operations: see `deploy/README.md`. Keep the server squad file current after FPL moves.
-The complete local source, squad updates, tests and saved reviews are committed
-to GitHub. The active server deployment is a Git checkout of the same revision.
+The complete local source, squad updates, tests and saved reviews are published
+on GitHub with the user's explicit approval for the public repository. The merge
+preserves both GitHub delivery history and local reviews. The active deployment
+is a Git checkout of the same revision; future updates use `git pull --ff-only`.
+Credentials, server overrides and live runtime data were verified unchanged
+while converting the deployment to Git. A pre-migration backup is saved under
+`.server/backups/`.
 Server overrides are ignored in `config/strategy.local.yaml`; live state, logs and
 outputs are preserved in `.server/runtime/` outside tracked files. Update code
 with `git pull --ff-only`. Server runtime data remains authoritative.
