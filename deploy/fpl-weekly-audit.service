@@ -1,0 +1,16 @@
+[Unit]
+Description=Weekly FPL strategy audit using GPT-6.1 Sol high
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=3h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/apps/fpl-bot
+Environment=PATH=%h/.openclaw/tools/node/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/apps/fpl-bot/.venv/bin/python -m fpl_bot.weekly_audit --repo-root %h/apps/fpl-bot
+TimeoutStartSec=35min
+Restart=on-failure
+RestartSec=30min
+UMask=0077

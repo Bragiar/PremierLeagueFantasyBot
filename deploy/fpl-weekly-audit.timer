@@ -1,0 +1,11 @@
+[Unit]
+Description=Tuesday FPL strategy audit at 09:00 Amsterdam time
+
+[Timer]
+OnCalendar=Tue *-*-* 09:00:00 Europe/Amsterdam
+Persistent=true
+AccuracySec=1min
+Unit=fpl-weekly-audit.service
+
+[Install]
+WantedBy=timers.target

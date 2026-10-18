@@ -79,3 +79,25 @@ For changes to running scheduler code, first stop both timers and wait for any
 active deadline service to finish. Update the service definitions if changed,
 reload systemd, then restart `fpl-refresh.timer` and the refresh service. Never
 reset or delete `.server`, the private `.env`, or the server's ChatGPT login.
+
+## Weekly strategy audit
+
+`fpl-weekly-audit.timer` runs Tuesdays at 09:00 Europe/Amsterdam (including DST).
+Install it and `fpl-weekly-audit.service` alongside the deadline units. It uses
+ChatGPT-authenticated `gpt-6.1-sol` with `model_reasoning_effort="high"`; no API key.
+The model receives an allowlisted packet of source/tests, tracked strategy/squad
+and live runtime history. It has web search, no shell tools, and a read-only
+sandbox. Python saves the report to `.server/runtime/outputs/strategy_review.md`
+and status to `.server/runtime/state/weekly_audit.json`. Reports propose changes;
+there is no automatic strategy editing, Git push, FPL action or Telegram delivery.
+A no-change result preserves the previous report. Failures preserve the report
+and retry after 30 minutes, limited to three starts per three hours. Weekly
+success is deduplicated. The deadline lock and a 45-minute exclusion before a
+planned deadline run give production delivery priority. Raw audit web events are
+private under runtime outputs. The audit can only assess the provided evidence;
+it does not run tests or refresh the authenticated squad.
+
+Enable: `systemctl --user enable --now fpl-weekly-audit.timer`.
+Check: `systemctl --user status fpl-weekly-audit.timer fpl-weekly-audit.service`.
+Stop: `systemctl --user disable --now fpl-weekly-audit.timer` (also stop its service
+if an audit is active). The old Mac squad-sync and weekly audit automations are paused.
