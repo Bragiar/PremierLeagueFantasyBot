@@ -49,3 +49,8 @@ not credential files or the private configuration override. All 86 tests pass.
 The deadline research review is also explicitly pinned to GPT-6.1 Sol with high
 reasoning. Its review timeout is 20 minutes, inside the 45-minute service budget.
 Python retains the engine plan if research fails or times out.
+
+Weekly audit reports are now automatically committed and pushed to GitHub main
+at `outputs/strategy_review.md`, using a repository-only server deploy key.
+Only the report is published; strategy/code findings remain proposals. The job
+uses a disposable clone and non-forced push, leaving production state untouched.

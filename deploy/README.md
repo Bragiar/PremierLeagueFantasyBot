@@ -92,7 +92,8 @@ The model receives an allowlisted packet of source/tests, tracked strategy/squad
 and live runtime history. It has web search, no shell tools, and a read-only
 sandbox. Python saves the report to `.server/runtime/outputs/strategy_review.md`
 and status to `.server/runtime/state/weekly_audit.json`. Reports propose changes;
-there is no automatic strategy editing, Git push, FPL action or Telegram delivery.
+Python publishes a changed report to GitHub main as `outputs/strategy_review.md`.
+There is no automatic strategy editing, FPL action or Telegram delivery.
 A no-change result preserves the previous report. Failures preserve the report
 and retry after 30 minutes, limited to three starts per three hours. Weekly
 success is deduplicated. The deadline lock and a 45-minute exclusion before a
@@ -104,3 +105,26 @@ Enable: `systemctl --user enable --now fpl-weekly-audit.timer`.
 Check: `systemctl --user status fpl-weekly-audit.timer fpl-weekly-audit.service`.
 Stop: `systemctl --user disable --now fpl-weekly-audit.timer` (also stop its service
 if an audit is active). The old Mac squad-sync and weekly audit automations are paused.
+
+The server has a write-enabled deploy key restricted to this repository. The
+private key stays at `~/.ssh/fpl_audit_ed25519`; GitHub host keys are in
+`~/.ssh/fpl_github_known_hosts`, obtained through GitHub's authenticated HTTPS
+metadata endpoint. Enable publication using the ignored local override:
+
+```yaml
+weekly_audit:
+  publish:
+    enabled: true
+    ssh_key: /home/bragi/.ssh/fpl_audit_ed25519
+    known_hosts: /home/bragi/.ssh/fpl_github_known_hosts
+```
+
+Publication clones current main into a disposable directory and commits only
+`outputs/strategy_review.md`. A normal, non-forced push retries against fresh
+main on a race; it never stages the production checkout or copies private files.
+Unchanged reports produce no commit. Publication retries reuse the completed
+weekly audit rather than spending model usage again. Status records the published
+commit. The active production checkout intentionally does not pull new source
+unattended; report commits can leave it behind origin until the next manual pull.
+The report commit includes `[skip ci]`. Raw web events and runtime state stay private.
+To revoke publishing, remove the GitHub deploy key and set `publish.enabled: false`.

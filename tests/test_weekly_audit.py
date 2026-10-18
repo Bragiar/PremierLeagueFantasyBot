@@ -74,3 +74,23 @@ def test_effective_settings_are_sanitized(tmp_path):
     assert packet['deployment']['effective_offsets_minutes'] == [120]
     assert packet['deployment']['effective_api_review_enabled'] is False
     assert 'do-not-include-this-credential' not in json.dumps(packet)
+
+
+def test_publication_failure_retries_without_rerunning_model(monkeypatch, tmp_path):
+    runtime, report = setup(monkeypatch, tmp_path)
+    def model(command, **kwargs):
+        Path(command[command.index('-o') + 1]).write_text('New reviewed report')
+        return SimpleNamespace(stdout='')
+    monkeypatch.setattr(weekly_audit.subprocess, 'run', model)
+    def failed_publish(*args):
+        raise RuntimeError('network unavailable')
+    monkeypatch.setattr(weekly_audit, 'publish_report', failed_publish)
+    with pytest.raises(RuntimeError, match='network unavailable'):
+        weekly_audit.run_audit(tmp_path)
+    assert report.read_text() == 'New reviewed report\n'
+    def unexpected_model(*args, **kwargs):
+        raise AssertionError('must reuse the completed audit')
+    monkeypatch.setattr(weekly_audit.subprocess, 'run', unexpected_model)
+    monkeypatch.setattr(weekly_audit, 'publish_report', lambda *args: 'published-commit')
+    weekly_audit.run_audit(tmp_path)
+    assert json.loads((runtime / 'state/weekly_audit.json').read_text())['publication'] == 'published-commit'

@@ -24,6 +24,11 @@ settings = {
         "timeout_seconds": 1200,
     },
     "runtime": {"directory": str(runtime)},
+    "weekly_audit": {"publish": {
+        "enabled": (Path.home() / ".ssh/fpl_audit_ed25519").is_file(),
+        "ssh_key": str(Path.home() / ".ssh/fpl_audit_ed25519"),
+        "known_hosts": str(Path.home() / ".ssh/fpl_github_known_hosts"),
+    }},
 }
 (root / "config/strategy.local.yaml").write_text(yaml.safe_dump(settings, sort_keys=False))
 print("Server overrides saved; runtime preserved outside tracked files.")
