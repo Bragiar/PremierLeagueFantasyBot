@@ -1,0 +1,4931 @@
+[
+  {
+    "case": "four weeks",
+    "overrides": {
+      "fixture_horizon": 4
+    },
+    "review": {
+      "event_id": 7,
+      "horizon": 4,
+      "baseline_option_id": "transfer:368:124",
+      "routes": [
+        {
+          "label": "WC GW7; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 305.1,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Semenyo",
+            "Haaland",
+            "Tzolakis",
+            "Verbruggen",
+            "Thomas",
+            "Calafiori",
+            "Dasilva",
+            "Tarkowski",
+            "De Cuyper",
+            "Cherki",
+            "McGinn",
+            "Gro\u00df",
+            "Cunha",
+            "Barry",
+            "Jo\u00e3o Pedro"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 305.1,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Cherki",
+                  "Cunha",
+                  "McGinn",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Calafiori",
+                  "Thomas",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 91.28,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Calafiori",
+                  "Dasilva",
+                  "Thomas",
+                  "De Cuyper",
+                  "Semenyo",
+                  "Cunha",
+                  "Cherki",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "McGinn",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 71.3,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Dasilva",
+                  "Semenyo",
+                  "Cherki",
+                  "McGinn",
+                  "Cunha",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 68.33,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Tarkowski",
+                  "Calafiori",
+                  "De Cuyper",
+                  "Semenyo",
+                  "Cunha",
+                  "Cherki",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 74.19,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 27.87
+        },
+        {
+          "label": "WC GW7; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 303.47,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Haaland",
+            "Trafford",
+            "Verbruggen",
+            "Calafiori",
+            "Tarkowski",
+            "Dasilva",
+            "Gu\u00e9hi",
+            "De Cuyper",
+            "McGinn",
+            "King",
+            "Semenyo",
+            "Gro\u00df",
+            "Cunha",
+            "Barry",
+            "Jo\u00e3o Pedro"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 303.47,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Gu\u00e9hi",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Cunha",
+                  "McGinn",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Calafiori",
+                  "King",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 89.94,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Semenyo",
+                  "Cunha",
+                  "King",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "McGinn",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 71.23,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Semenyo",
+                  "McGinn",
+                  "Cunha",
+                  "King",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 67.3,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Semenyo",
+                  "Cunha",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "King",
+                  "Dasilva",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 75.0,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 26.24
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; unrestricted",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 286.31,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 286.31,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Ajer",
+                  "Dasilva",
+                  "Rogers",
+                  "Semenyo",
+                  "Janelt",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Dewsbury-Hall",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 72.54,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Ajer",
+                  "Janelt",
+                  "Dasilva"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 68.44,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.2,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Gu\u00e9hi",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Ajer",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 75.99,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 9.08
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 286.31,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 286.31,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Ajer",
+                  "Dasilva",
+                  "Rogers",
+                  "Semenyo",
+                  "Janelt",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Dewsbury-Hall",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 72.54,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Ajer",
+                  "Janelt",
+                  "Dasilva"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 68.44,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.2,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Gu\u00e9hi",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Ajer",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 75.99,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 9.08
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 280.45,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 280.45,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Ajer",
+                  "Dasilva",
+                  "Rogers",
+                  "Semenyo",
+                  "Janelt",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Dewsbury-Hall",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 72.54,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Ajer",
+                  "Janelt",
+                  "Dasilva"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 68.44,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.2,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Gu\u00e9hi",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Ajer",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 75.99,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 3.22
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 280.45,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 280.45,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Ajer",
+                  "Dasilva",
+                  "Rogers",
+                  "Semenyo",
+                  "Janelt",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Dewsbury-Hall",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 72.54,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Calafiori",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Ajer",
+                  "Janelt",
+                  "Dasilva"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 68.44,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.2,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Gu\u00e9hi",
+                  "Semenyo",
+                  "Dewsbury-Hall",
+                  "Rogers",
+                  "Stach",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Ajer",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 75.99,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.2,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 3.22
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; ordinary transfers",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": null,
+          "score": 277.23,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 277.23,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 68.26,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.8,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 94,
+                    "player_out": "Schade",
+                    "player_in_id": 236,
+                    "player_in": "Dewsbury-Hall"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Gabriel",
+                  "Ajayi",
+                  "Calafiori",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.64,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.4,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 5.4.",
+                "action": "Schade \u2192 Dewsbury-Hall"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 572,
+                    "player_out": "Tzolakis",
+                    "player_in_id": 385,
+                    "player_in": "Trafford"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 73.99,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 3.2.",
+                "action": "Tzolakis \u2192 Trafford"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 0.0
+        },
+        {
+          "label": "Roll the free transfer; ordinary transfers",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": null,
+          "score": 271.21,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 4,
+            "total_projected_score": 271.21,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 236,
+                    "player_in": "Dewsbury-Hall"
+                  },
+                  {
+                    "player_out_id": 279,
+                    "player_out": "Ajayi",
+                    "player_in_id": 176,
+                    "player_in": "Dasilva"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Dewsbury-Hall",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 68.51,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 1,
+                "bank_after": 0.5,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 16.8.",
+                "action": "Szoboszlai \u2192 Dewsbury-Hall, Ajayi \u2192 Dasilva"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 391,
+                    "player_out": "Gvardiol",
+                    "player_in_id": 229,
+                    "player_in": "Tarkowski"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Tarkowski",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.84,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.9.",
+                "action": "Gvardiol \u2192 Tarkowski"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 572,
+                    "player_out": "Tzolakis",
+                    "player_in_id": 57,
+                    "player_in": "Petrovi\u0107"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Petrovi\u0107",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Calafiori",
+                  "Dasilva",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Schade",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 73.38,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.3.",
+                "action": "Tzolakis \u2192 Petrovi\u0107"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": -6.02
+        }
+      ],
+      "failures": [],
+      "limitations": [
+        "Comparative model scores, not literal point forecasts or guaranteed upside.",
+        "Bounded local and beam searches; global optimality is not established.",
+        "Prices and current availability/roles are held fixed; recovery and rotation are uncertain.",
+        "The no-chip routes retain a Wildcard; its value beyond this horizon is not priced.",
+        "Only the selected immediate action and hold are tested before a future Wildcard.",
+        "Keeping the captain constrains the rebuild only; later ordinary moves may sell him.",
+        "Experimental drafts are comparisons, not newly selected immediate shortlist actions."
+      ]
+    }
+  },
+  {
+    "case": "six weeks",
+    "overrides": {
+      "fixture_horizon": 6
+    },
+    "review": {
+      "event_id": 7,
+      "horizon": 6,
+      "baseline_option_id": "transfer:368:124",
+      "routes": [
+        {
+          "label": "WC GW7; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 445.32,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Trafford",
+            "Verbruggen",
+            "Gu\u00e9hi",
+            "Justin",
+            "Dasilva",
+            "De Cuyper",
+            "Tarkowski",
+            "Palmer",
+            "Semenyo",
+            "McGinn",
+            "Gro\u00df",
+            "Kamada",
+            "Haaland",
+            "Jo\u00e3o Pedro",
+            "Brobbey"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 445.32,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Gu\u00e9hi",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Palmer",
+                  "McGinn",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Justin",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 88.98,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Justin",
+                  "Tarkowski",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Kamada",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 71.1,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Justin",
+                  "Semenyo",
+                  "Palmer",
+                  "McGinn",
+                  "Kamada",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 68.79,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Justin",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 73.26,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Justin"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 77.95,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Justin",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Semenyo",
+                  "Dasilva",
+                  "Gu\u00e9hi"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 65.24,
+                "points_hit": 0,
+                "free_transfers_before": 5,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 31.04
+        },
+        {
+          "label": "WC GW7; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 445.32,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Haaland",
+            "Trafford",
+            "Verbruggen",
+            "Gu\u00e9hi",
+            "Justin",
+            "Dasilva",
+            "Tarkowski",
+            "De Cuyper",
+            "Palmer",
+            "Semenyo",
+            "McGinn",
+            "Kamada",
+            "Gro\u00df",
+            "Jo\u00e3o Pedro",
+            "Brobbey"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 445.32,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Gu\u00e9hi",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Palmer",
+                  "McGinn",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Justin",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 88.98,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Justin",
+                  "Tarkowski",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Kamada",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 71.1,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Justin",
+                  "Semenyo",
+                  "Palmer",
+                  "McGinn",
+                  "Kamada",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 68.79,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Justin",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 73.26,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Justin"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 77.95,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Justin",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Semenyo",
+                  "Dasilva",
+                  "Gu\u00e9hi"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 65.24,
+                "points_hit": 0,
+                "free_transfers_before": 5,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 31.04
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 425.91,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 425.91,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Muharemovi\u0107",
+                  "Tarkowski",
+                  "Palmer",
+                  "Rogers",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Kamada",
+                  "McGinn",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 72.27,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Muharemovi\u0107",
+                  "Palmer",
+                  "McGinn",
+                  "Rogers",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 66.81,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Muharemovi\u0107",
+                  "De Cuyper",
+                  "Palmer",
+                  "Rogers",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "McGinn",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 74.66,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Rogers",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Barry",
+                  "McGinn",
+                  "Muharemovi\u0107"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 76.32,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Muharemovi\u0107",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "Rogers",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gu\u00e9hi",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 66.51,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 11.63
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; unrestricted",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 425.82,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 425.82,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Justin",
+                  "Tarkowski",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Kamada",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 71.56,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Justin",
+                  "Semenyo",
+                  "Palmer",
+                  "McGinn",
+                  "Kamada",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 68.79,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Justin",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 73.26,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Justin"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 77.63,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Justin",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Semenyo",
+                  "Dasilva",
+                  "Gu\u00e9hi"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 65.24,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 11.54
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 420.05,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 420.05,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Muharemovi\u0107",
+                  "Tarkowski",
+                  "Palmer",
+                  "Rogers",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Kamada",
+                  "McGinn",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 72.27,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Muharemovi\u0107",
+                  "Palmer",
+                  "McGinn",
+                  "Rogers",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 66.81,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Muharemovi\u0107",
+                  "De Cuyper",
+                  "Palmer",
+                  "Rogers",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "McGinn",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 74.66,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Rogers",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Barry",
+                  "McGinn",
+                  "Muharemovi\u0107"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 76.32,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Muharemovi\u0107",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "Rogers",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gu\u00e9hi",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 66.51,
+                "points_hit": 0,
+                "free_transfers_before": 5,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 5.77
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 419.96,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 419.96,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Justin",
+                  "Tarkowski",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Kamada",
+                  "McGinn"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 71.56,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Justin",
+                  "Semenyo",
+                  "Palmer",
+                  "McGinn",
+                  "Kamada",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 68.79,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Justin",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Kamada"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 73.26,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "McGinn",
+                  "Brobbey",
+                  "Justin"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 77.63,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Justin",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Palmer",
+                  "McGinn",
+                  "Gro\u00df",
+                  "Kamada",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Semenyo",
+                  "Dasilva",
+                  "Gu\u00e9hi"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 65.24,
+                "points_hit": 0,
+                "free_transfers_before": 5,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 5.68
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; ordinary transfers",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": null,
+          "score": 414.28,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 414.28,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.34,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [
+                  {
+                    "player_out_id": 279,
+                    "player_out": "Ajayi",
+                    "player_in_id": 176,
+                    "player_in": "Dasilva"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.28,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 1.0,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 4.4.",
+                "action": "Ajayi \u2192 Dasilva"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 94,
+                    "player_out": "Schade",
+                    "player_in_id": 236,
+                    "player_in": "Dewsbury-Hall"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.0,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.6,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 8.8.",
+                "action": "Schade \u2192 Dewsbury-Hall"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 497,
+                    "player_out": "Dubravka",
+                    "player_in_id": 109,
+                    "player_in": "Verbruggen"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 73.65,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 12.2.",
+                "action": "Dubravka \u2192 Verbruggen"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gabriel",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Dasilva",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Gro\u00df",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 73.06,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [
+                  {
+                    "player_out_id": 391,
+                    "player_out": "Gvardiol",
+                    "player_in_id": 334,
+                    "player_in": "Muharemovi\u0107"
+                  }
+                ],
+                "chip": "None",
+                "captain": "B.Fernandes",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Muharemovi\u0107",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Dewsbury-Hall",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 63.95,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.7,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.4.",
+                "action": "Gvardiol \u2192 Muharemovi\u0107"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 0.0
+        },
+        {
+          "label": "Roll the free transfer; ordinary transfers",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": null,
+          "score": 408.42,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 6,
+            "total_projected_score": 408.42,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 63.48,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  },
+                  {
+                    "player_out_id": 279,
+                    "player_out": "Ajayi",
+                    "player_in_id": 176,
+                    "player_in": "Dasilva"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 69.28,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 1,
+                "bank_after": 1.0,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 27.5.",
+                "action": "Szoboszlai \u2192 Gro\u00df, Ajayi \u2192 Dasilva"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 94,
+                    "player_out": "Schade",
+                    "player_in_id": 236,
+                    "player_in": "Dewsbury-Hall"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.0,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.6,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 8.8.",
+                "action": "Schade \u2192 Dewsbury-Hall"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 497,
+                    "player_out": "Dubravka",
+                    "player_in_id": 109,
+                    "player_in": "Verbruggen"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 73.65,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 12.2.",
+                "action": "Dubravka \u2192 Verbruggen"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gabriel",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Dasilva",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Gro\u00df",
+                  "Dewsbury-Hall",
+                  "Mbeumo",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 73.06,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 12,
+                "event_name": "Gameweek 12",
+                "transfers": [
+                  {
+                    "player_out_id": 391,
+                    "player_out": "Gvardiol",
+                    "player_in_id": 334,
+                    "player_in": "Muharemovi\u0107"
+                  }
+                ],
+                "chip": "None",
+                "captain": "B.Fernandes",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Muharemovi\u0107",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Dewsbury-Hall",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 63.95,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.7,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.4.",
+                "action": "Gvardiol \u2192 Muharemovi\u0107"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": -5.86
+        }
+      ],
+      "failures": [],
+      "limitations": [
+        "Comparative model scores, not literal point forecasts or guaranteed upside.",
+        "Bounded local and beam searches; global optimality is not established.",
+        "Prices and current availability/roles are held fixed; recovery and rotation are uncertain.",
+        "The no-chip routes retain a Wildcard; its value beyond this horizon is not priced.",
+        "Only the selected immediate action and hold are tested before a future Wildcard.",
+        "Keeping the captain constrains the rebuild only; later ordinary moves may sell him.",
+        "Experimental drafts are comparisons, not newly selected immediate shortlist actions."
+      ]
+    }
+  },
+  {
+    "case": "stronger fixture penalty",
+    "overrides": {
+      "lineup_fixture_weight": 1.5
+    },
+    "review": {
+      "event_id": 7,
+      "horizon": 5,
+      "baseline_option_id": "transfer:368:124",
+      "routes": [
+        {
+          "label": "WC GW7; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 396.55,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Semenyo",
+            "Haaland",
+            "Rushworth",
+            "Verbruggen",
+            "Van Hecke",
+            "De Cuyper",
+            "Dasilva",
+            "Tarkowski",
+            "Gu\u00e9hi",
+            "Tonali",
+            "Palmer",
+            "Gro\u00df",
+            "Belloumi",
+            "Jo\u00e3o Pedro",
+            "Brobbey"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 396.55,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Gu\u00e9hi",
+                  "Van Hecke",
+                  "Dasilva",
+                  "Tarkowski",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Palmer",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Tonali",
+                  "Brobbey",
+                  "Belloumi"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 93.67,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "De Cuyper",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Belloumi",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Van Hecke",
+                  "Tonali"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 73.38,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Tarkowski",
+                  "Van Hecke",
+                  "Gu\u00e9hi",
+                  "Semenyo",
+                  "Belloumi",
+                  "Tonali",
+                  "Palmer",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 72.09,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Van Hecke",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Brobbey",
+                  "Belloumi"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 73.11,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Van Hecke",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Brobbey",
+                  "Belloumi"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 84.3,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.0,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 34.01
+        },
+        {
+          "label": "WC GW7; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 7,
+          "score": 395.92,
+          "wildcard_retained": false,
+          "wildcard_draft": [
+            "Haaland",
+            "Rushworth",
+            "Verbruggen",
+            "Thomas",
+            "Tarkowski",
+            "Dasilva",
+            "De Cuyper",
+            "Gu\u00e9hi",
+            "Stach",
+            "Palmer",
+            "Tonali",
+            "Gro\u00df",
+            "Semenyo",
+            "Jo\u00e3o Pedro",
+            "Brobbey"
+          ],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 395.92,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "De Cuyper",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Tarkowski",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Palmer",
+                  "Tonali",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Brobbey",
+                  "Thomas",
+                  "Stach"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 93.25,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Thomas",
+                  "Palmer",
+                  "Semenyo",
+                  "Stach",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Jo\u00e3o Pedro",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Tonali"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 75.16,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Semenyo",
+                  "Tonali",
+                  "Palmer",
+                  "Stach",
+                  "Haaland",
+                  "Brobbey",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Gro\u00df",
+                  "De Cuyper"
+                ],
+                "reserve_goalkeeper": "Verbruggen",
+                "projected_score": 69.12,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Palmer",
+                  "Semenyo",
+                  "Stach",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "Brobbey"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 74.74,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gu\u00e9hi",
+                  "De Cuyper",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Jo\u00e3o Pedro"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Brobbey",
+                  "Stach"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 83.65,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 33.38
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; unrestricted",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 375.99,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 375.99,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 72.14,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Thomas",
+                  "Palmer",
+                  "Semenyo",
+                  "Janelt",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Tonali",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 74.79,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Semenyo",
+                  "Tonali",
+                  "Palmer",
+                  "Janelt",
+                  "Haaland",
+                  "Brobbey",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "Gro\u00df"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 69.87,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Barry"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 76.68,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Thomas",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Barry",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 82.51,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 13.45
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": 8,
+          "score": 375.99,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 375.99,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 72.14,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Thomas",
+                  "Palmer",
+                  "Semenyo",
+                  "Janelt",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Tonali",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 74.79,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Semenyo",
+                  "Tonali",
+                  "Palmer",
+                  "Janelt",
+                  "Haaland",
+                  "Brobbey",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "Gro\u00df"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 69.87,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Barry"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 76.68,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Thomas",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Barry",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 82.51,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 13.45
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; unrestricted",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 369.13,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 369.13,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.28,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Thomas",
+                  "Palmer",
+                  "Semenyo",
+                  "Janelt",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Tonali",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 74.79,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Semenyo",
+                  "Tonali",
+                  "Palmer",
+                  "Janelt",
+                  "Haaland",
+                  "Brobbey",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "Gro\u00df"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 69.87,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Barry"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 76.68,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Thomas",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Barry",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 82.51,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 6.59
+        },
+        {
+          "label": "Roll the free transfer; WC GW8; keep Haaland at rebuild",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": 8,
+          "score": 369.13,
+          "wildcard_retained": false,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 369.13,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.28,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [],
+                "chip": "Wildcard",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Thomas",
+                  "Palmer",
+                  "Semenyo",
+                  "Janelt",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Brobbey"
+                ],
+                "bench": [
+                  "Tarkowski",
+                  "Tonali",
+                  "Barry"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 74.79,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional Wildcard rebuild; draft and timing require fresh news.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Semenyo",
+                  "Tonali",
+                  "Palmer",
+                  "Janelt",
+                  "Haaland",
+                  "Brobbey",
+                  "Barry"
+                ],
+                "bench": [
+                  "Dasilva",
+                  "Thomas",
+                  "Gro\u00df"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 69.87,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 3,
+                "bank_after": 0.1,
+                "confidence": "Medium",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Trafford",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Gu\u00e9hi",
+                  "Dasilva",
+                  "Palmer",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland",
+                  "Barry"
+                ],
+                "bench": [
+                  "Thomas",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 76.68,
+                "points_hit": 0,
+                "free_transfers_before": 3,
+                "free_transfers_after": 4,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gu\u00e9hi",
+                  "Gabriel",
+                  "Tarkowski",
+                  "Dasilva",
+                  "Thomas",
+                  "Semenyo",
+                  "Palmer",
+                  "Gro\u00df",
+                  "Tonali",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Barry",
+                  "Brobbey",
+                  "Janelt"
+                ],
+                "reserve_goalkeeper": "Trafford",
+                "projected_score": 82.51,
+                "points_hit": 0,
+                "free_transfers_before": 4,
+                "free_transfers_after": 5,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Roll to preserve transfer flexibility.",
+                "action": "Roll / no transfer"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 6.59
+        },
+        {
+          "label": "Szoboszlai \u2192 Gro\u00df; ordinary transfers",
+          "immediate_option_id": "transfer:368:124",
+          "wildcard_event_id": null,
+          "score": 362.54,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 362.54,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 124,
+                    "player_in": "Gro\u00df"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Gro\u00df",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 72.14,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.8,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Szoboszlai \u2192 Gro\u00df"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [
+                  {
+                    "player_out_id": 497,
+                    "player_out": "Dubravka",
+                    "player_in_id": 110,
+                    "player_in": "Rushworth"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Mbeumo",
+                  "Schade",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 70.93,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.3,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 17.3.",
+                "action": "Dubravka \u2192 Rushworth"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 94,
+                    "player_out": "Schade",
+                    "player_in_id": 68,
+                    "player_in": "Tavernier"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Ajayi",
+                  "Gabriel",
+                  "Calafiori",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Tavernier",
+                  "Mbeumo",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Gro\u00df",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Rushworth",
+                "projected_score": 64.47,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.4,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 6.0.",
+                "action": "Schade \u2192 Tavernier"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 279,
+                    "player_out": "Ajayi",
+                    "player_in_id": 176,
+                    "player_in": "Dasilva"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "Dasilva",
+                  "B.Fernandes",
+                  "Tavernier",
+                  "Mbeumo",
+                  "Gro\u00df",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "van Ewijk",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 75.77,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.6,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 5.0.",
+                "action": "Ajayi \u2192 Dasilva"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [
+                  {
+                    "player_out_id": 427,
+                    "player_out": "Mbeumo",
+                    "player_in_id": 397,
+                    "player_in": "Semenyo"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Rushworth",
+                  "Gvardiol",
+                  "Gabriel",
+                  "Calafiori",
+                  "Dasilva",
+                  "van Ewijk",
+                  "Semenyo",
+                  "Gro\u00df",
+                  "B.Fernandes",
+                  "Tavernier",
+                  "Haaland"
+                ],
+                "bench": [
+                  "Calvert-Lewin",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 79.23,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.1,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 3.4.",
+                "action": "Mbeumo \u2192 Semenyo"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": 0.0
+        },
+        {
+          "label": "Roll the free transfer; ordinary transfers",
+          "immediate_option_id": "hold",
+          "wildcard_event_id": null,
+          "score": 356.47,
+          "wildcard_retained": true,
+          "wildcard_draft": [],
+          "plan": {
+            "generated_for_event": 7,
+            "horizon": 5,
+            "total_projected_score": 356.47,
+            "gameweeks": [
+              {
+                "event_id": 7,
+                "event_name": "Gameweek 7",
+                "transfers": [],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Calafiori",
+                  "Gabriel",
+                  "Ajayi",
+                  "van Ewijk",
+                  "Mbeumo",
+                  "B.Fernandes",
+                  "Schade",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Kusi-Asare",
+                  "Szoboszlai",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 65.28,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 2,
+                "bank_after": 0.1,
+                "confidence": "High",
+                "rationale": "Current reviewed action; later weeks are optimized from this legal state.",
+                "action": "Roll / no transfer"
+              },
+              {
+                "event_id": 8,
+                "event_name": "Gameweek 8",
+                "transfers": [
+                  {
+                    "player_out_id": 368,
+                    "player_out": "Szoboszlai",
+                    "player_in_id": 575,
+                    "player_in": "Yirenkyi"
+                  },
+                  {
+                    "player_out_id": 94,
+                    "player_out": "Schade",
+                    "player_in_id": 397,
+                    "player_in": "Semenyo"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Semenyo",
+                  "Mbeumo",
+                  "Yirenkyi",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 71.76,
+                "points_hit": 0,
+                "free_transfers_before": 2,
+                "free_transfers_after": 1,
+                "bank_after": 0.0,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 26.8.",
+                "action": "Szoboszlai \u2192 Yirenkyi, Schade \u2192 Semenyo"
+              },
+              {
+                "event_id": 9,
+                "event_name": "Gameweek 9",
+                "transfers": [
+                  {
+                    "player_out_id": 427,
+                    "player_out": "Mbeumo",
+                    "player_in_id": 236,
+                    "player_in": "Dewsbury-Hall"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Tzolakis",
+                  "Gvardiol",
+                  "Ajayi",
+                  "Gabriel",
+                  "Calafiori",
+                  "van Ewijk",
+                  "Semenyo",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Yirenkyi",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Dubravka",
+                "projected_score": 67.29,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 1.2,
+                "confidence": "Medium",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.8.",
+                "action": "Mbeumo \u2192 Dewsbury-Hall"
+              },
+              {
+                "event_id": 10,
+                "event_name": "Gameweek 10",
+                "transfers": [
+                  {
+                    "player_out_id": 497,
+                    "player_out": "Dubravka",
+                    "player_in_id": 109,
+                    "player_in": "Verbruggen"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gabriel",
+                  "Calafiori",
+                  "Gvardiol",
+                  "van Ewijk",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Semenyo",
+                  "Yirenkyi",
+                  "Haaland",
+                  "Calvert-Lewin"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Kusi-Asare",
+                  "Hughes"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 74.04,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.6,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 9.2.",
+                "action": "Dubravka \u2192 Verbruggen"
+              },
+              {
+                "event_id": 11,
+                "event_name": "Gameweek 11",
+                "transfers": [
+                  {
+                    "player_out_id": 346,
+                    "player_out": "Calvert-Lewin",
+                    "player_in_id": 138,
+                    "player_in": "Kostoulas"
+                  }
+                ],
+                "chip": "None",
+                "captain": "Haaland",
+                "starting_xi": [
+                  "Verbruggen",
+                  "Gvardiol",
+                  "Gabriel",
+                  "Calafiori",
+                  "van Ewijk",
+                  "Semenyo",
+                  "B.Fernandes",
+                  "Dewsbury-Hall",
+                  "Yirenkyi",
+                  "Haaland",
+                  "Kostoulas"
+                ],
+                "bench": [
+                  "Ajayi",
+                  "Hughes",
+                  "Kusi-Asare"
+                ],
+                "reserve_goalkeeper": "Tzolakis",
+                "projected_score": 78.1,
+                "points_hit": 0,
+                "free_transfers_before": 1,
+                "free_transfers_after": 1,
+                "bank_after": 0.9,
+                "confidence": "Low",
+                "rationale": "Conditional route: the moves improve remaining-horizon player ratings by 2.7.",
+                "action": "Calvert-Lewin \u2192 Kostoulas"
+              }
+            ],
+            "chip_targets": [],
+            "changes": [],
+            "methodology": "Bounded rolling-horizon search using current prices and projections; future actions are provisional and recalculated every run."
+          },
+          "delta_vs_selected_no_chip": -6.07
+        }
+      ],
+      "failures": [],
+      "limitations": [
+        "Comparative model scores, not literal point forecasts or guaranteed upside.",
+        "Bounded local and beam searches; global optimality is not established.",
+        "Prices and current availability/roles are held fixed; recovery and rotation are uncertain.",
+        "The no-chip routes retain a Wildcard; its value beyond this horizon is not priced.",
+        "Only the selected immediate action and hold are tested before a future Wildcard.",
+        "Keeping the captain constrains the rebuild only; later ordinary moves may sell him.",
+        "Experimental drafts are comparisons, not newly selected immediate shortlist actions."
+      ]
+    }
+  }
+]

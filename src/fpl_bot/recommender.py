@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from functools import lru_cache
 import re
 from typing import Any, Iterable
 
@@ -995,16 +996,34 @@ def _optimizer_pool(
 
 
 def _cheapest_legal_squad(
-    pools: dict[str, list[Player]], scores: dict[int, float]
+    pools: dict[str, list[Player]], scores: dict[int, float],
+    required_ids: frozenset[int] = frozenset(),
+    purchase_costs: dict[int, int] | None = None,
 ) -> list[Player]:
     quotas = {"GK": 2, "DEF": 5, "MID": 5, "FWD": 3}
     selected: list[Player] = []
     club_counts: dict[int, int] = defaultdict(int)
+    available = {player.id: player for group in pools.values() for player in group}
+    if not required_ids.issubset(available):
+        raise ValueError("A required optimizer player is unavailable")
+    for player_id in sorted(required_ids):
+        player = available[player_id]
+        selected.append(player)
+        club_counts[player.team_id] += 1
+    if any(count > 3 for count in club_counts.values()) or any(
+        sum(player.position == position for player in selected) > quota
+        for position, quota in quotas.items()
+    ):
+        raise ValueError("Required optimizer players violate squad limits")
     for position, quota in quotas.items():
-        ranked = sorted(
-            pools[position], key=lambda player: (player.cost, -scores[player.id])
-        )
+        ranked = sorted(pools[position], key=lambda player: (
+            (purchase_costs or {}).get(player.id, player.cost), -scores[player.id]
+        ))
         for player in ranked:
+            if sum(item.position == position for item in selected) == quota:
+                break
+            if player.id in required_ids:
+                continue
             if club_counts[player.team_id] >= 3:
                 continue
             selected.append(player)
@@ -1026,29 +1045,51 @@ def _optimize_squad(
     *,
     bench_weight: float,
     strategy: dict[str, Any] | None = None,
+    weekly_scores: list[dict[int, float]] | None = None,
+    required_ids: frozenset[int] = frozenset(),
+    initial_squad: list[Player] | None = None,
+    purchase_costs: dict[int, int] | None = None,
 ) -> tuple[list[Player], float]:
     """Use a bounded multi-start local search for a legal 15-player squad."""
     strategy = strategy or {}
+    def cost(player: Player) -> int:
+        return (purchase_costs or {}).get(player.id, player.cost)
+
     pools = _optimizer_pool(candidates, scores, strategy)
-    starting = _cheapest_legal_squad(pools, scores)
-    if sum(player.cost for player in starting) > budget:
+    starting = _cheapest_legal_squad(pools, scores, required_ids, purchase_costs)
+    if sum(cost(player) for player in starting) > budget:
         raise ValueError("No legal optimizer squad fits the available team value")
 
-    def improve(mode: str) -> tuple[list[Player], float]:
-        squad = list(starting)
-        objective = _squad_objective(squad, scores, bench_weight)
+    by_id = {player.id: player for group in pools.values() for player in group}
+
+    @lru_cache(maxsize=8192)
+    def evaluate_ids(player_ids: tuple[int, ...]) -> float:
+        squad = [by_id[player_id] for player_id in player_ids]
+        return sum(
+            _squad_objective(squad, week, bench_weight)
+            for week in (weekly_scores if weekly_scores is not None else [scores])
+        )
+
+    def evaluate(squad: list[Player]) -> float:
+        return evaluate_ids(tuple(sorted(player.id for player in squad)))
+
+    def improve(seed: list[Player], mode: str) -> tuple[list[Player], float]:
+        squad = list(seed)
+        objective = evaluate(squad)
         for _ in range(35):
             current_ids = {player.id for player in squad}
-            current_cost = sum(player.cost for player in squad)
+            current_cost = sum(cost(player) for player in squad)
             club_counts: dict[int, int] = defaultdict(int)
             for player in squad:
                 club_counts[player.team_id] += 1
             best: tuple[float, float, int, Player] | None = None
             for index, outgoing in enumerate(squad):
+                if outgoing.id in required_ids:
+                    continue
                 for incoming in pools[outgoing.position]:
                     if incoming.id in current_ids:
                         continue
-                    new_cost = current_cost - outgoing.cost + incoming.cost
+                    new_cost = current_cost - cost(outgoing) + cost(incoming)
                     if new_cost > budget:
                         continue
                     incoming_club_count = club_counts[incoming.team_id]
@@ -1058,11 +1099,11 @@ def _optimize_squad(
                         continue
                     proposed = list(squad)
                     proposed[index] = incoming
-                    new_objective = _squad_objective(proposed, scores, bench_weight)
+                    new_objective = evaluate(proposed)
                     gain = new_objective - objective
                     if gain <= 0.001:
                         continue
-                    extra_cost = max(1, incoming.cost - outgoing.cost)
+                    extra_cost = max(1, cost(incoming) - cost(outgoing))
                     priority = gain if mode == "absolute" else gain / extra_cost
                     candidate = (priority, new_objective, index, incoming)
                     if best is None or candidate[:2] > best[:2]:
@@ -1073,10 +1114,40 @@ def _optimize_squad(
             squad[index] = incoming
         return squad, objective
 
-    attempts = [improve("absolute"), improve("value")]
+    seeds = [starting]
+    # A cheap-only start can get stuck: buying a premium may first require a
+    # downgrade elsewhere. Seed several distinct structures, then allow them to
+    # compete freely (only explicit required_ids remain locked).
+    anchor_limit = max(0, int(strategy.get("optimizer_anchor_seeds", 3)))
+    ranked_anchors = sorted(
+        (player for group in pools.values() for player in group),
+        key=lambda player: scores[player.id], reverse=True,
+    )
+    diverse_anchors = [next((player for player in ranked_anchors if player.position == position), None)
+                       for position in ("FWD", "MID", "DEF", "GK")]
+    anchors = list({player.id: player for player in [*diverse_anchors, *ranked_anchors]
+                    if player is not None}.values())
+    for anchor in anchors[:anchor_limit]:
+        try:
+            seed = _cheapest_legal_squad(pools, scores,
+                                         required_ids | {anchor.id}, purchase_costs)
+        except ValueError:
+            continue
+        if sum(cost(player) for player in seed) <= budget:
+            seeds.append(seed)
+    if (
+        initial_squad is not None
+        and not validate_squad(initial_squad)
+        and sum(cost(player) for player in initial_squad) <= budget
+        and required_ids.issubset(player.id for player in initial_squad)
+        and all(player in pools[player.position] for player in initial_squad)
+    ):
+        seeds.append(initial_squad)
+    seeds = list({tuple(sorted(player.id for player in seed)): seed for seed in seeds}.values())
+    attempts = [improve(seed, mode) for seed in seeds for mode in ("absolute", "value")]
     best_squad, best_objective = max(attempts, key=lambda item: item[1])
     errors = validate_squad(best_squad)
-    if errors or sum(player.cost for player in best_squad) > budget:
+    if errors or sum(cost(player) for player in best_squad) > budget:
         raise ValueError("Optimizer produced an illegal squad")
     return best_squad, best_objective
 
@@ -1098,6 +1169,7 @@ def _chip_options(
     reserve_goalkeeper: Player,
     settings: SquadSettings,
     strategy: dict[str, Any],
+    weekly_scores: list[dict[int, float]] | None = None,
 ) -> list[ChipOption]:
     half = "first" if event.id <= 19 else "second"
     expiry = 19 if event.id <= 19 else 38
@@ -1136,6 +1208,10 @@ def _chip_options(
     team_value = settings.bank + sum(
         selling_price(item.player.cost, item.purchase_price) for item in owned
     )
+    retained_costs = {
+        item.player.id: selling_price(item.player.cost, item.purchase_price)
+        for item in owned
+    }
     if event.id != 1 and _chip_is_available(settings, event.id, "free_hit"):
         free_hit_squad, optimized = _optimize_squad(
             candidates,
@@ -1143,6 +1219,7 @@ def _chip_options(
             team_value,
             bench_weight=0.0,
             strategy=strategy,
+            purchase_costs=retained_costs,
         )
         baseline = _squad_objective(current_squad, gameweek_scores, 0.0)
         options.append(
@@ -1157,14 +1234,22 @@ def _chip_options(
             )
         )
     if _chip_is_available(settings, event.id, "wildcard"):
+        wildcard_scores = horizon_scores if weekly_scores is None else {
+            player.id: sum(week[player.id] for week in weekly_scores)
+            for player in candidates
+        }
         wildcard_squad, optimized = _optimize_squad(
             candidates,
-            horizon_scores,
+            wildcard_scores,
             team_value,
             bench_weight=0.15,
             strategy=strategy,
+            purchase_costs=retained_costs,
+            weekly_scores=weekly_scores,
+            initial_squad=current_squad,
         )
-        baseline = _squad_objective(current_squad, horizon_scores, 0.15)
+        baseline = sum(_squad_objective(current_squad, week, 0.15)
+                       for week in (weekly_scores if weekly_scores is not None else [horizon_scores]))
         options.append(
             ChipOption(
                 id="chip:wildcard",
@@ -1235,6 +1320,10 @@ def _confidence_assessment(
             + ", ".join(player.name for player in low_minutes[:3])
             + "."
         )
+
+    doubtful = [player.name for player in lineup if availability(player) < 90]
+    if doubtful:
+        reasons.append("Starting XI contains availability doubts: " + ", ".join(doubtful) + ".")
 
     captain_minutes = expected_minutes(captain, strategy)
     margin = _captain_margin(lineup, gameweek_scores, strategy)
@@ -1374,6 +1463,11 @@ def recommend(
     }
     lineup, bench, reserve_goalkeeper = _choose_lineup(proposed, gameweek_scores)
     captain, vice = _captains(lineup, gameweek_scores, scoring_strategy)
+    from fpl_bot.planner import _scores_for_event
+
+    weekly_scores = [_scores_for_event(
+        candidates, fixtures, week, scoring_strategy, current_event_id=event.id
+    ) for week in range(event.id, min(39, event.id + horizon))]
     chip_options = _chip_options(
         event,
         owned,
@@ -1386,6 +1480,7 @@ def recommend(
         reserve_goalkeeper,
         settings,
         scoring_strategy,
+        weekly_scores=weekly_scores,
     )
     chosen_chip_id = selected_chip_id or _default_chip_id(event, chip_options, strategy)
     chosen_chip = next(
@@ -1401,7 +1496,13 @@ def recommend(
         team_value = settings.bank + sum(
             selling_price(item.player.cost, item.purchase_price) for item in owned
         )
-        remaining_bank = team_value - sum(player.cost for player in proposed)
+        retained_costs = {
+            item.player.id: selling_price(item.player.cost, item.purchase_price)
+            for item in owned
+        }
+        remaining_bank = team_value - sum(
+            retained_costs.get(player.id, player.cost) for player in proposed
+        )
         errors = validate_squad(proposed)
         if errors or remaining_bank < 0:
             raise ValueError("Selected chip squad failed final legality validation")
@@ -1414,11 +1515,16 @@ def recommend(
         captain,
         gameweek_scores,
         engine_options,
-        chosen_option.id,
+        chosen_option.id if chosen_chip.id not in {"chip:wildcard", "chip:free_hit"} else "rebuild",
         scoring_strategy,
     )
 
-    if transfers:
+    if chosen_chip.id in {"chip:wildcard", "chip:free_hit"}:
+        transfer_text = (
+            f"Rebuild the squad with {chosen_chip.chip}; transfers cost no points. "
+            f"The legal squad leaves £{remaining_bank / 10:.1f}m in the bank."
+        )
+    elif transfers:
         count = len(transfers)
         moves = "; ".join(
             f"{transfer.player_out.name} to {transfer.player_in.name}"

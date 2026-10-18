@@ -633,6 +633,8 @@ def _build_chip_targets(
                     team_value,
                     bench_weight=0.0,
                     strategy=strategy,
+                    purchase_costs={item.player.id: selling_price(
+                        item.player.cost, item.purchase_price) for item in owned},
                 )
                 del optimized_squad
                 baseline = _squad_objective(players, scores, 0.0)
@@ -677,6 +679,11 @@ def _build_chip_targets(
                 wc_search[-1:] = current[:1]
         for _, event_id, owned, team_value, horizon_scores in wc_search:
             players = [item.player for item in owned]
+            weekly_scores = [score_cache[week] for week in range(
+                event_id, min(expiry + 1, event_id + planning_horizon)
+            ) if week in score_cache]
+            horizon_scores = {player.id: sum(week[player.id] for week in weekly_scores)
+                              for player in candidates}
             try:
                 optimized_squad, optimized = _optimize_squad(
                     candidates,
@@ -684,9 +691,13 @@ def _build_chip_targets(
                     team_value,
                     bench_weight=0.15,
                     strategy=strategy,
+                    weekly_scores=weekly_scores,
+                    initial_squad=players,
+                    purchase_costs={item.player.id: selling_price(
+                        item.player.cost, item.purchase_price) for item in owned},
                 )
                 del optimized_squad
-                baseline = _squad_objective(players, horizon_scores, 0.15)
+                baseline = sum(_squad_objective(players, week, 0.15) for week in weekly_scores)
                 uplift = max(0.0, optimized - baseline)
             except ValueError:
                 uplift = 0.0
@@ -805,6 +816,10 @@ def build_rolling_plan(
     current_captain: str,
     selected_chip_uplift: float = 0.0,
     current_confidence: str = "High",
+    *,
+    include_chip_targets: bool = True,
+    scheduled_wildcard_event_id: int | None = None,
+    wildcard_required_ids: frozenset[int] = frozenset(),
 ) -> RollingPlan:
     """Plan a legal, reachable route and provisional chip windows."""
     names = _event_names(raw_events)
@@ -813,6 +828,14 @@ def build_rolling_plan(
         int(strategy.get("max_fixture_horizon", 6)),
     )
     event_ids = list(range(event.id, min(38, event.id + horizon - 1) + 1))
+    if scheduled_wildcard_event_id is not None:
+        if not event.id < scheduled_wildcard_event_id <= event_ids[-1]:
+            raise ValueError("Scheduled Wildcard must be a later week within the route")
+        half = "first_half" if scheduled_wildcard_event_id <= 19 else "second_half"
+        if settings.chips.get(half, {}).get("wildcard") != "available":
+            raise ValueError("Scheduled Wildcard is unavailable")
+        if selected_chip_id == "chip:wildcard":
+            raise ValueError("Cannot schedule a second Wildcard in the same route")
     score_strategy = dict(strategy)
     score_strategy["completed_gameweeks"] = max(0, event.id - 1)
     score_cache = {
@@ -839,7 +862,13 @@ def build_rolling_plan(
         team_value = settings.bank + sum(
             selling_price(item.player.cost, item.purchase_price) for item in original_owned
         )
-        current_bank = team_value - sum(player.cost for player in current_squad)
+        retained_costs = {
+            item.player.id: selling_price(item.player.cost, item.purchase_price)
+            for item in original_owned
+        }
+        current_bank = team_value - sum(
+            retained_costs.get(player.id, player.cost) for player in current_squad
+        )
     else:
         applied = _apply(original_owned, settings.bank, tuple(immediate_transfers))
         if applied is None:
@@ -897,6 +926,57 @@ def build_rolling_plan(
             for player in candidates
         }
         expanded: dict[tuple[tuple[int, ...], int, int], _PlannerState] = {}
+        if event_id == scheduled_wildcard_event_id:
+            # Bounded counterfactual: rebuild from the strongest prefix states.
+            # Later ordinary moves are optimized exactly as in the no-chip route.
+            for current in beam[:max(1, int(strategy.get("wildcard_review_state_searches", 1)))]:
+                team_value = current.bank + sum(
+                    selling_price(item.player.cost, item.purchase_price)
+                    for item in current.owned
+                )
+                purchase_costs = {
+                    item.player.id: selling_price(item.player.cost, item.purchase_price)
+                    for item in current.owned
+                }
+                players, _ = _optimize_squad(
+                    candidates, lookahead_scores, team_value,
+                    bench_weight=bench_weight, strategy=score_strategy,
+                    weekly_scores=[score_cache[item] for item in remaining_ids],
+                    required_ids=wildcard_required_ids,
+                    initial_squad=[item.player for item in current.owned],
+                    purchase_costs=purchase_costs,
+                )
+                next_owned = _owned_from_players(players, current.owned)
+                next_bank = team_value - sum(
+                    purchase_costs.get(player.id, player.cost) for player in players
+                )
+                projected, lineup, bench, reserve, captain = _project_week(
+                    players, score_cache[event_id], strategy=score_strategy
+                )
+                week = GameweekPlan(
+                    event_id=event_id, event_name=names.get(event_id, f"Gameweek {event_id}"),
+                    transfers=(), chip="Wildcard", captain=captain.name,
+                    starting_xi=tuple(player.name for player in lineup),
+                    bench=tuple(player.name for player in bench), reserve_goalkeeper=reserve.name,
+                    projected_score=round(projected, 2), points_hit=0,
+                    free_transfers_before=current.free_transfers,
+                    free_transfers_after=_next_free_transfers(
+                        current.free_transfers, 0, "chip:wildcard", free_transfer_cap
+                    ),
+                    bank_after=next_bank / 10, confidence="Low",
+                    rationale="Conditional Wildcard rebuild; draft and timing require fresh news.",
+                )
+                candidate_state = _PlannerState(
+                    owned=next_owned, bank=next_bank, free_transfers=week.free_transfers_after,
+                    objective=current.objective + projected + bench_weight * (
+                        sum(score_cache[event_id][player.id] for player in bench)
+                        + score_cache[event_id][reserve.id]
+                    ),
+                    weeks=(*current.weeks, week), history=(*current.history, next_owned),
+                )
+                expanded[_state_signature(candidate_state)] = candidate_state
+            beam = sorted(expanded.values(), key=lambda item: item.objective, reverse=True)[:beam_width]
+            continue
         for current in beam:
             for transfers in _actions_for_state(
                 current, candidates, lookahead_scores, score_strategy
@@ -993,7 +1073,7 @@ def build_rolling_plan(
         selected_chip_uplift,
         route_squads,
         route_banks,
-    )
+    ) if include_chip_targets else ()
     return RollingPlan(
         generated_for_event=event.id,
         horizon=len(best.weeks),

@@ -4,6 +4,8 @@ from fpl_bot.models import Recommendation
 
 
 def transfer_lines(recommendation: Recommendation) -> list[str]:
+    if recommendation.selected_chip_id in {"chip:wildcard", "chip:free_hit"}:
+        return [f"Transfers: {recommendation.chip} squad rebuild"]
     if not recommendation.transfers:
         return ["Transfers: Roll / no transfer"]
     lines = ["Transfers:"]
@@ -98,6 +100,8 @@ def render_markdown(recommendation: Recommendation, window: str) -> str:
             for transfer in recommendation.transfers
         )
     )
+    if recommendation.selected_chip_id in {"chip:wildcard", "chip:free_hit"}:
+        transfer_text = f"{recommendation.chip} squad rebuild"
     hit = "0" if recommendation.points_hit == 0 else f"-{recommendation.points_hit}"
     lines = [
         f"# {recommendation.event.name} recommendation",

@@ -81,6 +81,13 @@ def load_squad(path: Path) -> SquadSettings:
 
 def load_strategy(path: Path) -> dict[str, Any]:
     data = load_yaml(path)
+    local = path.with_name("strategy.local.yaml")
+    if local.exists():
+        for section, settings in load_yaml(local).items():
+            if isinstance(settings, dict) and isinstance(data.get(section), dict):
+                data[section] = {**data[section], **settings}
+            else:
+                data[section] = settings
     required = {"strategy", "notifications", "openai", "fpl_api"}
     missing = required.difference(data)
     if missing:

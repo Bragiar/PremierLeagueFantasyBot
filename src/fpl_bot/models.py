@@ -195,6 +195,8 @@ class GameweekPlan:
 
     @property
     def action(self) -> str:
+        if self.chip in {"Wildcard", "Free Hit"}:
+            return f"{self.chip} squad rebuild"
         if not self.transfers:
             return "Roll / no transfer"
         return ", ".join(

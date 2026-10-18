@@ -47,3 +47,18 @@ When the user asks to run or review the FPL bot “locally”, “here in Codex/
 
 This workflow avoids charges to the user's OpenAI API account. It still uses whatever
 ChatGPT/Codex plan and usage limits apply to the current app session.
+
+## Authorized server production schedule
+
+The user authorized production Telegram delivery from `bragi@192.168.1.241`.
+The deployment is `/home/bragi/apps/fpl-bot`, separate from OpenClaw's checkout.
+Its systemd timers refresh official deadlines daily and run one plan two hours
+before each deadline. Python invokes subscription-authenticated `codex exec`,
+validates any reviewed shortlist choice, sends Telegram, and records delivery.
+This production scheduler is the exception to the interactive test-only delivery
+rule above. Do not send extra messages during setup or ordinary interactive reviews.
+Never enable the project's OpenAI API for this deployment. Codex may only review
+the supplied packet and research the web; Python owns validation and delivery.
+Preserve server notification state when deploying updates. GitHub's cron trigger
+is removed; manual dispatch is retained as an emergency alternative, not a second
+concurrent production sender. See `deploy/README.md` for operation and recovery.

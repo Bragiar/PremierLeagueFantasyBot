@@ -1,35 +1,34 @@
-# Gameweek 6 recommendation
+# Gameweek 7 recommendation
 
-- **Deadline:** 2026-10-10 10:00 UTC
-- **Run window:** manual
-- **Transfers:** Roll / no transfer
+- **Deadline:** 2026-10-17 10:00 UTC
+- **Run window:** 45m
+- **Transfers:** Szoboszlai → Groß (£6.8m → £6.1m)
 - **Cost / points hit:** 0
-- **Captain:** B.Fernandes
-- **Vice-captain:** Haaland
+- **Captain:** Haaland
+- **Vice-captain:** Groß
 - **Chip:** None — save the chip
-- **Confidence:** Low
+- **Confidence:** Medium
 - **Analysis source:** deterministic
 
 ## Starting XI
 
-Tzolakis, Gabriel, Calafiori, Gvardiol, Ajayi, B.Fernandes, Mbeumo, Tzolis, Szoboszlai, Haaland, Calvert-Lewin
+Tzolakis, Gvardiol, Calafiori, Gabriel, Ajayi, van Ewijk, Groß, Mbeumo, B.Fernandes, Schade, Haaland
 
 ## Bench
 
-1. van Ewijk, 2. Kusi-Asare, 3. Hughes
+1. Calvert-Lewin, 2. Kusi-Asare, 3. Hughes
 
 Reserve goalkeeper: Dubravka
 
 ## Explanation
 
-Roll the transfer. No urgent availability problem clears the configured multi-fixture gain threshold, so a points-free hold is preferred. Transfers are assessed across the next 5 Gameweeks. The starting XI, bench order and captaincy are assessed separately for this Gameweek because those changes are free. Chip choice: None; estimated uplift 0.0. Risk mode: balanced.
+Use 1 free transfer: Szoboszlai to Groß. The moves remain within budget with £0.8m left and pass all squad rules. Transfers are assessed across the next 5 Gameweeks. The starting XI, bench order and captaincy are assessed separately for this Gameweek because those changes are free. Chip choice: None; estimated uplift 0.0. Risk mode: balanced.
 
 ### Confidence notes
 
-- The model overestimated B.Fernandes by at least 4 points in each of three recent forecasts (average 7.9); recheck captaincy near the deadline.
-- Only 5 completed Gameweeks of current-season evidence.
-- Captaincy is close: the top-two model margin is only 0.43 points.
-- The hold policy conflicts with a shortlisted model gain of 8.7.
+- The last three settled forecast XIs overpredicted by at least 10 points each (average 30.5); treat optimizer gains cautiously. These are forecast lineups, not confirmed user results.
+- Starting XI contains availability doubts: Schade.
+- Wildcard comparison: WC GW7; unrestricted leads the selected no-chip route by +30.3 model score; later chip value is unpriced. See outputs/latest_wildcard_review.md before choosing a chip.
 
 ## Current-Gameweek projections
 
@@ -37,83 +36,84 @@ Expected points are model estimates; expected minutes express role uncertainty r
 
 | Player | Role | Expected minutes | Expected points |
 |---|---|---:|---:|
-| B.Fernandes | Captain | 89 | 8.96 |
-| Haaland | Vice-Captain | 89 | 8.44 |
-| Mbeumo | Starter | 88 | 7.11 |
-| Gabriel | Starter | 88 | 6.13 |
-| Calafiori | Starter | 83 | 5.44 |
-| Gvardiol | Starter | 85 | 5.36 |
-| Tzolakis | Starter | 86 | 5.26 |
-| Ajayi | Starter | 83 | 3.95 |
-| Tzolis | Starter | 76 | 3.83 |
-| Szoboszlai | Starter | 86 | 3.64 |
-| Calvert-Lewin | Starter | 83 | 2.92 |
-| van Ewijk | Bench | 52 | 1.50 |
+| Haaland | Captain | 88 | 9.26 |
+| Groß | Vice-Captain | 87 | 8.68 |
+| Gvardiol | Starter | 74 | 6.17 |
+| Mbeumo | Starter | 87 | 5.91 |
+| B.Fernandes | Starter | 88 | 5.78 |
+| Calafiori | Starter | 83 | 5.67 |
+| Gabriel | Starter | 88 | 4.79 |
+| Tzolakis | Starter | 86 | 4.60 |
+| Ajayi | Starter | 83 | 3.19 |
+| van Ewijk | Starter | 72 | 3.12 |
+| Schade | Starter | 62 | 2.90 |
+| Calvert-Lewin | Bench | 84 | 2.82 |
 | Kusi-Asare | Bench | 5 | 0.27 |
-| Hughes | Bench | 8 | 0.20 |
-| Dubravka | Reserve Goalkeeper | 5 | 0.06 |
-| Groß | Transfer Candidate | 87 | 7.58 |
-| Schade | Transfer Candidate | 86 | 6.92 |
-| Scott | Transfer Candidate | 86 | 4.92 |
+| Hughes | Bench | 8 | 0.11 |
+| Dubravka | Reserve Goalkeeper | 5 | 0.28 |
+| De Cuyper | Transfer Candidate | 82 | 8.54 |
+| Dewsbury-Hall | Transfer Candidate | 87 | 5.50 |
+| Szoboszlai | Transfer Candidate | 18 | 0.26 |
 
 ## Engine shortlist
 
-- **Roll the free transfer** (`hold`) — selected: projected gain +0.0. Preserves flexibility and avoids acting on a marginal projection.
-- **Tzolis → Groß** (`transfer:557:124`): projected gain +8.7. The move improves the projected best XI plus weighted bench by 8.7 over the configured horizon; incoming availability is 100%.
-- **Tzolis → Schade** (`transfer:557:94`): projected gain +8.5. The move improves the projected best XI plus weighted bench by 8.5 over the configured horizon; incoming availability is 100%.
-- **Tzolis → Scott** (`transfer:557:69`): projected gain +5.6. The move improves the projected best XI plus weighted bench by 5.6 over the configured horizon; incoming availability is 100%.
+- **Roll the free transfer** (`hold`): projected gain +0.0. Preserves flexibility and avoids acting on a marginal projection.
+- **Szoboszlai → Groß** (`transfer:368:124`) — selected: projected gain +17.9. The move improves the projected best XI plus weighted bench by 17.9 over the configured horizon; incoming availability is 100%. Price timing: Szoboszlai projects -116% toward a fall; that fall would cut the selling price by £0.1m. Groß projects 190% toward a rise, so waiting could add £0.1m to the buying price.
+- **Szoboszlai → Dewsbury-Hall** (`transfer:368:236`): projected gain +14.1. The move improves the projected best XI plus weighted bench by 14.1 over the configured horizon; incoming availability is 100%. Price timing: Szoboszlai projects -116% toward a fall; that fall would cut the selling price by £0.1m.
+- **Schade → Groß** (`transfer:94:124`): projected gain +13.1. The move improves the projected best XI plus weighted bench by 13.1 over the configured horizon; incoming availability is 100%. Price timing: Schade projects -135% toward a fall; that fall would cut the selling price by £0.1m. Groß projects 190% toward a rise, so waiting could add £0.1m to the buying price.
+- **Gvardiol → De Cuyper** (`transfer:391:115`): projected gain +3.2. The move improves the projected best XI plus weighted bench by 3.2 over the configured horizon; incoming availability is 100%. Price timing: De Cuyper projects 166% toward a rise, so waiting could add £0.1m to the buying price. Market-watch candidate: De Cuyper has 883,345 net transfers in this Gameweek; that momentum does not add to the points projection.
 
 ## Chip shortlist
 
 - **None** (`chip:none`) — selected: projected uplift +0.0. Preserve the first-half chips for a stronger opportunity before GW19.
-- **Triple Captain** (`chip:triple_captain`): projected uplift +9.0. Adds one extra copy of B.Fernandes's projected 9.0 points.
-- **Bench Boost** (`chip:bench_boost`): projected uplift +2.0. The four substitutes project for 2.0 points in total.
-- **Free Hit** (`chip:free_hit`): projected uplift +17.6. Bounded one-Gameweek legal squad search compared with the current best XI.
-  - Optimized squad: Tzolakis, Verbruggen, Davis, Thomas, Hall, Tarkowski, Branthwaite, B.Fernandes, Groß, Schade, Mbeumo, Barnes, Emersonn, Haaland, Barry
-- **Wildcard** (`chip:wildcard`): projected uplift +37.8. Bounded permanent-squad search across the configured planning horizon.
-  - Optimized squad: Tzolakis, Raya, Guéhi, Gvardiol, Hall, Tarkowski, Virgil, Scott, Grimes, Groß, Schade, Saka, Emersonn, Kostoulas, Haaland
+- **Triple Captain** (`chip:triple_captain`): projected uplift +9.3. Adds one extra copy of Haaland's projected 9.3 points.
+- **Bench Boost** (`chip:bench_boost`): projected uplift +3.5. The four substitutes project for 3.5 points in total.
+- **Free Hit** (`chip:free_hit`): projected uplift +20.4. Bounded one-Gameweek legal squad search compared with the current best XI.
+  - Optimized squad: Haaland, Rushworth, Kinsky, Tarkowski, De Cuyper, Dasilva, Giles, O'Shea, Semenyo, Cunha, Palmer, Cherki, Groß, Kostoulas, Delap
+- **Wildcard** (`chip:wildcard`): projected uplift +51.7. Bounded permanent-squad search across the configured planning horizon.
+  - Optimized squad: Haaland, Trafford, Verbruggen, Calafiori, De Cuyper, Dasilva, Guéhi, Tarkowski, Semenyo, McGinn, Rogers, Groß, Tonali, Barry, João Pedro
 
 ## Rolling short-term plan
 
-Combined model score over the 5-Gameweek route: **356.4**. This is a comparative rating, not a literal points forecast.
+Combined model score over the 5-Gameweek route: **350.3**. This is a comparative rating, not a literal points forecast.
 
 | GW | Transfers | Captain | Chip | Hit | Free transfers after | Bank | Model score | Confidence |
 |---:|---|---|---|---:|---:|---:|---:|---|
-| 6 | Roll / no transfer | B.Fernandes | None | 0 | 2 | £0.0m | 70.0 | Medium |
-| 7 | Tzolis → Schade, van Ewijk → Thomas | Haaland | None | 0 | 1 | £0.1m | 73.0 | Medium |
-| 8 | Roll / no transfer | Haaland | None | 0 | 2 | £0.1m | 73.2 | Medium |
-| 9 | Roll / no transfer | Haaland | None | 0 | 3 | £0.1m | 67.7 | Low |
-| 10 | Tzolakis → Petrović | Haaland | None | 0 | 3 | £0.2m | 72.5 | Low |
-
-### Gameweek 6 projected team
-
-- **Starting XI:** Tzolakis, Gabriel, Calafiori, Gvardiol, Ajayi, B.Fernandes, Mbeumo, Tzolis, Szoboszlai, Haaland, Calvert-Lewin
-- **Bench:** van Ewijk, Kusi-Asare, Hughes; reserve goalkeeper Dubravka
-- **Reasoning:** Current reviewed action; later weeks are optimized from this legal state.
+| 7 | Szoboszlai → Groß | Haaland | None | 0 | 1 | £0.8m | 69.3 | Medium |
+| 8 | Ajayi → Dasilva | Haaland | None | 0 | 1 | £1.0m | 69.3 | Medium |
+| 9 | Schade → Dewsbury-Hall | Haaland | None | 0 | 1 | £0.6m | 65.0 | Medium |
+| 10 | Dubravka → Verbruggen | Haaland | None | 0 | 1 | £0.0m | 73.7 | Low |
+| 11 | Roll / no transfer | Haaland | None | 0 | 2 | £0.0m | 73.1 | Low |
 
 ### Gameweek 7 projected team
 
-- **Starting XI:** Tzolakis, Gvardiol, Gabriel, Calafiori, Ajayi, Thomas, B.Fernandes, Mbeumo, Szoboszlai, Schade, Haaland
+- **Starting XI:** Tzolakis, Gvardiol, Calafiori, Gabriel, Ajayi, van Ewijk, Groß, Mbeumo, B.Fernandes, Schade, Haaland
 - **Bench:** Calvert-Lewin, Kusi-Asare, Hughes; reserve goalkeeper Dubravka
-- **Reasoning:** Conditional route: the moves improve remaining-horizon player ratings by 10.4.
+- **Reasoning:** Current reviewed action; later weeks are optimized from this legal state.
 
 ### Gameweek 8 projected team
 
-- **Starting XI:** Tzolakis, Gabriel, Gvardiol, Calafiori, Thomas, B.Fernandes, Schade, Mbeumo, Szoboszlai, Haaland, Calvert-Lewin
-- **Bench:** Ajayi, Hughes, Kusi-Asare; reserve goalkeeper Dubravka
-- **Reasoning:** Roll to preserve transfer flexibility.
+- **Starting XI:** Tzolakis, Gabriel, Calafiori, Gvardiol, Dasilva, B.Fernandes, Mbeumo, Groß, Schade, Haaland, Calvert-Lewin
+- **Bench:** van Ewijk, Hughes, Kusi-Asare; reserve goalkeeper Dubravka
+- **Reasoning:** Conditional route: the moves improve remaining-horizon player ratings by 4.3.
 
 ### Gameweek 9 projected team
 
-- **Starting XI:** Tzolakis, Gvardiol, Gabriel, Ajayi, Calafiori, B.Fernandes, Schade, Mbeumo, Szoboszlai, Haaland, Calvert-Lewin
-- **Bench:** Thomas, Hughes, Kusi-Asare; reserve goalkeeper Dubravka
-- **Reasoning:** Roll to preserve transfer flexibility.
+- **Starting XI:** Tzolakis, Gvardiol, Gabriel, Calafiori, Dasilva, B.Fernandes, Dewsbury-Hall, Mbeumo, Groß, Haaland, Calvert-Lewin
+- **Bench:** van Ewijk, Hughes, Kusi-Asare; reserve goalkeeper Dubravka
+- **Reasoning:** Conditional route: the moves improve remaining-horizon player ratings by 7.2.
 
 ### Gameweek 10 projected team
 
-- **Starting XI:** Petrović, Gabriel, Calafiori, Gvardiol, Thomas, B.Fernandes, Mbeumo, Szoboszlai, Schade, Haaland, Calvert-Lewin
-- **Bench:** Ajayi, Kusi-Asare, Hughes; reserve goalkeeper Dubravka
-- **Reasoning:** Conditional route: the moves improve remaining-horizon player ratings by 2.3.
+- **Starting XI:** Verbruggen, Gabriel, Calafiori, Gvardiol, Dasilva, B.Fernandes, Dewsbury-Hall, Mbeumo, Groß, Haaland, Calvert-Lewin
+- **Bench:** van Ewijk, Kusi-Asare, Hughes; reserve goalkeeper Tzolakis
+- **Reasoning:** Conditional route: the moves improve remaining-horizon player ratings by 8.5.
+
+### Gameweek 11 projected team
+
+- **Starting XI:** Verbruggen, Gabriel, Gvardiol, Calafiori, Dasilva, van Ewijk, B.Fernandes, Groß, Dewsbury-Hall, Mbeumo, Haaland
+- **Bench:** Calvert-Lewin, Hughes, Kusi-Asare; reserve goalkeeper Tzolakis
+- **Reasoning:** Roll to preserve transfer flexibility.
 
 ## Provisional long-term chip calendar
 
@@ -122,9 +122,9 @@ These are decision gates, not chips already applied to the short-term route. If 
 | Chip | Primary window | Backup | Target | Uplift | Confidence |
 |---|---|---|---|---:|---|
 | Wildcard | Unassigned | None | — | 0.0 | Low |
-| Free Hit | GW17 | GW18 | — | 5.4 | Low |
-| Bench Boost | GW9 | GW8 | — | 4.3 | Low |
-| Triple Captain | GW7 | GW16 | Haaland | 10.1 | Medium |
+| Free Hit | GW18 | GW17 | — | 7.2 | Low |
+| Bench Boost | GW11 | GW12 | — | 7.4 | Low |
+| Triple Captain | GW16 | GW19 | Haaland | 10.0 | Low |
 
 ### Chip-window reasoning
 
@@ -143,13 +143,13 @@ These are decision gates, not chips already applied to the short-term route. If 
 
 - 15-player squad and position quotas valid
 - Maximum three players per club valid
-- Transfer budget valid; projected bank £0.0m
+- Transfer budget valid; projected bank £0.8m
 - Points hit 0
-- Selected reviewed engine option hold
+- Selected reviewed engine option transfer:368:124
 - Selected legal chip option chip:none
 - Projection sanity bounds passed
 - Mini-league risk mode balanced
 - Reachable 5-Gameweek rolling route validated
-- Recent forecast calibration: 3.01 points MAE and 16.7 minutes MAE across 4 Gameweeks
+- Recent forecast calibration: 2.99 points MAE and 18.2 minutes MAE across 5 Gameweeks
 
 > Recommendation only: confirm team news and make any changes yourself in FPL.

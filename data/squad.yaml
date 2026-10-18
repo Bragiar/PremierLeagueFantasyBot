@@ -1,13 +1,13 @@
-# Reconciled from public FPL GW5 picks and transfer records on 2026-09-25.
-# New purchase prices are from the public transfer ledger; unchanged prices are
-# retained from the last authenticated sync. Public picks cannot show GW6 moves.
+# Reconciled with user screenshot and confirmed bank/free transfers on 2026-10-17.
+# Schade purchase price confirmed from public GW6 transfer ledger; unchanged
+# purchase prices retained from the previous squad record.
 # Never place FPL credentials or tokens in this file.
 fpl_entry_id: 8825888
-last_confirmed_at: "2026-09-25T21:30:27+00:00"
-bank: 0.0
+last_confirmed_at: "2026-10-17"
+bank: 0.1
 free_transfers: 1
-captain: Haaland
-vice_captain: B.Fernandes
+captain: B.Fernandes
+vice_captain: Haaland
 chips:
   first_half:
     wildcard: available
@@ -31,7 +31,7 @@ squad:
   - {element_id: 368, name: Szoboszlai, position: MID, purchase_price: 7.0}
   - {element_id: 426, name: B.Fernandes, position: MID, purchase_price: 12.0}
   - {element_id: 427, name: Mbeumo, position: MID, purchase_price: 8.0}
-  - {element_id: 557, name: Tzolis, position: MID, purchase_price: 6.5}
+  - {element_id: 94, name: Schade, position: MID, purchase_price: 6.2}
   - {element_id: 346, name: Calvert-Lewin, position: FWD, purchase_price: 6.0}
   - {element_id: 272, name: Kusi-Asare, position: FWD, purchase_price: 4.5}
   - {element_id: 411, name: Haaland, position: FWD, purchase_price: 15.5}

@@ -28,7 +28,7 @@ The deterministic Python analysis works without OpenAI. If `OPENAI_API_KEY` is p
 - JSON Lines decision history plus a readable latest plan
 - A machine-readable latest route and a saved prior route so each run explains what changed
 - A saved forecast ledger that grades expected points and minutes against official results
-- GitHub Actions every 30 minutes and a separate local Codex strategy reviewer
+- Deadline-driven Linux server scheduling with subscription Codex research and Telegram delivery
 
 ## 1. Run locally
 
@@ -100,6 +100,18 @@ Each sync retrieves exact FPL purchase prices, bank, remaining free transfers, c
 vice-captain, and explicit chip statuses. It records detected player changes in
 `logs/actual_transfer_history.jsonl`. If authorization expires, repeat the setup step.
 
+If macOS Keychain is unavailable, the sync also accepts a local fallback file outside
+the repository at `~/Library/Application Support/fpl-bot/auth.env`:
+
+```dotenv
+FPL_ENTRY_ID=1234567
+FPL_REFRESH_TOKEN=your-refresh-token
+```
+
+Create that file with restrictive permissions and never commit or paste its contents
+into chat. Keychain values remain preferred when readable, and the fallback file is
+used only when Keychain access fails or the requested item is absent.
+
 ### How the decision model works
 
 The bot does look at upcoming matches as well as FDR. For each player it builds an
@@ -148,8 +160,27 @@ Chip projections are incremental versus the normal plan. Triple Captain adds one
 copy of the captain projection; Bench Boost adds the four substitute projections; Free
 Hit runs a bounded search for a legal one-Gameweek squad; Wildcard does the same for a
 permanent squad over the configured horizon. These are heuristic estimates rather than
-proof of the globally optimal squad. The conservative controls in `config/strategy.yaml` preserve
-chips unless the opportunity is exceptional or the half-season expiry is close.
+proof of the globally optimal squad. With `save_chips_by_default: true` and
+`allow_exceptional_early_chip: false`, automatic selection saves chips before expiry
+pressure even if their displayed gain exceeds the exceptional threshold. A no-chip
+selection is therefore a policy decision, not proof that waiting scores better.
+
+`wildcard_review_enabled: true` separately tests Wildcard now, Wildcard next week
+(after the selected shortlisted transfer or a hold), and ordinary transfer routes.
+Every route uses the same horizon, weekly projections, budget and transfer rules.
+Rebuilds optimize a separate legal XI and captain each week, use several starting
+structures, and test retaining the selected captain. Players retained on a chip are
+valued at their selling opportunity cost, rather than charged a market repurchase.
+The outputs are `outputs/latest_wildcard_review.md` and `.json`. These comparisons
+do not activate a chip or replace the reviewed immediate shortlist. Drafts remain
+experimental until selected through the normal validated flow.
+
+The scores do not price the value of retaining a Wildcard beyond the horizon, and
+future prices, injury recovery and rotation remain uncertain. The search is bounded;
+it does not enumerate every team or prove global optimality. Increase
+`optimizer_anchor_seeds` or `wildcard_review_state_searches` to explore more starting
+structures or pre-Wildcard states at a higher runtime cost. Keep forecast weights
+unchanged until held-out, chronological evaluation supports a change.
 
 ### Rolling short-term and long-term planning
 
@@ -190,7 +221,7 @@ Open this FPL folder in a fresh Codex/ChatGPT task and say:
 
 The repository's `AGENTS.md` tells Codex to generate a non-recording Python preview with OpenAI disabled, inspect the legal shortlist, research current news using the app's web search, choose only a shortlisted option, and send that option back through Python for final validation. The finalized run is dry-run only, so it records the recommendation but never sends Telegram.
 
-This avoids charges to your separate OpenAI API account; ordinary ChatGPT/Codex plan limits still apply. `openai.enabled` is disabled by default in `config/strategy.yaml`, so scheduled runs also remain deterministic even if an API key exists. Set it to `true` only if you deliberately want the bot-hosted web review again.
+This avoids charges to your separate OpenAI API account; ordinary ChatGPT/Codex plan limits still apply. `openai.enabled` is disabled by default in `config/strategy.yaml`, so the Python bot never calls that API even if a key exists. The server instead uses its separately configured subscription Codex reviewer. Set it to `true` only if you deliberately want the bot-hosted web review again.
 
 To exercise Telegram too, say:
 
@@ -230,7 +261,7 @@ In GitHub, open **Settings → Secrets and variables → Actions → Repository 
 - `TELEGRAM_CHAT_ID`
 - `OPENAI_API_KEY` (optional)
 
-Use **repository secrets** for the normal setup. The scheduled workflow can access them
+Use **repository secrets** for the normal setup. The manually dispatched workflow can access them
 without declaring a deployment environment. Use **environment secrets** only if you
 intentionally configure separate environments such as `production` and `staging`, need
 different credentials for each, or want environment approval and branch-protection
@@ -240,9 +271,9 @@ To change the optional model, add an Actions **variable** named `OPENAI_MODEL`. 
 
 Under **Settings → Actions → General → Workflow permissions**, allow **Read and write permissions** so the workflow can commit its generated decision and planning artifacts. Branch protection must also permit the built-in GitHub Actions bot to push to the chosen branch, or use a narrowly scoped approved alternative.
 
-## 4. Enable and test GitHub Actions
+## 4. Manual GitHub Actions fallback
 
-Pushing the repository installs the workflow in `.github/workflows/fpl-bot.yml`. Open the **Actions** tab, select **FPL recommendation bot**, and enable workflows if GitHub asks.
+The workflow in `.github/workflows/fpl-bot.yml` retains manual dispatch for emergency use. Its cron trigger has been removed because the server is the production scheduler. Avoid running a second live sender against independent notification state.
 
 For the first test:
 
@@ -251,9 +282,9 @@ For the first test:
 3. Leave **force** disabled; dry runs are automatically forced so they produce a plan immediately.
 4. Start the run and inspect `outputs/latest_recommendation.md` and the newest line in `logs/decision_log.jsonl`.
 
-Then run a real forced notification only if you want a Telegram message: disable **dry_run** and enable **force**. Scheduled runs are requested every 15 minutes at :07, :22, :37, and :52 UTC. They first fetch the lightweight official deadline feed and exit quickly without modifying the repository when no window is due.
+Then run a real forced notification only if you want a Telegram message: disable **dry_run** and enable **force**. Normal production delivery runs on the server two hours before each deadline. GitHub no longer polls for deadlines.
 
-The workflow has one concurrency group per branch, does not cancel an in-progress run, and is triggered only by the schedule or manual dispatch. Its own commits therefore do not start another bot run. A notification is marked delivered only after Telegram accepts it.
+The workflow has one concurrency group per branch, does not cancel an in-progress run, and is triggered only by manual dispatch. Its own commits therefore do not start another bot run. A notification is marked delivered only after Telegram accepts it.
 
 ## 5. Decision log lifecycle
 
@@ -282,19 +313,34 @@ JSON Lines is deliberately append-only and Git-friendly: each line is a complete
 
 Python always creates and validates the transfer and chip shortlists first. The research model must use web search and may choose only exact IDs from those shortlists. Model-written URLs are discarded unless they also appear in the API's web-search source metadata. A researched combination replaces the engine's initial choices only when the verdict is `disagree`, confidence is `high`, at least two sources are verified, and `allow_research_override` remains enabled. The transfer and chip combination is then rebuilt and validated by Python. Any API, parsing, sourcing or validation failure safely retains the deterministic choices.
 
-Configure the candidate count, search-call limit, override switch and minimum source count in `config/strategy.yaml`. Use `--no-openai` to skip research entirely.
+Configure the candidate count, search-call limit, override switch and minimum source count in `config/strategy.yaml`. Use `--no-openai` to skip the bot-hosted OpenAI API review. The separate server-only `codex.enabled` setting controls subscription-authenticated CLI research.
 
-## 6. Codex as the AI maintainer
+## 6. Server scheduling and Codex review
 
-The local Codex scheduled task runs weekly on Tuesday morning against this project. It
-reviews new decision-log entries, material code or strategy changes, the reachable
-5–6 Gameweek route, and the provisional chip calendar. When nothing material has
-changed, it exits without rewriting project files. When there is new evidence, it writes
-a concise audit to `outputs/strategy_review.md`. It may recommend changes, but it must
-not send Telegram, call the project's OpenAI API, edit credentials, log into FPL, or
-become the deadline scheduler.
+Production runs on `bragi@192.168.1.241` in `/home/bragi/apps/fpl-bot`.
+The server runs Debian Linux. A daily lightweight systemd task refreshes official
+FPL deadlines and programs the next run for two hours before the next deadline.
+Python generates the engine plan and invokes `codex exec` using the server's
+ChatGPT login, with live web search and shell commands disabled. No OpenAI API key
+is used. Subscription usage limits still apply.
 
-GitHub Actions remains the dependable production runner because it checks official deadlines every 30 minutes even when this computer or Codex is closed. Codex is the slower maintenance layer: use it to review the repository, improve tests, investigate weak assumptions, and propose carefully validated strategy changes. Commit any accepted strategy review or code change normally.
+The reviewer receives the legal shortlist, expected minutes, confidence notes,
+rolling plan, chip calendar and forecast history. Python verifies source URLs
+against web-tool events, applies the conservative override policy, revalidates
+budget and squad rules, and sends Telegram. If review fails, the engine choices
+remain. Delivery failures retry after ten minutes, with deadline and duplicate
+guards. A missed run can catch up until fifteen minutes before the deadline.
+
+The server must remain powered on, awake and connected; the desktop app can be
+closed. Keep the server's squad file current after making FPL changes. Server
+state and logs in `.server/runtime/` are authoritative and preserved across code pulls.
+Ignored `config/strategy.local.yaml` overrides retain the server settings.
+GitHub retains manual dispatch as an emergency alternative; its cron is removed.
+See [server operating instructions](deploy/README.md) for status, logs and recovery.
+
+The separate weekly Codex maintenance task may review strategy and tests. It
+must not send Telegram or become a second deadline scheduler. Its local files
+do not automatically sync with the server deployment.
 
 ## Safety and operating notes
 
@@ -303,7 +349,7 @@ GitHub Actions remains the dependable production runner because it checks offici
 - The refresh token is an account credential. Keep it in macOS Keychain, never commit it, and renew it if authentication is rejected.
 - Official FPL news and chance-of-playing fields can downgrade or exclude players from recommendations; a live-data error produces a low-confidence, no-transfer, no-hit fallback with the configured captaincy and a legal 4-4-2.
 - Web research is advisory evidence, not guaranteed truth. The output records its links and risks so you can inspect late news yourself.
-- Notification timing is approximate because GitHub schedules can be delayed or dropped. Each notification window remains eligible until the next threshold (24h, 3h, then 45m before the deadline), and duplicate keys prevent repeat delivery within a window. The bot cannot send after the deadline or if GitHub never starts a run before it.
+- Production notification timing is two hours before the deadline plus plan/research runtime. Daily refreshes catch deadline changes. Server downtime, connectivity loss or exhausted subscription limits can affect delivery or research; the bot cannot send after the deadline.
 - Run `pytest` after strategy or code changes. Run `fpl-bot --dry-run --force` before merging operational changes.
 
 ## Project map
@@ -321,5 +367,6 @@ state/last_run.json           duplicate prevention and last known deadlines
 state/rolling_plan.json       previous route used for change detection
 state/forecast_history.json   predictions settled against official results
 tests/                        focused automated checks
-.github/workflows/fpl-bot.yml production schedule
+.github/workflows/fpl-bot.yml manual emergency fallback
+deploy/                       server units and operating instructions
 ```

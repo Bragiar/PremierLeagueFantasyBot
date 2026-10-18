@@ -204,3 +204,23 @@ def recent_player_overprediction(
     if len(misses) != count or any(miss < 4.0 for miss in misses):
         return None
     return round(sum(misses) / count, 1)
+
+
+def recent_team_overprediction(
+    history: dict[str, Any], *, count: int = 3, minimum_miss: float = 10.0,
+) -> float | None:
+    """Warn about repeated forecast-XI bias; do not recalibrate on this small sample."""
+    recent = sorted(
+        (week for week in history.get("settled", {}).values() if isinstance(week, dict)),
+        key=lambda week: int(week.get("event_id", 0)),
+    )[-count:]
+    if len(recent) != count or any(
+        week.get("expected_team_points") is None or week.get("actual_team_points") is None
+        for week in recent
+    ):
+        return None
+    misses = [float(week["expected_team_points"]) - float(week["actual_team_points"])
+              for week in recent]
+    if any(miss < minimum_miss for miss in misses):
+        return None
+    return round(sum(misses) / count, 1)

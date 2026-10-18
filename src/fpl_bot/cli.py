@@ -18,6 +18,13 @@ def default_repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+def load_auth_environment(repo_root: Path) -> None:
+    """Load local auth settings without putting the secret in the repository."""
+    external_path = Path.home() / "Library" / "Application Support" / "fpl-bot" / "auth.env"
+    load_dotenv(external_path)
+    load_dotenv(repo_root / ".env")
+
+
 def parse_now(value: str) -> datetime:
     parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if parsed.tzinfo is None:
@@ -143,7 +150,7 @@ def main(argv: list[str] | None = None) -> int:
     if raw_argv[:1] == ["sync-team"]:
         args = build_sync_parser().parse_args(raw_argv[1:])
         repo_root = args.repo_root.resolve()
-        load_dotenv(repo_root / ".env")
+        load_auth_environment(repo_root)
         try:
             result = sync_team(repo_root)
         except (FPLAuthError, OSError, ValueError) as exc:
@@ -154,7 +161,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = build_parser().parse_args(raw_argv)
     repo_root = args.repo_root.resolve()
-    load_dotenv(repo_root / ".env")
+    load_auth_environment(repo_root)
     try:
         result = run(
             repo_root,

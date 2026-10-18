@@ -1,0 +1,14 @@
+[Unit]
+Description=Generate, review and deliver the FPL deadline plan
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/apps/fpl-bot
+Environment=PATH=%h/.openclaw/tools/node/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/apps/fpl-bot/.venv/bin/python -m fpl_bot.server_scheduler --repo-root %h/apps/fpl-bot --run
+TimeoutStartSec=45min
+Restart=on-failure
+RestartSec=10min
+UMask=0077

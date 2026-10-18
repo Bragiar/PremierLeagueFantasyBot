@@ -161,7 +161,11 @@ class KeychainStore:
 
 
 def stored_entry_id(store: KeychainStore) -> int:
-    raw = store.get(ENTRY_ID_ACCOUNT) or os.getenv("FPL_ENTRY_ID", "").strip()
+    try:
+        stored = store.get(ENTRY_ID_ACCOUNT)
+    except FPLAuthError:
+        stored = None
+    raw = stored or os.getenv("FPL_ENTRY_ID", "").strip()
     try:
         entry_id = int(raw)
     except (TypeError, ValueError) as exc:
@@ -174,9 +178,11 @@ def stored_entry_id(store: KeychainStore) -> int:
 
 
 def stored_refresh_token(store: KeychainStore) -> str:
-    token = store.get(REFRESH_TOKEN_ACCOUNT) or os.getenv(
-        "FPL_REFRESH_TOKEN", ""
-    ).strip()
+    try:
+        stored = store.get(REFRESH_TOKEN_ACCOUNT)
+    except FPLAuthError:
+        stored = None
+    token = stored or os.getenv("FPL_REFRESH_TOKEN", "").strip()
     if not token:
         raise FPLAuthError(
             "FPL refresh token is not configured; run `fpl-bot setup-fpl-auth`"

@@ -1,5 +1,7 @@
 .env
 .env.save
+auth.env
+.fpl-auth.env
 .venv/
 __pycache__/
 *.py[cod]
@@ -10,3 +12,9 @@ dist/
 build/
 *.egg-info/
 .DS_Store
+.server/
+outputs/latest_codex_web_events.jsonl
+outputs/latest_codex_review.json
+config/strategy.local.yaml
+.server-preview.log
+.server-reviewed-preview.log

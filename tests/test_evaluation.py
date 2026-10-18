@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from fpl_bot.evaluation import (
     performance_summary,
     recent_player_overprediction,
+    recent_team_overprediction,
     record_forecast,
     settle_finished_forecasts,
 )
@@ -18,6 +19,17 @@ class FakeLiveClient:
                 {"id": 2, "stats": {"total_points": 2, "minutes": 30}},
             ]
         }
+
+
+def test_repeated_team_bias_is_flagged_independently_of_current_captain():
+    history = {"settled": {str(event): {
+        "event_id": event, "expected_team_points": 70, "actual_team_points": 40,
+    } for event in (4, 5, 6)}}
+    assert recent_team_overprediction(history) == 30.0
+    history["settled"]["6"]["actual_team_points"] = 65
+    assert recent_team_overprediction(history) is None
+    del history["settled"]["6"]["actual_team_points"]
+    assert recent_team_overprediction(history) is None
 
 
 def test_repeated_captain_overprediction_requires_three_recent_large_misses():

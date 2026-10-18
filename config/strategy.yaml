@@ -18,6 +18,11 @@ strategy:
   planner_saved_transfer_value: 0.8
   planner_bench_weight: 0.18
   planner_chip_window_searches: 4
+  # Test early Wildcards even when automatic chip selection remains conservative.
+  # Counterfactuals share one horizon and never activate a chip automatically.
+  wildcard_review_enabled: true
+  wildcard_review_state_searches: 1
+  optimizer_anchor_seeds: 3
   planner_promoted_home_tc_bonus: 2.5
   planner_gw19_free_hit_penalty: 5.0
   promoted_teams: [Coventry City, Hull City, Ipswich Town]

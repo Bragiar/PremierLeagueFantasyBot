@@ -19,6 +19,7 @@ from fpl_bot.evaluation import (
     normalize_forecast_history,
     performance_summary,
     recent_player_overprediction,
+    recent_team_overprediction,
     record_forecast,
     settle_finished_forecasts,
 )
@@ -140,12 +141,14 @@ def run(
 ) -> ServiceResult:
     if test_telegram and (dry_run or preview):
         raise ValueError("Test Telegram delivery cannot be combined with dry-run or preview")
+    real_time_run = now is None
     now = (now or datetime.now(UTC)).astimezone(UTC)
     strategy_config = load_strategy(repo_root / "config" / "strategy.yaml")
     squad_settings = load_squad(repo_root / "data" / "squad.yaml")
-    state_path = repo_root / "state" / "last_run.json"
-    plan_state_path = repo_root / "state" / "rolling_plan.json"
-    forecast_state_path = repo_root / "state" / "forecast_history.json"
+    artifact_root = Path(strategy_config.get("runtime", {}).get("directory", repo_root))
+    state_path = artifact_root / "state" / "last_run.json"
+    plan_state_path = artifact_root / "state" / "rolling_plan.json"
+    forecast_state_path = artifact_root / "state" / "forecast_history.json"
     state = load_state(state_path)
     previous_plan = load_json_object(plan_state_path)
     forecast_history = normalize_forecast_history(
@@ -255,8 +258,20 @@ def run(
     review = None
     ai_error = None
     if not recommendation.fallback:
-        review, ai_error = research_recommendation(recommendation, openai_config)
+        if strategy_config.get("codex", {}).get("enabled", False):
+            from fpl_bot.codex_review import research_with_codex
+
+            review, ai_error = research_with_codex(
+                recommendation, strategy_config["codex"], artifact_root, forecast_history
+            )
+        else:
+            review, ai_error = research_recommendation(recommendation, openai_config)
     ai_used = review is not None
+    if ai_error and strategy_config.get("codex", {}).get("enabled", False):
+        recommendation.validation.append(ai_error)
+        recommendation.confidence_reasons.insert(
+            0, "Codex research unavailable; this is the engine-only plan."
+        )
     if review is not None:
         original_option_id = recommendation.selected_option_id
         original_chip_id = recommendation.selected_chip_id
@@ -287,7 +302,10 @@ def run(
             except (KeyError, TypeError, ValueError) as exc:
                 ai_error = f"{type(exc).__name__}: research choice failed final validation"
         recommendation.research_review = review
-        recommendation.source = "deterministic+openai-web"
+        recommendation.source = (
+            "deterministic+codex-web" if strategy_config.get("codex", {}).get("enabled", False)
+            else "deterministic+openai-web"
+        )
 
     if recommendation.rolling_plan is not None:
         from fpl_bot.planner import with_plan_changes
@@ -304,6 +322,15 @@ def run(
             f"{model_summary['gameweeks']} Gameweeks"
         )
     if not recommendation.fallback:
+        team_miss = recent_team_overprediction(forecast_history)
+        if team_miss is not None:
+            recommendation.confidence_reasons.insert(
+                0, f"The last three settled forecast XIs overpredicted by at least 10 points "
+                f"each (average {team_miss:.1f}); treat optimizer gains cautiously. "
+                "These are forecast lineups, not confirmed user results."
+            )
+            if recommendation.confidence == "High":
+                recommendation.confidence = "Medium"
         captain_miss = recent_player_overprediction(
             forecast_history, recommendation.captain
         )
@@ -316,14 +343,45 @@ def run(
                 "recheck captaincy near the deadline.",
             )
 
+    if bootstrap is not None and not recommendation.fallback and bool(
+        strategy_config["strategy"].get("wildcard_review_enabled", False)
+    ):
+        from fpl_bot.squad import all_api_players
+        from fpl_bot.wildcard_review import compare_wildcard_routes, render_wildcard_review
+
+        review = compare_wildcard_routes(
+            event, owned, all_api_players(bootstrap["elements"], bootstrap["teams"]),
+            bootstrap["events"], fixtures, squad_settings,
+            strategy_config["strategy"], recommendation,
+        )
+        save_json_object(artifact_root / "outputs" / "latest_wildcard_review.json", review)
+        atomic_write_text(artifact_root / "outputs" / "latest_wildcard_review.md",
+                          render_wildcard_review(review))
+        best = next(iter(review["routes"]), None)
+        if best and best["wildcard_event_id"] is not None:
+            recommendation.confidence_reasons.append(
+                f"Wildcard comparison: {best['label']} leads the selected no-chip route by "
+                f"{best['delta_vs_selected_no_chip']:+.1f} model score; later chip value is unpriced. "
+                "See outputs/latest_wildcard_review.md before choosing a chip."
+            )
+            if recommendation.confidence == "High":
+                recommendation.confidence = "Medium"
+
+    if recommendation.rolling_plan is not None and recommendation.rolling_plan.gameweeks:
+        first, *later = recommendation.rolling_plan.gameweeks
+        recommendation.rolling_plan = replace(
+            recommendation.rolling_plan,
+            gameweeks=(replace(first, confidence=recommendation.confidence), *later),
+        )
+
     telegram_message = render_telegram(
         recommendation, window, test_message=test_telegram
     )
     markdown = render_markdown(recommendation, window)
-    atomic_write_text(repo_root / "outputs" / "latest_recommendation.md", markdown)
+    atomic_write_text(artifact_root / "outputs" / "latest_recommendation.md", markdown)
     if recommendation.rolling_plan is not None:
         save_json_object(
-            repo_root / "outputs" / "latest_strategy_plan.json",
+            artifact_root / "outputs" / "latest_strategy_plan.json",
             recommendation.rolling_plan.to_dict(),
         )
 
@@ -333,6 +391,10 @@ def run(
     delivery = "dry_run" if dry_run else "pending"
     delivery_error: str | None = None
     if not dry_run:
+        if (real_time_run and not test_telegram
+                and strategy_config.get("codex", {}).get("enabled", False)
+                and datetime.now(UTC) >= recommendation.event.deadline):
+            return ServiceResult(0, "deadline_passed", "Deadline passed during review; no Telegram sent.")
         try:
             send_telegram(
                 os.getenv("TELEGRAM_BOT_TOKEN", "").strip(),
@@ -368,7 +430,7 @@ def run(
         record_forecast(forecast_history, recommendation, now)
     save_json_object(forecast_state_path, forecast_history)
     append_jsonl(
-        repo_root / "logs" / "decision_log.jsonl",
+        artifact_root / "logs" / "decision_log.jsonl",
         _record(recommendation, now, window, key, delivery, ai_used, ai_error),
     )
 
