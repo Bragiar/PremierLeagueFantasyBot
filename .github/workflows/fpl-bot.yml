@@ -1,9 +1,6 @@
 name: FPL recommendation bot
 
 on:
-  schedule:
-    # Avoid the start of the hour, when GitHub scheduled runs are often delayed.
-    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
