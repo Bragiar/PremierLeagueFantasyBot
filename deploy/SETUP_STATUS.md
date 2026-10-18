@@ -33,3 +33,15 @@ while converting the deployment to Git. A pre-migration backup is saved under
 Server overrides are ignored in `config/strategy.local.yaml`; live state, logs and
 outputs are preserved in `.server/runtime/` outside tracked files. Update code
 with `git pull --ff-only`. Server runtime data remains authoritative.
+
+## Weekly audit migration
+
+The Mac's authenticated squad sync and weekly audit automations are paused.
+The server weekly audit is enabled for Tuesdays at 09:00 Europe/Amsterdam,
+starting 20 October 2026. It explicitly uses `gpt-6.1-sol` with high reasoning
+through the saved ChatGPT login. An initial audit completed successfully on
+18 October at 10:30 UTC. Reports live in `.server/runtime/outputs/strategy_review.md`;
+status lives in `.server/runtime/state/weekly_audit.json`. No Telegram message
+was sent. Findings are proposals only; no strategy or squad changes are applied.
+The audit packet includes sanitized effective schedule settings and status,
+not credential files or the private configuration override. All 86 tests pass.

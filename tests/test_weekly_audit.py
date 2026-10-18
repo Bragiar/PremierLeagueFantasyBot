@@ -63,3 +63,14 @@ def test_no_change_retains_report_and_deduplicates_week(monkeypatch, tmp_path):
     assert 'Already audited' in weekly_audit.run_audit(tmp_path)
     assert len(calls) == 1
     assert report.read_text() == 'previous review'
+
+
+def test_effective_settings_are_sanitized(tmp_path):
+    packet = weekly_audit.audit_packet(tmp_path, tmp_path / '.server/runtime', {
+        'notifications': {'offsets_minutes': [120]},
+        'openai': {'enabled': False, 'api_key': 'do-not-include-this-credential'},
+        'telegram': {'token': 'do-not-include-this-credential'},
+    })
+    assert packet['deployment']['effective_offsets_minutes'] == [120]
+    assert packet['deployment']['effective_api_review_enabled'] is False
+    assert 'do-not-include-this-credential' not in json.dumps(packet)
