@@ -1,45 +1,64 @@
-# FPL strategy review — 6 October 2026
+**FPL audit — retain `hold` + `chip:none` provisionally; decision confidence Low.**
 
-## Review scope
+**Review time:** 2026-10-18 10:28:32 UTC.  
+**Newest recorded decision:** 2026-10-17 09:41:58.531697 UTC, GW7 dry run. The newer GW8 preview has no generation timestamp.  
+**Scope:** supplied code, tests, truncated decision log, squad, forecasts and plans; supporting official web pages opened. Tests were reviewed as text and **were not run**. No commands, API calls, edits or messages were performed. No previous audit report was supplied, so `NO_CHANGE` cannot be established.
 
-Reviewed `AGENTS.md`, strategy configuration, squad baseline, decision log, latest GW6 recommendation and plan, rolling state, forecast history, delivery state, relevant source/test changes, working-tree diff, and Git history. New evidence since the 29 September review is the 1 October planner/scoring/deadline-alert release and regenerated GW6 packet/state, plus uncommitted auth/CLI fallback changes. The newest reviewed decision remains `2026-09-25T21:41:38.513338+00:00` (`gw6:manual` dry run). No user execution is inferred after that timestamp.
+**Immediate decision and legality**
 
-Focused regression tests for deadlines, planner, engine options, evaluation, fallback, duplicate prevention, and Telegram pass: 23 tests.
+The current transfer shortlist is exactly `hold`, `transfer:368:124`, `transfer:368:236` and `transfer:368:156`. Retain `hold`; preserve chips with `chip:none`. The other current chip IDs are `chip:triple_captain`, `chip:bench_boost`, `chip:free_hit` and `chip:wildcard`. No alternative has sufficient verified evidence to justify changing the selection now.
 
-## Findings
+The supplied squad records £0.1m bank and one free transfer. Holding leaves £0.1m, costs zero points and produces two free transfers next week under the supplied model. The GW8 XI is a legal 5-3-2, with distinct starting captain Haaland and vice-captain Schade. Bench: Kusi-Asare, Hughes, Szoboszlai; reserve goalkeeper Dubravka.
 
-- The current legal immediate shortlist is `hold`, `transfer:557:124` (Tzolis → Groß, +8.7), `transfer:557:94` (Tzolis → Schade, +8.5), and `transfer:557:69` (Tzolis → Scott, +5.6). The selected IDs remain `hold` and `chip:none`; validation reports a legal 15-player squad, budget, maximum-three-per-club rule, £0.0m bank, and zero hit. Any real action must be one of these exact current IDs.
-- The new early-transfer hold policy explains why `hold` is selected while the stronger transfer shortlist is still displayed. This is internally coherent but remains a material decision conflict: the current plan is low confidence and should be revisited only with late availability/role evidence. The public squad baseline is not proof that GW6 was played as shown.
-- The current XI is Tzolakis, Gabriel, Calafiori, Gvardiol, Ajayi, B.Fernandes, Mbeumo, Tzolis, Szoboszlai, Haaland and Calvert-Lewin; bench order is van Ewijk, Kusi-Asare, Hughes, with Dubravka in reserve. It is structurally valid, but bench cover is weak: the packet projects about 52, 5 and 8 minutes for those three substitutes.
-- Captaincy remains fragile: B.Fernandes leads Haaland by only 0.43 projected points. The new confidence warning cites three consecutive recent captain overestimates averaging 7.9 points. Keep this as a deadline review risk, not evidence of a user-selected captain.
+Code checks squad quotas, duplicate players, club limits, selling prices and affordability. Its selling-price formula matches the official half-profit rule. However, current market prices, resolved club IDs and full GW8 transfer price details are absent: **current transfer affordability and club counts remain packet-reported, not independently verified**. The earlier GW7 £6.8m sale/£6.1m purchase correctly leaves £0.8m from £0.1m. That recommendation is not proof the user executed it. [Official rules](https://www.premierleague.com/en/news/4661029)
 
-## Outcomes and calibration
+**Findings and proposed improvements**
 
-Officially settled engine forecasts available are GW2 actual 106 vs expected 42.73, GW3 44 vs 83.62, GW4 57 vs 77.30, and GW5 38 vs 75.26. Mean points MAE is 3.01 and mean minutes MAE is 16.66 across four settled weeks. These compare engine-selected forecast lineups, not confirmed user actions. Four weeks are still below the configured 4–6-week calibration threshold; do not change weights yet. The repeated Bruno overprediction is enough to lower confidence and prompt deadline review, but not enough to recalibrate strategy.
+- **High — Wildcard calendar can be skipped incorrectly. Confidence High.** In `planner._build_chip_targets`, rejecting a Free Hit candidate executes `continue`, bypassing the subsequent Wildcard analysis for that week. This can explain “Wildcard unassigned / 0.0” despite the immediate +52.9 estimate. Restrict that rejection to Free Hit processing and add a regression case where Free Hit is unsuitable but Wildcard remains assessable.
 
-## Rolling route
+- **High — forecast evidence is inconsistent across artifacts. Confidence High.** From the supplied settled GW2–6 history, player-points MAE averages **2.92**, minutes MAE **16.8**; the GW8 output instead reports 2.99/18.2. GW6 forecast-XI outcome is **42**, not the 34 implied by the web review’s claimed 34-point miss. Correct the review and derive all displayed metrics from one timestamped, versioned snapshot.
 
-The saved plan files are byte-identical and validate as reachable: GW6 hold (1 → 2 free transfers, £0.0m), conditional GW7 Tzolis → Schade plus van Ewijk → Thomas (2 → 1, £0.1m), GW8 hold (1 → 2), GW9 hold (2 → 3), then conditional GW10 Tzolakis → Petrović (3 → 3, £0.2m). All planned hits are zero and the route preserves legal squad structure. Every move after GW6 is conditional and must be rebuilt from the actual squad, prices, availability and news; none is a confirmed future transfer. Confidence decays to Low by GW9–10, appropriately reflecting projection uncertainty.
+- **High — production configuration cannot be verified. Confidence High in the evidence gap.** The scheduler requires `[120]`, while supplied base configuration contains `[1440,180,45]`; local overrides and scheduler status are excluded. This does not prove production is misconfigured. Include sanitized effective notification settings, runtime location, scheduler status and deployment revision in future packets. Python should remain the sole production deadline runner.
 
-The 1 October planner changes—two-transfer bundles, all-outgoing search, stronger minutes gates, bench weighting, form smoothing and future-prior blending—are directionally sensible and now covered by focused tests. They make the hold-vs-transfer conflict more visible, but the report should continue to distinguish comparative model score from literal points.
+- **Medium — minutes and recovery assumptions need scenario handling. Confidence High.** Future projections retain current injury status and largely season-average minutes. An injured player can therefore remain unavailable throughout the horizon without recovery evidence. Add recovery/rotation scenarios and evidence-age confidence limits. Liverpool confirms Szoboszlai’s recurrence and need for further recovery, without a return date. [Official Liverpool update](https://www.liverpoolfc.com/news/andoni-iraola-on-jeremie-frimpong-and-dominik-szoboszlai-injuries)
 
-## Chip calendar
+- **Medium — explanations and confidence overstate precision. Confidence High.** Calling the transfer marginal conflicts with the shortlisted +15.8 gain; the operative reason is the early-transfer timing policy. Explain that directly. GW9–10 “Medium” confidence also follows a Low-confidence starting decision with unresolved ownership, injuries and prices; propagate those uncertainties through the route.
 
-The provisional calendar remains Wildcard unassigned (Low), Free Hit GW17 with GW18 backup (Low, +5.4), Bench Boost GW9 with GW8 backup (Low, +4.3), and Triple Captain GW7 with GW16 backup (Medium, +10.1 on Haaland). No primary/backup collision is present in the saved targets. The implementation retains first-half expiry at GW19, second-half availability through GW38, and the GW19 first-half Free Hit opportunity-cost restriction; the current GW17/GW18 Free Hit target avoids that collision.
+- **Medium — strengthen validation and audit coverage. Confidence High.** `load_squad` discards supplied `element_id`, then resolves names fuzzily; preserve stable IDs. Enforce opening-Gameweek Wildcard restrictions and the consecutive-Free-Hit prohibition explicitly. Add focused tests for these rules, the Wildcard calendar defect, settlement substitutions and interrupted delivery.
 
-The low Bench Boost and Free Hit uplifts do not justify early use. Triple Captain GW7 has the strongest current rationale, but it remains conditional and should be compared with later double-gameweek evidence before activation. Wildcard remains a decision gate, not a planned move. A chip activation would require rebuilding the route from the resulting squad.
+**Forecasts versus outcomes**
 
-## Delivery, source changes and risks
+These are reconstructed outcomes for **forecast lineups**, not confirmed user scores:
 
-Decision-log telemetry totals 13 dry runs, 6 sent records, 3 test-sent records and 1 test-failed record. There is no new production send, fallback, retry, or post-25-September decision. Historical repeated `gw4:manual` sent records remain a duplicate/idempotency risk, although `state/last_run.json` retains one sent key.
+| GW | Forecast | Stored outcome | Forecast minus outcome |
+|---:|---:|---:|---:|
+| 2 | 42.73 | 106 | −63.27 |
+| 3 | 83.62 | 44 | +39.62 |
+| 4 | 77.30 | 57 | +20.30 |
+| 5 | 75.26 | 38 | +37.26 |
+| 6 | 67.92 | 42 | +25.92 |
 
-The uncommitted auth/CLI changes add a local macOS auth-file fallback and catch Keychain lookup errors before environment fallback. They do not alter strategy decisions or production delivery in this audit; keep credentials outside the repository and do not commit secrets. The 1 October committed deadline change broadens notification windows to tolerate delayed scheduled runs; it is covered by the passing deadline tests but still cannot recover a run that never starts before the deadline.
+Forecast-XI MAE is **37.27 points**; the last three overpredictions average **27.83**, rather than the displayed 30.5. Settlement omits automatic substitutions and vice-captain fallback, so its “actual team points” label needs qualification.
 
-Specific improvements:
+Five settled weeks justify investigating calibration, but changing coefficients requires reconciling versions and forecast timing first. Preserve immutable forecast records: `record_forecast` currently overwrites each Gameweek, including with dry runs. Separate starters from scouting candidates in metrics; the reported starter hit rate currently includes candidates. GW7 remains unsettled in the supplied history.
 
-- Add an explicit regression test and report warning for the policy case where `hold` is selected while a legal transfer exceeds the configured conflict threshold.
-- Keep outcome settlement separate from execution attribution, and add GW6 settlement before considering calibration.
-- Make duplicate notification-key history and retry provenance auditable rather than relying on the single latest state key.
-- Recheck captaincy and the Tzolis transfer shortlist near the deadline using official availability and role news; do not turn the rolling route or chip calendar into confirmed actions.
+**Conditional rolling and chip assessment**
 
-No strategy, squad, state, workflow, credentials, source code, tests, recommendation, plan, delivery, commit or push changes were made by this audit beyond this review report and the automation memory.
+The GW8–12 route is: hold; Szoboszlai → Dewsbury-Hall; Schade → Groß plus Gvardiol → De Cuyper; Ajayi → Vuskovic; hold. Its free-transfer sequence **2/2/1/1/2** is internally consistent, with zero hits and nonnegative banks. Recalculate from the actual squad before each deadline; the £0.0m endpoint leaves no price buffer. Buying three Brighton players also warrants refreshed role evidence: the Scout documented congestion and competition for places, but its October 1 analysis is not current lineup confirmation. [Scout analysis](https://www.premierleague.com/en/news/4728140/is-it-still-a-good-idea-invest-in-brighton-players-in-fpl)
+
+| Chip | Primary / backup | Assessment |
+|---|---|---|
+| Wildcard | Unassigned / none | Calendar defect undermines this result. Reconcile +52.9 static uplift with the reported +22.9 rolling comparison; detailed counterfactual output is missing. |
+| Free Hit | GW19 / GW17 | +13.3 is uncertain and below the current +17.1 estimate. Compare both explicitly; GW19 blocks another Free Hit in GW20. |
+| Bench Boost | GW11 / GW12 | +3.6 is weak; current bench projects only +0.6. Reassess after improving playing cover. |
+| Triple Captain | GW16 / GW9 | +10.1 versus +9.2 now. GW16’s Haaland–Hull fixture supports consideration, conditional on fitness and role. |
+
+Assigned primaries and listed backups have no collisions, but Wildcard is missing and backups are not jointly reserved. Rebuild the calendar whenever a chip moves. Officially, only one chip may be used per Gameweek; first-half chips expire at the **GW19 deadline, 2 January 2027, 13:30 GMT**, and second-half chips cover GW20–38. Wildcard/Free Hit preserve banked transfers; both are unavailable for a manager’s opening Gameweek and cannot be cancelled once confirmed. Bench Boost/Triple Captain can be cancelled before deadline. [Official rules](https://www.premierleague.com/en/news/4661029), [2026/27 chip guidance](https://www.premierleague.com/en/news/4679879/whats-happening-with-fpl-chips-in-202627)
+
+Haaland’s post-match fitness comments support provisional captaincy, not guaranteed minutes. Schade’s vice-captain role needs fresh fitness confirmation. [Official City reaction](https://www.mancity.com/matchday/fixtures/mens/2026/premier-league/man-city-v-ipswich-17-oct-2026)
+
+**Delivery assessment**
+
+The visible log contains one successful send and two dry runs; repeated `gw7:45m` dry runs are **not duplicate deliveries**. No failure is visible, but truncation prevents a complete delivery audit. The latest GW8 preview has no delivery record, consistent with preview behavior.
+
+A remaining **Medium-severity, High-confidence** reliability risk is delivery succeeding before notification state is saved: a crash or ambiguous timeout can trigger a duplicate retry. Persist attempt IDs and returned message receipts, distinguish uncertain delivery from definite failure, and test recovery. No automatic configuration changes are proposed.
